@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.5: 景色カード刷新／仮テキスト反映／導入結晶の調整 -->
+  <!-- SNOW MAP v0.5.1: カード縮小／導入結晶の発光調整 -->
   <style>
     :root {
       --ink: #31475f;
@@ -196,14 +196,17 @@
       position: fixed;
       z-index: 21;
       left: 50%;
-      bottom: 0;
-      width: min(100%, 560px);
-      transform: translate(-50%, 105%);
-      border-radius: 27px 27px 0 0;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      width: min(calc(100% - 24px), 500px);
+      max-height: calc(100svh - 92px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transform: translate(-50%, calc(100% + 28px));
+      border-radius: 24px;
       background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(245,251,253,.78));
       border: 1px solid rgba(255,255,255,.72);
       box-shadow: 0 -18px 60px rgba(36,55,70,.20), inset 0 1px 0 rgba(255,255,255,.72);
-      padding: 12px 22px max(20px, env(safe-area-inset-bottom));
+      padding: 10px 18px 14px;
       opacity: 0;
       transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
     }
@@ -212,26 +215,26 @@
       0% { transform: translate(-50%, 22px) scale(.985); opacity: 0; }
       100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
     }
-    .handle { width: 36px; height: 4px; margin: 0 auto 15px; border-radius: 99px; background: rgba(49,71,95,.17); }
+    .handle { width: 32px; height: 4px; margin: 0 auto 10px; border-radius: 99px; background: rgba(49,71,95,.17); }
     .place-label { margin: 0; font-size: 10px; letter-spacing: .16em; opacity: .46; }
-    .place-name { margin: 5px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(24px,7vw,33px); line-height: 1.2; letter-spacing: .055em; font-weight: 500; }
-    .experience { margin: 8px 0 0; font-size: 12px; letter-spacing: .18em; color: #668092; font-weight: 700; }
-    .place-copy { margin: 13px 0 0; max-width: 31em; font-size: 14px; line-height: 1.8; letter-spacing: .045em; color: rgba(49,71,95,.78); }
-    .divider { height: 1px; margin: 18px 0 15px; background: linear-gradient(90deg,var(--line),transparent); }
+    .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(22px,6.2vw,29px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
+    .experience { margin: 6px 0 0; font-size: 11px; letter-spacing: .18em; color: #668092; font-weight: 700; }
+    .place-copy { margin: 10px 0 0; max-width: 31em; font-size: 13px; line-height: 1.65; letter-spacing: .045em; color: rgba(49,71,95,.78); }
+    .divider { height: 1px; margin: 13px 0 11px; background: linear-gradient(90deg,var(--line),transparent); }
     .song-label { margin: 0 0 3px; font-size: 10px; letter-spacing: .16em; opacity: .44; }
-    .song-name { margin: 3px 0 17px; font-size: clamp(23px,6.7vw,32px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
-    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 11px; }
+    .song-name { margin: 2px 0 12px; font-size: clamp(20px,5.9vw,28px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
+    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 9px; }
     .service {
       display: flex; align-items: center; justify-content: center;
-      min-height: 44px; padding: 7px;
+      min-height: 38px; padding: 6px 4px;
       border: 1px solid rgba(49,71,95,.12); border-radius: 15px;
       color: var(--ink); text-decoration: none;
       background: rgba(255,255,255,.58);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
-      font-size: 12px; font-weight: 650;
+      font-size: 11px; font-weight: 650;
     }
-    .next { width: 100%; min-height: 52px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
-    .close { display: block; margin: 10px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 8px 16px; cursor: pointer; }
+    .next { width: 100%; min-height: 46px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+    .close { display: block; margin: 6px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 8px 16px; cursor: pointer; }
 
     .intro {
       position: fixed;
@@ -245,23 +248,41 @@
     .intro.hide { opacity: 0; visibility: hidden; }
     .intro-mark { text-align: center; }
     .intro-mark strong { display: block; font-family: Georgia,"Times New Roman",serif; font-size: 30px; font-weight: 500; letter-spacing: .14em; }
+    .intro-snow-glow {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      margin: 12px auto 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      animation: introFlakeGlow 2.8s ease-in-out infinite;
+    }
+    .intro-snow-glow::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(193,232,247,.58) 0%, rgba(213,241,251,.24) 42%, transparent 72%);
+      filter: blur(5px);
+    }
     .intro-snow {
-      width: 38px;
-      height: 38px;
-      margin: 16px auto 0;
-      color: #c4d9e3;
-      filter: drop-shadow(0 0 7px rgba(191,222,235,.45));
-      animation: introFlakeGlow 2.4s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      width: 34px;
+      height: 34px;
+      color: rgba(224,243,250,.88);
+      filter: drop-shadow(0 0 2px rgba(255,255,255,.95)) drop-shadow(0 0 7px rgba(154,214,237,.62));
     }
     .intro-snow line {
       vector-effect: non-scaling-stroke;
       stroke: currentColor;
-      stroke-width: 1.05;
+      stroke-width: .62;
       stroke-linecap: round;
     }
     @keyframes introFlakeGlow {
-      0%,100% { opacity: .34; transform: translateY(1px) scale(.96); }
-      50% { opacity: .9; transform: translateY(-1px) scale(1.035); }
+      0%,100% { opacity: .48; transform: scale(.96); }
+      50% { opacity: 1; transform: scale(1.045); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -272,7 +293,7 @@
 </head>
 <body>
   <div class="intro" id="intro" aria-hidden="true">
-    <div class="intro-mark"><strong>SNOW MAP</strong><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div>
+    <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
   </div>
 
   <main class="app" id="app">
