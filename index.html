@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.4.1: 線画の雪結晶マーカー＋背景調整 -->
+  <!-- SNOW MAP v0.4.2: 導入は雪結晶／地図は黄色い光のタップ誘導 -->
   <style>
     :root {
       --ink: #31475f;
@@ -99,7 +99,7 @@
     .ambient { z-index: 2; transition: background .8s ease; }
     .lights { z-index: 4; }
 
-    /* タップ誘導は絵文字ではなく、細い線画の雪結晶 */
+    /* 地図上のタップ誘導：景色を邪魔しない、小さな暖色の光 */
     .beacon {
       position: absolute;
       z-index: 5;
@@ -110,53 +110,48 @@
       padding: 0;
       border-radius: 50%;
       background: transparent;
-      color: #477f9b;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .beacon-flake {
+    .beacon::before {
+      content: "";
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 23px;
-      height: 23px;
+      width: 9px;
+      height: 9px;
       transform: translate(-50%, -50%);
-      overflow: visible;
+      border-radius: 50%;
+      background: rgba(255,255,244,.98);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.62),
+        0 0 7px 3px rgba(255,224,112,.78),
+        0 0 16px 7px rgba(255,205,76,.34);
+      animation: beaconGlow 2.7s ease-in-out infinite;
       pointer-events: none;
-      filter:
-        drop-shadow(0 0 1.5px rgba(255,255,255,1))
-        drop-shadow(0 0 4px rgba(255,255,255,.95))
-        drop-shadow(0 0 8px rgba(87,167,200,.72));
-      animation: flakeGlow 2.8s ease-in-out infinite;
     }
-    .beacon-flake line {
-      vector-effect: non-scaling-stroke;
-      stroke: currentColor;
-      stroke-width: 1.25;
-      stroke-linecap: round;
-    }
-    .beacon:nth-of-type(3n) .beacon-flake { animation-delay: -.8s; }
-    .beacon:nth-of-type(3n+1) .beacon-flake { animation-delay: -1.55s; }
+    .beacon:nth-of-type(3n)::before { animation-delay: -.8s; }
+    .beacon:nth-of-type(3n+1)::before { animation-delay: -1.55s; }
     .beacon:focus-visible { outline: 2px dashed rgba(55,118,134,.72); outline-offset: -22px; }
-    .beacon:active .beacon-flake { transform: translate(-50%,-50%) scale(1.28); }
+    .beacon:active::before { transform: translate(-50%,-50%) scale(1.22); }
 
-    .time-evening .beacon,
-    .time-night .beacon { color: rgba(244,252,255,.98); }
-    .time-night .beacon-flake {
-      filter:
-        drop-shadow(0 0 1px rgba(39,79,105,.9))
-        drop-shadow(0 0 5px rgba(255,255,255,.95))
-        drop-shadow(0 0 11px rgba(111,203,238,.9));
+    .time-evening .beacon::before,
+    .time-night .beacon::before {
+      background: rgba(255,252,224,1);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.72),
+        0 0 8px 4px rgba(255,221,102,.9),
+        0 0 18px 8px rgba(255,187,62,.42);
     }
 
-    @keyframes flakeGlow {
+    @keyframes beaconGlow {
       0%,100% {
-        opacity: .52;
-        transform: translate(-50%,-50%) translateY(1px) rotate(-3deg) scale(.88);
+        opacity: .58;
+        transform: translate(-50%,-50%) scale(.78);
       }
       50% {
         opacity: 1;
-        transform: translate(-50%,-50%) translateY(-1px) rotate(3deg) scale(1.08);
+        transform: translate(-50%,-50%) scale(1.08);
       }
     }
 
@@ -407,12 +402,6 @@
     function closeSheet(){ sheet.classList.remove("open"); backdrop.classList.remove("open"); document.body.style.overflow=""; }
 
     document.querySelectorAll(".beacon").forEach(b=>{
-      const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-      svg.setAttribute("viewBox","0 0 24 24");
-      svg.setAttribute("aria-hidden","true");
-      svg.classList.add("beacon-flake","snowflake-svg");
-      drawSnowflake(svg);
-      b.appendChild(svg);
       b.addEventListener("click",()=>showSong(b.dataset.place));
     });
     nextButton.addEventListener("click",continueWalk); closeButton.addEventListener("click",closeSheet); backdrop.addEventListener("click",closeSheet);
