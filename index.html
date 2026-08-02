@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.5.1: カード縮小／導入結晶の発光調整 -->
+  <!-- SNOW MAP v0.5.2: 導入約2秒／結晶視認性／カード文字縮小 -->
   <style>
     :root {
       --ink: #31475f;
@@ -197,16 +197,16 @@
       z-index: 21;
       left: 50%;
       bottom: max(10px, env(safe-area-inset-bottom));
-      width: min(calc(100% - 24px), 500px);
+      width: min(calc(100% - 42px), 430px);
       max-height: calc(100svh - 92px);
       overflow-y: auto;
       overscroll-behavior: contain;
       transform: translate(-50%, calc(100% + 28px));
-      border-radius: 24px;
+      border-radius: 22px;
       background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(245,251,253,.78));
       border: 1px solid rgba(255,255,255,.72);
       box-shadow: 0 -18px 60px rgba(36,55,70,.20), inset 0 1px 0 rgba(255,255,255,.72);
-      padding: 10px 18px 14px;
+      padding: 9px 15px 12px;
       opacity: 0;
       transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
     }
@@ -215,26 +215,26 @@
       0% { transform: translate(-50%, 22px) scale(.985); opacity: 0; }
       100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
     }
-    .handle { width: 32px; height: 4px; margin: 0 auto 10px; border-radius: 99px; background: rgba(49,71,95,.17); }
-    .place-label { margin: 0; font-size: 10px; letter-spacing: .16em; opacity: .46; }
-    .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(22px,6.2vw,29px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
-    .experience { margin: 6px 0 0; font-size: 11px; letter-spacing: .18em; color: #668092; font-weight: 700; }
-    .place-copy { margin: 10px 0 0; max-width: 31em; font-size: 13px; line-height: 1.65; letter-spacing: .045em; color: rgba(49,71,95,.78); }
-    .divider { height: 1px; margin: 13px 0 11px; background: linear-gradient(90deg,var(--line),transparent); }
-    .song-label { margin: 0 0 3px; font-size: 10px; letter-spacing: .16em; opacity: .44; }
-    .song-name { margin: 2px 0 12px; font-size: clamp(20px,5.9vw,28px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
-    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 9px; }
+    .handle { width: 30px; height: 4px; margin: 0 auto 8px; border-radius: 99px; background: rgba(49,71,95,.17); }
+    .place-label { margin: 0; font-size: 9px; letter-spacing: .16em; opacity: .46; }
+    .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(20px,5.4vw,25px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
+    .experience { margin: 5px 0 0; font-size: 10px; letter-spacing: .18em; color: #668092; font-weight: 700; }
+    .place-copy { margin: 8px 0 0; max-width: 31em; font-size: 12px; line-height: 1.6; letter-spacing: .045em; color: rgba(49,71,95,.78); }
+    .divider { height: 1px; margin: 10px 0 9px; background: linear-gradient(90deg,var(--line),transparent); }
+    .song-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .16em; opacity: .44; }
+    .song-name { margin: 2px 0 9px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
+    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 8px; }
     .service {
       display: flex; align-items: center; justify-content: center;
-      min-height: 38px; padding: 6px 4px;
+      min-height: 34px; padding: 5px 3px;
       border: 1px solid rgba(49,71,95,.12); border-radius: 15px;
       color: var(--ink); text-decoration: none;
       background: rgba(255,255,255,.58);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
-      font-size: 11px; font-weight: 650;
+      font-size: 10px; font-weight: 650;
     }
-    .next { width: 100%; min-height: 46px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
-    .close { display: block; margin: 6px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 8px 16px; cursor: pointer; }
+    .next { width: 100%; min-height: 42px; border: 0; border-radius: 15px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+    .close { display: block; margin: 4px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 7px 14px; font-size: 12px; cursor: pointer; }
 
     .intro {
       position: fixed;
@@ -263,26 +263,26 @@
       position: absolute;
       inset: 5px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(193,232,247,.58) 0%, rgba(213,241,251,.24) 42%, transparent 72%);
-      filter: blur(5px);
+      background: radial-gradient(circle, rgba(181,224,242,.70) 0%, rgba(210,239,250,.34) 44%, transparent 74%);
+      filter: blur(6px);
     }
     .intro-snow {
       position: relative;
       z-index: 1;
       width: 34px;
       height: 34px;
-      color: rgba(224,243,250,.88);
-      filter: drop-shadow(0 0 2px rgba(255,255,255,.95)) drop-shadow(0 0 7px rgba(154,214,237,.62));
+      color: rgba(178,211,225,.82);
+      filter: drop-shadow(0 0 1px rgba(255,255,255,.98)) drop-shadow(0 0 8px rgba(139,205,233,.72));
     }
     .intro-snow line {
       vector-effect: non-scaling-stroke;
       stroke: currentColor;
-      stroke-width: .62;
+      stroke-width: .55;
       stroke-linecap: round;
     }
     @keyframes introFlakeGlow {
-      0%,100% { opacity: .48; transform: scale(.96); }
-      50% { opacity: 1; transform: scale(1.045); }
+      0%,100% { opacity: .64; transform: scale(.97); }
+      50% { opacity: 1; transform: scale(1.035); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -300,7 +300,7 @@
     <header class="topbar">
       <h1>SNOW MAP</h1>
       <p class="top-copy">今日は、どの景色を歩きますか。</p>
-      <p class="hint" id="hint">雪の結晶が光る景色に触れてみてください</p>
+      <p class="hint" id="hint">小さく光る景色に触れてみてください</p>
     </header>
 
     <section class="map-viewport" aria-label="SNOW MAPの地図">
@@ -485,7 +485,7 @@
     nextButton.addEventListener("click",continueWalk); closeButton.addEventListener("click",closeSheet); backdrop.addEventListener("click",closeSheet);
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
     setWorldTime(); setInterval(setWorldTime,60000);
-    window.addEventListener("load",()=>setTimeout(()=>intro.classList.add("hide"),900));
+    window.addEventListener("load",()=>setTimeout(()=>intro.classList.add("hide"),2000));
   </script>
 </body>
 </html>
