@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
+  <!-- SNOW MAP v0.4: 朝・昼・夕方・夜の4画像切替 -->
   <style>
     :root {
       --ink: #31475f;
@@ -74,14 +75,20 @@
       margin-left: -6%;
     }
 
+    .map-images {
+      position: relative;
+      width: 100%;
+    }
     .map-image {
       display: block;
       width: 100%;
       height: auto;
       user-select: none;
       -webkit-user-drag: none;
-      transition: filter .8s ease;
+      opacity: 1;
+      transition: opacity .65s ease;
     }
+    .map-image.switching { opacity: 0; }
 
     .ambient,
     .lights {
@@ -150,31 +157,11 @@
       50% { opacity: .82; transform: translate(-50%,-50%) scale(1.05); }
     }
 
-    .time-morning .ambient {
-      background: linear-gradient(to bottom, rgba(255,219,158,.13), transparent 34%);
-    }
-    .time-morning .map-image { filter: brightness(1.035) saturate(.98); }
-    .time-day .ambient { background: transparent; }
-    .time-day .map-image { filter: none; }
-    .time-evening .ambient {
-      background: linear-gradient(to bottom, rgba(255,170,122,.09), rgba(110,91,155,.07));
-      mix-blend-mode: multiply;
-    }
-    .time-evening .map-image { filter: saturate(.98); }
-    .time-night .map-viewport {
-      background: linear-gradient(#dfe8f2, #eef3f5 44%, #e5edf2);
-    }
-    .time-night .ambient {
-      background:
-        radial-gradient(circle at 69% 29%, rgba(255,235,157,.18), transparent 13%),
-        linear-gradient(to bottom, rgba(55,80,119,.12), rgba(38,65,105,.08));
-      mix-blend-mode: multiply;
-    }
-    .time-night .map-image { filter: brightness(.94) saturate(.9) contrast(1.015); }
-    .time-night .beacon::after {
-      background: rgba(255,226,139,.98);
-      box-shadow: 0 0 8px #fff2b8, 0 0 22px rgba(255,197,92,.78);
-    }
+    /* 時間帯は描き分けた4枚の画像で表現します */
+    .time-morning .ambient,
+    .time-day .ambient,
+    .time-evening .ambient,
+    .time-night .ambient { background: transparent; }
 
     .sheet-backdrop {
       position: fixed;
@@ -233,7 +220,22 @@
     .intro.hide { opacity: 0; visibility: hidden; }
     .intro-mark { text-align: center; }
     .intro-mark strong { display: block; font-family: Georgia,"Times New Roman",serif; font-size: 30px; font-weight: 500; letter-spacing: .14em; }
-    .intro-light { width: 13px; height: 13px; margin: 18px auto 0; border-radius: 50%; background: #fff4aa; box-shadow: 0 0 14px #ffe78b,0 0 34px rgba(112,196,210,.55); animation: glow 1.7s ease-in-out infinite; }
+    .intro-snow {
+      width: 34px;
+      height: 34px;
+      margin: 15px auto 0;
+      display: grid;
+      place-items: center;
+      color: #82b8cc;
+      font-size: 27px;
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(152,214,230,.72);
+      animation: snowFloat 1.8s ease-in-out infinite;
+    }
+    @keyframes snowFloat {
+      0%,100% { opacity: .28; transform: translateY(5px) rotate(-8deg) scale(.78); }
+      50% { opacity: 1; transform: translateY(-4px) rotate(12deg) scale(1.08); }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
@@ -243,7 +245,7 @@
 </head>
 <body>
   <div class="intro" id="intro" aria-hidden="true">
-    <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-light"></div></div>
+    <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow" aria-hidden="true">❄</div></div>
   </div>
 
   <main class="app" id="app">
@@ -255,7 +257,9 @@
 
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
-        <img class="map-image" src="snow-map-v0.3.png" alt="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP" />
+        <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
+          <img class="map-image active" id="mapImage" src="snow-map-day.png" alt="SNOW MAPの地図" />
+        </div>
         <div class="ambient"></div>
         <div class="lights"></div>
         <div class="dome-aura" aria-hidden="true"></div>
@@ -264,7 +268,7 @@
         <button class="beacon" style="left:39.2%;top:20.3%;" data-place="シティライト" aria-label="シティライト"></button>
         <button class="beacon" style="left:68.0%;top:29.3%;" data-place="Snow Dome" aria-label="Snow Dome"></button>
         <button class="beacon" style="left:21.2%;top:40.1%;" data-place="木漏れ日の道" aria-label="木漏れ日の道"></button>
-        <button class="beacon" style="left:47.4%;top:42.0%;" data-place="歩道橋" aria-label="歩道橋"></button>
+        <button class="beacon" style="left:49.3%;top:39.3%;" data-place="歩道橋" aria-label="歩道橋"></button>
         <button class="beacon" style="left:67.3%;top:49.2%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
         <button class="beacon" style="left:72.1%;top:59.2%;" data-place="カフェ" aria-label="カフェ"></button>
         <button class="beacon" style="left:25.8%;top:65.7%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
@@ -308,16 +312,43 @@
     };
 
     const app=document.getElementById("app"), intro=document.getElementById("intro"), hint=document.getElementById("hint");
+    const mapImage=document.getElementById("mapImage");
+    const timeImages={
+      morning:"snow-map-morning.png",
+      day:"snow-map-day.png",
+      evening:"snow-map-evening.png",
+      night:"snow-map-night.png"
+    };
+    let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
     const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), songName=document.getElementById("songName");
     const nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null;
 
-    function setWorldTime(){
-      app.classList.remove("time-morning","time-day","time-evening","time-night");
+    function getTimeKey(){
       const h=new Date().getHours();
-      app.classList.add(h>=5&&h<10?"time-morning":h>=10&&h<16?"time-day":h>=16&&h<19?"time-evening":"time-night");
+      if(h>=5&&h<11) return "morning";
+      if(h>=11&&h<16) return "day";
+      if(h>=16&&h<19) return "evening";
+      return "night";
+    }
+    function setWorldTime(){
+      const key=getTimeKey();
+      app.classList.remove("time-morning","time-day","time-evening","time-night");
+      app.classList.add(`time-${key}`);
+      if(key===currentTimeKey) return;
+      currentTimeKey=key;
+      const nextSrc=timeImages[key];
+      const preload=new Image();
+      preload.onload=()=>{
+        mapImage.classList.add("switching");
+        setTimeout(()=>{
+          mapImage.src=nextSrc;
+          requestAnimationFrame(()=>mapImage.classList.remove("switching"));
+        },260);
+      };
+      preload.src=nextSrc;
     }
     function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
     function updateLinks(title){ const q=encodeURIComponent(`Snow Man ${title}`); spotifyLink.href=`https://open.spotify.com/search/${q}`; appleLink.href=`https://music.apple.com/jp/search?term=${q}`; youtubeLink.href=`https://www.youtube.com/results?search_query=${q}`; }
