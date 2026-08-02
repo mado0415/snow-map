@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.4.2: 導入は雪結晶／地図は黄色い光のタップ誘導 -->
+  <!-- SNOW MAP v0.5: 景色カード刷新／仮テキスト反映／導入結晶の調整 -->
   <style>
     :root {
       --ink: #31475f;
       --paper: #ffffff;
-      --panel: rgba(255,255,255,.96);
+      --panel: rgba(255,255,255,.88);
       --line: rgba(49,71,95,.14);
       --shadow: 0 18px 48px rgba(47,70,88,.16);
     }
@@ -184,8 +184,8 @@
       position: fixed;
       inset: 0;
       z-index: 20;
-      background: rgba(28,40,51,.17);
-      backdrop-filter: blur(4px);
+      background: rgba(28,40,51,.14);
+      backdrop-filter: blur(7px) saturate(.92);
       opacity: 0;
       pointer-events: none;
       transition: opacity .24s ease;
@@ -200,29 +200,37 @@
       width: min(100%, 560px);
       transform: translate(-50%, 105%);
       border-radius: 27px 27px 0 0;
-      background: var(--panel);
-      box-shadow: 0 -18px 60px rgba(36,55,70,.23);
-      padding: 12px 20px max(19px, env(safe-area-inset-bottom));
-      transition: transform .32s cubic-bezier(.2,.8,.2,1);
+      background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(245,251,253,.78));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: 0 -18px 60px rgba(36,55,70,.20), inset 0 1px 0 rgba(255,255,255,.72);
+      padding: 12px 22px max(20px, env(safe-area-inset-bottom));
+      opacity: 0;
+      transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
     }
-    .sheet.open { transform: translate(-50%,0); }
+    .sheet.open { transform: translate(-50%,0); opacity: 1; animation: placeCard .42s cubic-bezier(.18,.82,.24,1); }
+    @keyframes placeCard {
+      0% { transform: translate(-50%, 22px) scale(.985); opacity: 0; }
+      100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    }
     .handle { width: 36px; height: 4px; margin: 0 auto 15px; border-radius: 99px; background: rgba(49,71,95,.17); }
     .place-label { margin: 0; font-size: 10px; letter-spacing: .16em; opacity: .46; }
-    .place-name { margin: 3px 0 0; font-size: 15px; letter-spacing: .09em; font-weight: 650; }
-    .experience { margin: 5px 0 0; font-size: 13px; letter-spacing: .12em; color: #668092; font-weight: 650; }
-    .divider { height: 1px; margin: 13px 0 12px; background: linear-gradient(90deg,var(--line),transparent); }
+    .place-name { margin: 5px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(24px,7vw,33px); line-height: 1.2; letter-spacing: .055em; font-weight: 500; }
+    .experience { margin: 8px 0 0; font-size: 12px; letter-spacing: .18em; color: #668092; font-weight: 700; }
+    .place-copy { margin: 13px 0 0; max-width: 31em; font-size: 14px; line-height: 1.8; letter-spacing: .045em; color: rgba(49,71,95,.78); }
+    .divider { height: 1px; margin: 18px 0 15px; background: linear-gradient(90deg,var(--line),transparent); }
     .song-label { margin: 0 0 3px; font-size: 10px; letter-spacing: .16em; opacity: .44; }
-    .song-name { margin: 0 0 13px; font-size: clamp(23px,6.7vw,32px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
+    .song-name { margin: 3px 0 17px; font-size: clamp(23px,6.7vw,32px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
     .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 11px; }
     .service {
       display: flex; align-items: center; justify-content: center;
       min-height: 44px; padding: 7px;
-      border: 1px solid var(--line); border-radius: 14px;
+      border: 1px solid rgba(49,71,95,.12); border-radius: 15px;
       color: var(--ink); text-decoration: none;
-      background: rgba(255,255,255,.72);
+      background: rgba(255,255,255,.58);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
       font-size: 12px; font-weight: 650;
     }
-    .next { width: 100%; min-height: 51px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+    .next { width: 100%; min-height: 52px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
     .close { display: block; margin: 10px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 8px 16px; cursor: pointer; }
 
     .intro {
@@ -241,21 +249,19 @@
       width: 38px;
       height: 38px;
       margin: 16px auto 0;
-      color: #6ca7c2;
-      filter:
-        drop-shadow(0 0 2px rgba(255,255,255,1))
-        drop-shadow(0 0 9px rgba(112,186,216,.7));
-      animation: introFlakeGlow 2s ease-in-out infinite;
+      color: #c4d9e3;
+      filter: drop-shadow(0 0 7px rgba(191,222,235,.45));
+      animation: introFlakeGlow 2.4s ease-in-out infinite;
     }
     .intro-snow line {
       vector-effect: non-scaling-stroke;
       stroke: currentColor;
-      stroke-width: 1.25;
+      stroke-width: 1.05;
       stroke-linecap: round;
     }
     @keyframes introFlakeGlow {
-      0%,100% { opacity: .38; transform: translateY(3px) rotate(-3deg) scale(.9); }
-      50% { opacity: 1; transform: translateY(-2px) rotate(3deg) scale(1.06); }
+      0%,100% { opacity: .34; transform: translateY(1px) scale(.96); }
+      50% { opacity: .9; transform: translateY(-1px) scale(1.035); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -305,6 +311,7 @@
     <p class="place-label">PLACE</p>
     <p class="place-name" id="placeName"></p>
     <p class="experience" id="experience"></p>
+    <p class="place-copy" id="placeCopy"></p>
     <div class="divider"></div>
     <p class="song-label">MUSIC</p>
     <h2 class="song-name" id="songName"></h2>
@@ -313,7 +320,7 @@
       <a class="service" id="appleLink" target="_blank" rel="noopener">Apple Music</a>
       <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
     </div>
-    <button class="next" id="nextButton">この先へ</button>
+    <button class="next" id="nextButton">この景色を歩く</button>
     <button class="close" id="closeButton">地図へ戻る</button>
   </section>
 
@@ -339,16 +346,66 @@
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
     const places = {
-      "展望台": { verb:"見渡す", songs:["We'll go together","EVERYTHING IS EVERYTHING","星のうた","7%","SBY"], next:["歩道橋","シティライト","ブルーハーバー"] },
-      "シティライト": { verb:"駆け抜ける", songs:["Spark!!","BANG‼︎","I・だって止まらない","SAVE YOUR HEART","W"], next:["歩道橋","Snow Dome","展望台","ブルーハーバー"] },
-      "Snow Dome": { verb:"帰ってくる", songs:["P.M.G.","Party! Party! Party!","Crazy F-R-E-S-H Beat","Make It Hot","守りたい、その笑顔"], next:["はじまりの広場","シティライト","歩道橋"] },
-      "木漏れ日の道": { verb:"歩く", songs:["From Today","A PIECE OF CAKE","Brand New Smile","TIKI TIKI","Days"], next:["歩道橋","はじまりの広場","ブルーハーバー","シーズンガーデン"] },
-      "歩道橋": { verb:"選ぶ", songs:["オトノナルホウヘ","Don't Hold Back","グッタイム","iro iro","ファンターナモーレ"], next:["展望台","シティライト","Snow Dome","木漏れ日の道","はじまりの広場"] },
-      "はじまりの広場": { verb:"出会う", songs:["Snow World","Happy Birthday","NO SURRENDER！","ナミダの海を越えて行け","ブラザービート"], next:["Snow Dome","木漏れ日の道","カフェ","歩道橋"] },
-      "カフェ": { verb:"休む", songs:["ANY & EVERY","Luv Classic","Big Bang Sweet","What's your color?","Color me live..."], next:["はじまりの広場","木漏れ日の道","シーズンガーデン","シーサイド"] },
-      "ブルーハーバー": { verb:"旅立つ", songs:["Lock on!","Wonderful! × Surprise!","Ready Go Round","ミッドナイト・トレンディ","8月の青"], next:["シーサイド","木漏れ日の道","展望台","シティライト"] },
-      "シーサイド": { verb:"風を感じる", songs:["Stories","REFRESH","YumYumYum 〜SpicyGirl〜","DA BOMB","Hip bounce!!"], next:["ブルーハーバー","シーズンガーデン","カフェ","シティライト"] },
-      "シーズンガーデン": { verb:"季節を感じる", songs:["HELLO HELLO","オレンジkiss","君は僕のもの","いっそ、嫌いになれたら。","My Sweet Girl"], next:["シーサイド","カフェ","木漏れ日の道","はじまりの広場"] }
+      "展望台": {
+        verb:"見つける",
+        copy:"高く登れば、まだ知らない景色が見えてくる。",
+        songs:["We'll go together","EVERYTHING IS EVERYTHING","星のうた","7%","SBY"],
+        next:["歩道橋","シティライト","ブルーハーバー"]
+      },
+      "シティライト": {
+        verb:"駆け抜ける",
+        copy:"光あふれる街は、今日も前へ進み続ける。",
+        songs:["Spark!!","BANG‼︎","I・だって止まらない","SAVE YOUR HEART","W"],
+        next:["歩道橋","Snow Dome","展望台","ブルーハーバー"]
+      },
+      "Snow Dome": {
+        verb:"熱くなる",
+        copy:"光も歓声も、この街でいちばん熱い場所。",
+        songs:["P.M.G.","Party! Party! Party!","Crazy F-R-E-S-H Beat","Make It Hot","守りたい、その笑顔"],
+        next:["はじまりの広場","シティライト","歩道橋"]
+      },
+      "木漏れ日の道": {
+        verb:"歩き出す",
+        copy:"風に背中を押されて、また少し前へ。",
+        songs:["From Today","A PIECE OF CAKE","Brand New Smile","TIKI TIKI","Days"],
+        next:["歩道橋","はじまりの広場","ブルーハーバー","シーズンガーデン"]
+      },
+      "歩道橋": {
+        verb:"踏み出す",
+        copy:"一歩先へ。景色は歩いた人だけに見えてくる。",
+        songs:["オトノナルホウヘ","Don't Hold Back","グッタイム","iro iro","ファンターナモーレ"],
+        next:["展望台","シティライト","Snow Dome","木漏れ日の道","はじまりの広場"]
+      },
+      "はじまりの広場": {
+        verb:"出会う",
+        copy:"今日の景色は、ここから動き始める。",
+        songs:["Snow World","Happy Birthday","NO SURRENDER！","ナミダの海を越えて行け","ブラザービート"],
+        next:["Snow Dome","木漏れ日の道","カフェ","歩道橋"]
+      },
+      "カフェ": {
+        verb:"整える",
+        copy:"少しだけ立ち止まれば、次の景色がもっと楽しみになる。",
+        songs:["ANY & EVERY","Luv Classic","Big Bang Sweet","What's your color?","Color me live..."],
+        next:["はじまりの広場","木漏れ日の道","シーズンガーデン","シーサイド"]
+      },
+      "ブルーハーバー": {
+        verb:"旅立つ",
+        copy:"潮風に乗って、新しい景色へ漕ぎ出そう。",
+        songs:["Lock on!","Wonderful! × Surprise!","Ready Go Round","ミッドナイト・トレンディ","8月の青"],
+        next:["シーサイド","木漏れ日の道","展望台","シティライト"]
+      },
+      "シーサイド": {
+        verb:"風を受ける",
+        copy:"波と風が、心まで走らせてくれる。",
+        songs:["Stories","REFRESH","YumYumYum 〜SpicyGirl〜","DA BOMB","Hip bounce!!"],
+        next:["ブルーハーバー","シーズンガーデン","カフェ","シティライト"]
+      },
+      "シーズンガーデン": {
+        verb:"巡る",
+        copy:"季節が変わるたび、この街も少しずつ表情を変える。",
+        songs:["HELLO HELLO","オレンジkiss","君は僕のもの","いっそ、嫌いになれたら。","My Sweet Girl"],
+        next:["シーサイド","カフェ","木漏れ日の道","はじまりの広場"]
+      }
     };
 
     const app=document.getElementById("app"), intro=document.getElementById("intro"), hint=document.getElementById("hint");
@@ -361,7 +418,7 @@
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
-    const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), songName=document.getElementById("songName");
+    const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
     const nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null;
@@ -395,7 +452,7 @@
     function showSong(place){
       currentPlace=place;
       const data=places[place], song=pick(data.songs,previousSong);
-      previousSong=song; placeName.textContent=place; experience.textContent=data.verb; songName.textContent=song; updateLinks(song);
+      previousSong=song; placeName.textContent=place; experience.textContent=data.verb; placeCopy.textContent=data.copy; songName.textContent=song; updateLinks(song);
       sheet.classList.add("open"); backdrop.classList.add("open"); document.body.style.overflow="hidden"; hint.style.opacity="0";
     }
     function continueWalk(){ if(currentPlace) showSong(pick(places[currentPlace].next)); }
