@@ -8,234 +8,185 @@
   <style>
     :root {
       --ink: #31475f;
-      --paper: #fbfdfc;
-      --panel: rgba(255, 255, 255, 0.94);
-      --line: rgba(49, 71, 95, 0.15);
-      --accent: #6bb7b0;
-      --shadow: 0 18px 50px rgba(47, 70, 88, 0.18);
-      --time-overlay: rgba(255,255,255,0);
-      --time-filter: none;
-      --season-overlay: rgba(255,255,255,0);
+      --paper: #f8fbfb;
+      --panel: rgba(255,255,255,.96);
+      --line: rgba(49,71,95,.14);
+      --shadow: 0 18px 48px rgba(47,70,88,.16);
     }
 
     * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
+    html, body { margin: 0; min-height: 100%; }
+    body {
       background: var(--paper);
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
       overflow-x: hidden;
     }
-
     button, a { font: inherit; }
 
     .app {
       width: min(100%, 560px);
       min-height: 100svh;
-      padding: max(16px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom));
+      margin: 0 auto;
+      padding: max(10px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
     }
 
     .topbar {
-      padding: 2px 10px 14px;
+      position: relative;
+      z-index: 10;
+      padding: 3px 22px 4px;
+      pointer-events: none;
     }
-
-    .top-copy {
-      margin: 7px 0 0;
-      font-size: 15px;
-      line-height: 1.7;
-      letter-spacing: .04em;
-      font-weight: 500;
-    }
-
     h1 {
       margin: 0;
       font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 7.4vw, 36px);
       font-weight: 500;
-      letter-spacing: 0.12em;
-      font-size: clamp(26px, 8vw, 38px);
+      letter-spacing: .13em;
     }
-
+    .top-copy {
+      margin: 4px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+      letter-spacing: .05em;
+      font-weight: 520;
+    }
     .hint {
-      margin: 3px 0 0;
-      font-size: 11px;
-      letter-spacing: .08em;
-      opacity: .56;
-      transition: opacity .4s ease;
+      margin: 1px 0 0;
+      font-size: 10px;
+      letter-spacing: .07em;
+      opacity: .5;
+      transition: opacity .35s ease;
     }
 
-    .map-shell {
+    .map-viewport {
       position: relative;
-      width: calc(100% + 18px);
-      margin-left: -9px;
-      border-radius: 24px;
+      width: 100%;
+      margin-top: -2px;
       overflow: hidden;
-      background: white;
-      box-shadow: var(--shadow);
       isolation: isolate;
+      background: linear-gradient(#fbfdfc, #f7fbfb);
+    }
+
+    .map-stage {
+      position: relative;
+      width: 112%;
+      margin-left: -6%;
     }
 
     .map-image {
       display: block;
       width: 100%;
       height: auto;
-      filter: var(--time-filter);
       user-select: none;
       -webkit-user-drag: none;
+      transition: filter .8s ease;
     }
 
-    .time-layer,
-    .season-layer {
+    .ambient,
+    .lights {
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 2;
     }
+    .ambient { z-index: 2; transition: background .8s ease; }
+    .lights { z-index: 4; }
 
-    .time-layer {
-      background: var(--time-overlay);
-      mix-blend-mode: multiply;
-      transition: background 1s ease;
-    }
-
-    .season-layer {
-      background: var(--season-overlay);
-      mix-blend-mode: soft-light;
-      transition: background 1s ease;
-    }
-
-    .night-lights {
+    /* 大きなリングではなく、景色の中で小さく光が呼吸します */
+    .beacon {
       position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 1s ease;
-      background:
-        radial-gradient(circle at 43% 30%, rgba(255,224,120,.75) 0 1px, transparent 2px),
-        radial-gradient(circle at 47% 31%, rgba(255,224,120,.8) 0 1px, transparent 2px),
-        radial-gradient(circle at 39% 33%, rgba(255,224,120,.75) 0 1px, transparent 2px),
-        radial-gradient(circle at 68% 37%, rgba(255,245,180,.85) 0 2px, transparent 5px),
-        radial-gradient(circle at 66% 57%, rgba(255,225,150,.7) 0 1px, transparent 3px),
-        radial-gradient(circle at 74% 65%, rgba(255,225,150,.7) 0 1px, transparent 3px);
-    }
-
-    .dome-glow {
-      position: absolute;
-      left: 58%;
-      top: 28.5%;
-      width: 27%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 4;
-      background: radial-gradient(circle, rgba(255,250,205,.72), rgba(163,226,255,.25) 42%, transparent 70%);
-      filter: blur(6px);
-      animation: breathe 3.4s ease-in-out infinite;
-    }
-
-    @keyframes breathe {
-      0%, 100% { transform: scale(.94); opacity: .55; }
-      50% { transform: scale(1.06); opacity: .95; }
-    }
-
-    .hotspot {
-      position: absolute;
-      z-index: 6;
-      width: 13%;
+      z-index: 5;
+      width: 15%;
       aspect-ratio: 1;
       transform: translate(-50%, -50%);
       border: 0;
+      padding: 0;
       border-radius: 50%;
       background: transparent;
-      padding: 0;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-
-    .hotspot::before,
-    .hotspot::after {
+    .beacon::after {
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
-      border-radius: 50%;
+      width: 8px;
+      height: 8px;
       transform: translate(-50%, -50%);
-      pointer-events: none;
+      border-radius: 50%;
+      background: rgba(255,249,190,.92);
+      box-shadow:
+        0 0 7px rgba(255,250,206,.95),
+        0 0 18px rgba(112,201,201,.66);
+      animation: glow 2.7s ease-in-out infinite;
+    }
+    .beacon:nth-of-type(3n)::after { animation-delay: -.8s; }
+    .beacon:nth-of-type(3n+1)::after { animation-delay: -1.5s; }
+    .beacon:focus-visible { outline: 2px dashed rgba(55,118,134,.7); outline-offset: -22px; }
+    .beacon:active::after { transform: translate(-50%,-50%) scale(1.6); }
+
+    @keyframes glow {
+      0%,100% { opacity: .35; transform: translate(-50%,-50%) scale(.72); }
+      50% { opacity: 1; transform: translate(-50%,-50%) scale(1.35); }
     }
 
-    .hotspot::before {
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid rgba(255,255,255,.92);
-      box-shadow: 0 0 0 1px rgba(59,109,124,.24), 0 3px 12px rgba(42,69,83,.18);
-      background: rgba(255,255,255,.22);
-      animation: hotspot-breathe 2.8s ease-in-out infinite;
-    }
-
-    .hotspot::after {
-      width: 6px;
-      height: 6px;
-      background: rgba(54,102,117,.82);
-      box-shadow: 0 0 9px rgba(255,255,255,.9);
-      transition: transform .2s ease, background .2s ease;
-    }
-
-    .hotspot:active::after {
-      transform: translate(-50%, -50%) scale(1.7);
-      background: rgba(255,255,255,.95);
-    }
-
-    @keyframes hotspot-breathe {
-      0%,100% { transform: translate(-50%,-50%) scale(.86); opacity:.55; }
-      50% { transform: translate(-50%,-50%) scale(1.18); opacity:1; }
-    }
-
-    .hotspot:focus-visible {
-      outline: 3px solid rgba(58, 140, 156, .65);
-      outline-offset: 2px;
-    }
-
-    .pulse {
+    .dome-aura {
       position: absolute;
-      left: 65%;
-      top: 54.6%;
-      width: 22px;
-      height: 22px;
-      z-index: 7;
-      border: 2px solid rgba(67, 133, 148, .62);
+      z-index: 3;
+      left: 67.5%;
+      top: 29.2%;
+      width: 27%;
+      aspect-ratio: 1;
+      transform: translate(-50%,-50%);
       border-radius: 50%;
       pointer-events: none;
-      animation: pulse 2s ease-out 3;
+      background: radial-gradient(circle, rgba(255,250,205,.42), rgba(158,223,244,.14) 47%, transparent 72%);
+      filter: blur(6px);
+      animation: domeBreath 4.2s ease-in-out infinite;
+    }
+    @keyframes domeBreath {
+      0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(.94); }
+      50% { opacity: .82; transform: translate(-50%,-50%) scale(1.05); }
     }
 
-    @keyframes pulse {
-      0% { transform: translate(-50%,-50%) scale(.5); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+    .time-morning .ambient {
+      background: linear-gradient(to bottom, rgba(255,219,158,.13), transparent 34%);
+    }
+    .time-morning .map-image { filter: brightness(1.035) saturate(.98); }
+    .time-day .ambient { background: transparent; }
+    .time-day .map-image { filter: none; }
+    .time-evening .ambient {
+      background: linear-gradient(to bottom, rgba(255,170,122,.09), rgba(110,91,155,.07));
+      mix-blend-mode: multiply;
+    }
+    .time-evening .map-image { filter: saturate(.98); }
+    .time-night .map-viewport {
+      background: linear-gradient(#dfe8f2, #eef3f5 44%, #e5edf2);
+    }
+    .time-night .ambient {
+      background:
+        radial-gradient(circle at 69% 29%, rgba(255,235,157,.18), transparent 13%),
+        linear-gradient(to bottom, rgba(55,80,119,.12), rgba(38,65,105,.08));
+      mix-blend-mode: multiply;
+    }
+    .time-night .map-image { filter: brightness(.94) saturate(.9) contrast(1.015); }
+    .time-night .beacon::after {
+      background: rgba(255,226,139,.98);
+      box-shadow: 0 0 8px #fff2b8, 0 0 22px rgba(255,197,92,.78);
     }
 
     .sheet-backdrop {
       position: fixed;
       inset: 0;
       z-index: 20;
-      background: rgba(25, 37, 48, .18);
+      background: rgba(28,40,51,.17);
       backdrop-filter: blur(4px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .25s ease;
+      transition: opacity .24s ease;
     }
-
-    .sheet-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
+    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
 
     .sheet {
       position: fixed;
@@ -244,338 +195,146 @@
       bottom: 0;
       width: min(100%, 560px);
       transform: translate(-50%, 105%);
-      border-radius: 28px 28px 0 0;
+      border-radius: 27px 27px 0 0;
       background: var(--panel);
-      box-shadow: 0 -18px 60px rgba(36, 55, 70, .24);
-      padding: 13px 20px max(20px, env(safe-area-inset-bottom));
-      transition: transform .34s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 -18px 60px rgba(36,55,70,.23);
+      padding: 12px 20px max(19px, env(safe-area-inset-bottom));
+      transition: transform .32s cubic-bezier(.2,.8,.2,1);
     }
-
-    .sheet.open { transform: translate(-50%, 0); }
-
-    .handle {
-      width: 38px;
-      height: 4px;
-      margin: 0 auto 18px;
-      border-radius: 99px;
-      background: rgba(49,71,95,.18);
-    }
-
-    .place-name {
-      margin: 0;
-      font-size: 13px;
-      letter-spacing: .15em;
-      opacity: .66;
-    }
-
-    .experience {
-      margin: 7px 0 0;
-      font-size: 14px;
-      letter-spacing: .12em;
-      color: #5d748a;
-      font-weight: 650;
-    }
-
-    .card-divider {
-      height: 1px;
-      margin: 15px 0 13px;
-      background: linear-gradient(90deg, var(--line), transparent);
-    }
-
-    .song-name {
-      margin: 0 0 7px;
-      font-size: clamp(24px, 7vw, 34px);
-      line-height: 1.25;
-      font-weight: 650;
-      letter-spacing: .02em;
-    }
-
-    .walk-word {
-      display: none;
-    }
-
-    .services {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-      margin-bottom: 12px;
-    }
-
+    .sheet.open { transform: translate(-50%,0); }
+    .handle { width: 36px; height: 4px; margin: 0 auto 15px; border-radius: 99px; background: rgba(49,71,95,.17); }
+    .place-label { margin: 0; font-size: 10px; letter-spacing: .16em; opacity: .46; }
+    .place-name { margin: 3px 0 0; font-size: 15px; letter-spacing: .09em; font-weight: 650; }
+    .experience { margin: 5px 0 0; font-size: 13px; letter-spacing: .12em; color: #668092; font-weight: 650; }
+    .divider { height: 1px; margin: 13px 0 12px; background: linear-gradient(90deg,var(--line),transparent); }
+    .song-label { margin: 0 0 3px; font-size: 10px; letter-spacing: .16em; opacity: .44; }
+    .song-name { margin: 0 0 13px; font-size: clamp(23px,6.7vw,32px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
+    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 11px; }
     .service {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 8px;
-      border: 1px solid var(--line);
-      border-radius: 15px;
-      color: var(--ink);
-      text-decoration: none;
-      background: rgba(255,255,255,.7);
-      font-size: 12px;
-      font-weight: 650;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 7px;
+      border: 1px solid var(--line); border-radius: 14px;
+      color: var(--ink); text-decoration: none;
+      background: rgba(255,255,255,.72);
+      font-size: 12px; font-weight: 650;
     }
+    .next { width: 100%; min-height: 51px; border: 0; border-radius: 17px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+    .close { display: block; margin: 10px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 8px 16px; cursor: pointer; }
 
-    .next {
-      width: 100%;
-      min-height: 52px;
-      border: 0;
-      border-radius: 17px;
-      color: white;
-      background: var(--ink);
-      font-weight: 700;
-      letter-spacing: .08em;
-      cursor: pointer;
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      background: #f8fbfb;
+      transition: opacity .55s ease, visibility .55s ease;
     }
-
-    .close {
-      display: block;
-      margin: 13px auto 0;
-      border: 0;
-      background: transparent;
-      color: var(--ink);
-      opacity: .58;
-      padding: 8px 16px;
-      cursor: pointer;
-    }
-
-    .time-morning {
-      --time-overlay: linear-gradient(to bottom, rgba(255,222,166,.13), rgba(255,255,255,0) 46%);
-      --time-filter: brightness(1.04) saturate(.98);
-    }
-
-    .time-day {
-      --time-overlay: rgba(255,255,255,0);
-      --time-filter: none;
-    }
-
-    .time-evening {
-      --time-overlay: linear-gradient(to bottom, rgba(255,160,119,.12), rgba(111,83,153,.11));
-      --time-filter: saturate(.96) contrast(1.01);
-    }
-
-    .time-night {
-      --time-overlay: rgba(29,56,105,.34);
-      --time-filter: brightness(.82) saturate(.84);
-    }
-
-    .time-night .night-lights { opacity: 1; }
-    .time-night .dome-glow { opacity: 1; }
-
-    .season-spring { --season-overlay: linear-gradient(135deg, rgba(255,181,206,.08), transparent 45%); }
-    .season-summer { --season-overlay: linear-gradient(135deg, rgba(255,239,132,.07), rgba(93,211,226,.06)); }
-    .season-autumn { --season-overlay: linear-gradient(135deg, rgba(217,133,65,.08), transparent 56%); }
-    .season-winter { --season-overlay: linear-gradient(135deg, rgba(195,225,255,.12), rgba(255,255,255,.08)); }
+    .intro.hide { opacity: 0; visibility: hidden; }
+    .intro-mark { text-align: center; }
+    .intro-mark strong { display: block; font-family: Georgia,"Times New Roman",serif; font-size: 30px; font-weight: 500; letter-spacing: .14em; }
+    .intro-light { width: 13px; height: 13px; margin: 18px auto 0; border-radius: 50%; background: #fff4aa; box-shadow: 0 0 14px #ffe78b,0 0 34px rgba(112,196,210,.55); animation: glow 1.7s ease-in-out infinite; }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .intro { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-light"></div></div>
+  </div>
+
   <main class="app" id="app">
     <header class="topbar">
       <h1>SNOW MAP</h1>
       <p class="top-copy">今日は、どの景色を歩きますか。</p>
-      <p class="hint" id="hint">小さく光る場所をタップしてください</p>
+      <p class="hint" id="hint">光が揺れる景色に触れてみてください</p>
     </header>
 
-    <section class="map-shell" aria-label="SNOW MAPの地図">
-      <img class="map-image" src="snow-map-v0.2.jpg" alt="海、街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP" />
-      <div class="time-layer"></div>
-      <div class="season-layer"></div>
-      <div class="night-lights"></div>
-      <div class="dome-glow" aria-hidden="true"></div>
-      <div class="pulse" id="pulse" aria-hidden="true"></div>
+    <section class="map-viewport" aria-label="SNOW MAPの地図">
+      <div class="map-stage">
+        <img class="map-image" src="snow-map-v0.3.png" alt="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP" />
+        <div class="ambient"></div>
+        <div class="lights"></div>
+        <div class="dome-aura" aria-hidden="true"></div>
 
-      <button class="hotspot" style="left:48%;top:10%;" data-place="展望台" aria-label="展望台"></button>
-      <button class="hotspot" style="left:43%;top:24.1%;" data-place="シティライト" aria-label="シティライト"></button>
-      <button class="hotspot" style="left:69%;top:30.7%;" data-place="Snow Dome" aria-label="Snow Dome"></button>
-      <button class="hotspot" style="left:23%;top:44.8%;" data-place="木漏れ日の道" aria-label="木漏れ日の道"></button>
-      <button class="hotspot" style="left:50%;top:43.8%;" data-place="歩道橋" aria-label="歩道橋"></button>
-      <button class="hotspot" style="left:65%;top:54.6%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
-      <button class="hotspot" style="left:75%;top:63.4%;" data-place="カフェ" aria-label="カフェ"></button>
-      <button class="hotspot" style="left:23%;top:68.8%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
-      <button class="hotspot" style="left:61%;top:79.7%;" data-place="シーサイド" aria-label="シーサイド"></button>
-      <button class="hotspot" style="left:40%;top:81.9%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
+        <button class="beacon" style="left:45.3%;top:5.2%;" data-place="展望台" aria-label="展望台"></button>
+        <button class="beacon" style="left:39.2%;top:20.3%;" data-place="シティライト" aria-label="シティライト"></button>
+        <button class="beacon" style="left:68.0%;top:29.3%;" data-place="Snow Dome" aria-label="Snow Dome"></button>
+        <button class="beacon" style="left:21.2%;top:40.1%;" data-place="木漏れ日の道" aria-label="木漏れ日の道"></button>
+        <button class="beacon" style="left:47.4%;top:42.0%;" data-place="歩道橋" aria-label="歩道橋"></button>
+        <button class="beacon" style="left:67.3%;top:49.2%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
+        <button class="beacon" style="left:72.1%;top:59.2%;" data-place="カフェ" aria-label="カフェ"></button>
+        <button class="beacon" style="left:25.8%;top:65.7%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
+        <button class="beacon" style="left:64.4%;top:78.8%;" data-place="シーサイド" aria-label="シーサイド"></button>
+        <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
+      </div>
     </section>
   </main>
 
   <div class="sheet-backdrop" id="backdrop"></div>
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="songName">
     <div class="handle"></div>
+    <p class="place-label">PLACE</p>
     <p class="place-name" id="placeName"></p>
     <p class="experience" id="experience"></p>
-    <div class="card-divider"></div>
+    <div class="divider"></div>
+    <p class="song-label">MUSIC</p>
     <h2 class="song-name" id="songName"></h2>
-    <p class="walk-word" id="walkWord"></p>
-
     <div class="services">
       <a class="service" id="spotifyLink" target="_blank" rel="noopener">Spotify</a>
       <a class="service" id="appleLink" target="_blank" rel="noopener">Apple Music</a>
       <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
     </div>
-
     <button class="next" id="nextButton">この先へ</button>
     <button class="close" id="closeButton">地図へ戻る</button>
   </section>
 
   <script>
     "use strict";
-
     const places = {
-      "展望台": {
-        verb: "見渡す",
-        songs: ["We'll go together", "EVERYTHING IS EVERYTHING", "星のうた", "7%", "SBY"],
-        next: ["歩道橋", "シティライト", "ブルーハーバー"]
-      },
-      "シティライト": {
-        verb: "駆け抜ける",
-        songs: ["Spark!!", "BANG‼︎", "I・だって止まらない", "SAVE YOUR HEART", "W"],
-        next: ["歩道橋", "Snow Dome", "展望台", "ブルーハーバー"]
-      },
-      "Snow Dome": {
-        verb: "帰ってくる",
-        songs: ["P.M.G.", "Party! Party! Party!", "Crazy F-R-E-S-H Beat", "Make It Hot", "守りたい、その笑顔"],
-        next: ["はじまりの広場", "シティライト", "歩道橋"]
-      },
-      "木漏れ日の道": {
-        verb: "歩く",
-        songs: ["From Today", "A PIECE OF CAKE", "Brand New Smile", "TIKI TIKI", "Days"],
-        next: ["歩道橋", "はじまりの広場", "ブルーハーバー", "シーズンガーデン"]
-      },
-      "歩道橋": {
-        verb: "選ぶ",
-        songs: ["オトノナルホウヘ", "Don't Hold Back", "グッタイム", "iro iro", "ファンターナモーレ"],
-        next: ["展望台", "シティライト", "Snow Dome", "木漏れ日の道", "はじまりの広場"]
-      },
-      "はじまりの広場": {
-        verb: "出会う",
-        songs: ["Snow World", "Happy Birthday", "NO SURRENDER！", "ナミダの海を越えて行け", "ブラザービート"],
-        next: ["Snow Dome", "木漏れ日の道", "カフェ", "歩道橋"]
-      },
-      "カフェ": {
-        verb: "休む",
-        songs: ["ANY & EVERY", "Luv Classic", "Big Bang Sweet", "What's your color?", "Color me live..."],
-        next: ["はじまりの広場", "木漏れ日の道", "シーズンガーデン", "シーサイド"]
-      },
-      "ブルーハーバー": {
-        verb: "旅立つ",
-        songs: ["Lock on!", "Wonderful! × Surprise!", "Ready Go Round", "ミッドナイト・トレンディ", "8月の青"],
-        next: ["シーサイド", "木漏れ日の道", "展望台", "シティライト"]
-      },
-      "シーサイド": {
-        verb: "風を感じる",
-        songs: ["Stories", "REFRESH", "YumYumYum 〜SpicyGirl〜", "DA BOMB", "Hip bounce!!"],
-        next: ["ブルーハーバー", "シーズンガーデン", "カフェ", "シティライト"]
-      },
-      "シーズンガーデン": {
-        verb: "季節を感じる",
-        songs: ["HELLO HELLO", "オレンジkiss", "君は僕のもの", "いっそ、嫌いになれたら。", "My Sweet Girl"],
-        next: ["シーサイド", "カフェ", "木漏れ日の道", "はじまりの広場"]
-      }
+      "展望台": { verb:"見渡す", songs:["We'll go together","EVERYTHING IS EVERYTHING","星のうた","7%","SBY"], next:["歩道橋","シティライト","ブルーハーバー"] },
+      "シティライト": { verb:"駆け抜ける", songs:["Spark!!","BANG‼︎","I・だって止まらない","SAVE YOUR HEART","W"], next:["歩道橋","Snow Dome","展望台","ブルーハーバー"] },
+      "Snow Dome": { verb:"帰ってくる", songs:["P.M.G.","Party! Party! Party!","Crazy F-R-E-S-H Beat","Make It Hot","守りたい、その笑顔"], next:["はじまりの広場","シティライト","歩道橋"] },
+      "木漏れ日の道": { verb:"歩く", songs:["From Today","A PIECE OF CAKE","Brand New Smile","TIKI TIKI","Days"], next:["歩道橋","はじまりの広場","ブルーハーバー","シーズンガーデン"] },
+      "歩道橋": { verb:"選ぶ", songs:["オトノナルホウヘ","Don't Hold Back","グッタイム","iro iro","ファンターナモーレ"], next:["展望台","シティライト","Snow Dome","木漏れ日の道","はじまりの広場"] },
+      "はじまりの広場": { verb:"出会う", songs:["Snow World","Happy Birthday","NO SURRENDER！","ナミダの海を越えて行け","ブラザービート"], next:["Snow Dome","木漏れ日の道","カフェ","歩道橋"] },
+      "カフェ": { verb:"休む", songs:["ANY & EVERY","Luv Classic","Big Bang Sweet","What's your color?","Color me live..."], next:["はじまりの広場","木漏れ日の道","シーズンガーデン","シーサイド"] },
+      "ブルーハーバー": { verb:"旅立つ", songs:["Lock on!","Wonderful! × Surprise!","Ready Go Round","ミッドナイト・トレンディ","8月の青"], next:["シーサイド","木漏れ日の道","展望台","シティライト"] },
+      "シーサイド": { verb:"風を感じる", songs:["Stories","REFRESH","YumYumYum 〜SpicyGirl〜","DA BOMB","Hip bounce!!"], next:["ブルーハーバー","シーズンガーデン","カフェ","シティライト"] },
+      "シーズンガーデン": { verb:"季節を感じる", songs:["HELLO HELLO","オレンジkiss","君は僕のもの","いっそ、嫌いになれたら。","My Sweet Girl"], next:["シーサイド","カフェ","木漏れ日の道","はじまりの広場"] }
     };
 
-    const app = document.getElementById("app");
-    const hint = document.getElementById("hint");
-    const pulse = document.getElementById("pulse");
-    const sheet = document.getElementById("sheet");
-    const backdrop = document.getElementById("backdrop");
-    const placeName = document.getElementById("placeName");
-    const songName = document.getElementById("songName");
-    const experience = document.getElementById("experience");
-    const walkWord = document.getElementById("walkWord");
-    const nextButton = document.getElementById("nextButton");
-    const closeButton = document.getElementById("closeButton");
-    const spotifyLink = document.getElementById("spotifyLink");
-    const appleLink = document.getElementById("appleLink");
-    const youtubeLink = document.getElementById("youtubeLink");
+    const app=document.getElementById("app"), intro=document.getElementById("intro"), hint=document.getElementById("hint");
+    const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
+    const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), songName=document.getElementById("songName");
+    const nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
+    const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
+    let currentPlace=null, previousSong=null;
 
-    let currentPlace = null;
-    let previousSong = null;
-
-    function setWorldTime() {
-      const now = new Date();
-      const hour = now.getHours();
-      const month = now.getMonth() + 1;
-
-      const timeClass = hour >= 5 && hour < 10
-        ? "time-morning"
-        : hour >= 10 && hour < 16
-          ? "time-day"
-          : hour >= 16 && hour < 19
-            ? "time-evening"
-            : "time-night";
-
-      const seasonClass = [3,4,5].includes(month)
-        ? "season-spring"
-        : [6,7,8].includes(month)
-          ? "season-summer"
-          : [9,10,11].includes(month)
-            ? "season-autumn"
-            : "season-winter";
-
-      app.classList.add(timeClass, seasonClass);
+    function setWorldTime(){
+      app.classList.remove("time-morning","time-day","time-evening","time-night");
+      const h=new Date().getHours();
+      app.classList.add(h>=5&&h<10?"time-morning":h>=10&&h<16?"time-day":h>=16&&h<19?"time-evening":"time-night");
     }
-
-    function pick(list, excluded = null) {
-      const candidates = list.filter(item => item !== excluded);
-      const pool = candidates.length ? candidates : list;
-      return pool[Math.floor(Math.random() * pool.length)];
+    function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
+    function updateLinks(title){ const q=encodeURIComponent(`Snow Man ${title}`); spotifyLink.href=`https://open.spotify.com/search/${q}`; appleLink.href=`https://music.apple.com/jp/search?term=${q}`; youtubeLink.href=`https://www.youtube.com/results?search_query=${q}`; }
+    function showSong(place){
+      currentPlace=place;
+      const data=places[place], song=pick(data.songs,previousSong);
+      previousSong=song; placeName.textContent=place; experience.textContent=data.verb; songName.textContent=song; updateLinks(song);
+      sheet.classList.add("open"); backdrop.classList.add("open"); document.body.style.overflow="hidden"; hint.style.opacity="0";
     }
+    function continueWalk(){ if(currentPlace) showSong(pick(places[currentPlace].next)); }
+    function closeSheet(){ sheet.classList.remove("open"); backdrop.classList.remove("open"); document.body.style.overflow=""; }
 
-    function updateLinks(title) {
-      const query = encodeURIComponent(`Snow Man ${title}`);
-      spotifyLink.href = `https://open.spotify.com/search/${query}`;
-      appleLink.href = `https://music.apple.com/jp/search?term=${query}`;
-      youtubeLink.href = `https://www.youtube.com/results?search_query=${query}`;
-    }
-
-    function showSong(place, useSamePlace = true) {
-      currentPlace = place;
-      const data = places[place];
-      const song = pick(data.songs, previousSong);
-      previousSong = song;
-
-      placeName.textContent = place;
-      experience.textContent = data.verb;
-      songName.textContent = song;
-      walkWord.textContent = data.verb;
-      updateLinks(song);
-
-      sheet.classList.add("open");
-      backdrop.classList.add("open");
-      document.body.style.overflow = "hidden";
-      hint.style.opacity = "0";
-      if (pulse) pulse.remove();
-    }
-
-    function continueWalk() {
-      if (!currentPlace) return;
-      const nextPlace = pick(places[currentPlace].next);
-      showSong(nextPlace, false);
-    }
-
-    function closeSheet() {
-      sheet.classList.remove("open");
-      backdrop.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-
-    document.querySelectorAll(".hotspot").forEach(button => {
-      button.addEventListener("click", () => showSong(button.dataset.place));
-    });
-
-    nextButton.addEventListener("click", continueWalk);
-    closeButton.addEventListener("click", closeSheet);
-    backdrop.addEventListener("click", closeSheet);
-
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeSheet();
-    });
-
-    setWorldTime();
-    window.setInterval(setWorldTime, 60 * 1000);
+    document.querySelectorAll(".beacon").forEach(b=>b.addEventListener("click",()=>showSong(b.dataset.place)));
+    nextButton.addEventListener("click",continueWalk); closeButton.addEventListener("click",closeSheet); backdrop.addEventListener("click",closeSheet);
+    document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+    setWorldTime(); setInterval(setWorldTime,60000);
+    window.addEventListener("load",()=>setTimeout(()=>intro.classList.add("hide"),900));
   </script>
 </body>
 </html>
