@@ -73,6 +73,13 @@
       position: relative;
       width: 112%;
       margin-left: -6%;
+      transform: scale(1);
+      transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
+      transition: transform 1.15s cubic-bezier(.22,.72,.22,1);
+      will-change: transform;
+    }
+    .map-stage.walking {
+      transform: scale(1.22);
     }
 
     .map-images {
@@ -272,7 +279,7 @@
     @keyframes walkDot { 0%,100%{transform:translateY(1px);opacity:.3} 50%{transform:translateY(-2px);opacity:1} }
 
     .beacon.arriving::before {
-      animation: arrivalGlow .9s ease-out both;
+      animation: arrivalGlow 2.05s ease-in-out both;
     }
     .beacon.arriving::after {
       content:"";
@@ -281,18 +288,21 @@
       border:1px solid rgba(255,223,110,.82);
       transform:translate(-50%,-50%) scale(.4);
       opacity:0;
-      animation: arrivalRing .9s ease-out both;
+      animation: arrivalRing 2.05s ease-in-out both;
       pointer-events:none;
     }
     @keyframes arrivalGlow {
-      0%{opacity:.35;transform:translate(-50%,-50%) scale(.7)}
-      45%{opacity:1;transform:translate(-50%,-50%) scale(1.45)}
-      100%{opacity:.72;transform:translate(-50%,-50%) scale(.9)}
+      0%{opacity:.35;transform:translate(-50%,-50%) scale(.72)}
+      22%{opacity:1;transform:translate(-50%,-50%) scale(1.55)}
+      44%{opacity:.52;transform:translate(-50%,-50%) scale(.88)}
+      68%{opacity:1;transform:translate(-50%,-50%) scale(1.48)}
+      100%{opacity:.72;transform:translate(-50%,-50%) scale(.92)}
     }
     @keyframes arrivalRing {
-      0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
-      25%{opacity:.85}
-      100%{opacity:0;transform:translate(-50%,-50%) scale(2.6)}
+      0%,42%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+      12%,56%{opacity:.88}
+      36%,82%{opacity:0;transform:translate(-50%,-50%) scale(2.75)}
+      100%{opacity:0;transform:translate(-50%,-50%) scale(2.75)}
     }
 
     .intro {
@@ -506,6 +516,7 @@
     const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
     const nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
     const walkStatus=document.getElementById("walkStatus"), walkText=document.getElementById("walkText");
+    const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null;
 
@@ -547,8 +558,15 @@
     function centerBeacon(beacon){
       if(!beacon) return;
       const rect=beacon.getBoundingClientRect();
-      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.46;
+      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.39;
       window.scrollTo({top:Math.max(0,targetY),behavior:"smooth"});
+    }
+    function setWalkFocus(beacon){
+      if(!beacon || !mapStage) return;
+      const x=parseFloat(beacon.style.left || "50");
+      const y=parseFloat(beacon.style.top || "50");
+      mapStage.style.setProperty("--walk-x", `${x}%`);
+      mapStage.style.setProperty("--walk-y", `${y}%`);
     }
     function continueWalk(){
       if(!currentPlace) return;
@@ -557,13 +575,16 @@
       closeSheet();
       walkText.textContent=`${destination}へ`;
       walkStatus.classList.add("show");
-      setTimeout(()=>centerBeacon(beacon),80);
-      setTimeout(()=>beacon?.classList.add("arriving"),520);
+      setWalkFocus(beacon);
+      requestAnimationFrame(()=>mapStage?.classList.add("walking"));
+      setTimeout(()=>centerBeacon(beacon),120);
+      setTimeout(()=>beacon?.classList.add("arriving"),1050);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon?.classList.remove("arriving");
+        mapStage?.classList.remove("walking");
         showSong(destination);
-      },1250);
+      },3150);
     }
     function closeSheet(){ sheet.classList.remove("open"); backdrop.classList.remove("open"); document.body.style.overflow=""; }
 
