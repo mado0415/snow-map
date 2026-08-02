@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8fbfb" />
+  <title>SNOW MAP</title>
+  <style>
+    :root {
+      --ink: #31475f;
+      --paper: #fbfdfc;
+      --panel: rgba(255, 255, 255, 0.94);
+      --line: rgba(49, 71, 95, 0.15);
+      --accent: #6bb7b0;
+      --shadow: 0 18px 50px rgba(47, 70, 88, 0.18);
+      --time-overlay: rgba(255,255,255,0);
+      --time-filter: none;
+      --season-overlay: rgba(255,255,255,0);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    button, a { font: inherit; }
+
+    .app {
+      width: min(100%, 560px);
+      min-height: 100svh;
+      padding: max(16px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .topbar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 2px 8px 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      font-size: clamp(26px, 8vw, 38px);
+    }
+
+    .hint {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      opacity: 0.66;
+      white-space: nowrap;
+      transition: opacity .4s ease;
+    }
+
+    .map-shell {
+      position: relative;
+      width: 100%;
+      border-radius: 26px;
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .map-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: var(--time-filter);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .time-layer,
+    .season-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .time-layer {
+      background: var(--time-overlay);
+      mix-blend-mode: multiply;
+      transition: background 1s ease;
+    }
+
+    .season-layer {
+      background: var(--season-overlay);
+      mix-blend-mode: soft-light;
+      transition: background 1s ease;
+    }
+
+    .night-lights {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 1s ease;
+      background:
+        radial-gradient(circle at 43% 30%, rgba(255,224,120,.75) 0 1px, transparent 2px),
+        radial-gradient(circle at 47% 31%, rgba(255,224,120,.8) 0 1px, transparent 2px),
+        radial-gradient(circle at 39% 33%, rgba(255,224,120,.75) 0 1px, transparent 2px),
+        radial-gradient(circle at 68% 37%, rgba(255,245,180,.85) 0 2px, transparent 5px),
+        radial-gradient(circle at 66% 57%, rgba(255,225,150,.7) 0 1px, transparent 3px),
+        radial-gradient(circle at 74% 65%, rgba(255,225,150,.7) 0 1px, transparent 3px);
+    }
+
+    .dome-glow {
+      position: absolute;
+      left: 58%;
+      top: 28.5%;
+      width: 27%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 4;
+      background: radial-gradient(circle, rgba(255,250,205,.72), rgba(163,226,255,.25) 42%, transparent 70%);
+      filter: blur(6px);
+      animation: breathe 3.4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(.94); opacity: .55; }
+      50% { transform: scale(1.06); opacity: .95; }
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 6;
+      width: 13%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hotspot::after {
+      content: "";
+      position: absolute;
+      inset: 28%;
+      border-radius: 50%;
+      background: rgba(255,255,255,.01);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .hotspot:active::after {
+      transform: scale(1.35);
+      background: rgba(255,255,255,.34);
+    }
+
+    .hotspot:focus-visible {
+      outline: 3px solid rgba(58, 140, 156, .65);
+      outline-offset: 2px;
+    }
+
+    .pulse {
+      position: absolute;
+      left: 66%;
+      top: 57%;
+      width: 22px;
+      height: 22px;
+      z-index: 7;
+      border: 2px solid rgba(67, 133, 148, .62);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulse 2s ease-out 3;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%,-50%) scale(.5); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+    }
+
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(25, 37, 48, .18);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .sheet-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet {
+      position: fixed;
+      z-index: 21;
+      left: 50%;
+      bottom: 0;
+      width: min(100%, 560px);
+      transform: translate(-50%, 105%);
+      border-radius: 28px 28px 0 0;
+      background: var(--panel);
+      box-shadow: 0 -18px 60px rgba(36, 55, 70, .24);
+      padding: 13px 20px max(20px, env(safe-area-inset-bottom));
+      transition: transform .34s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .sheet.open { transform: translate(-50%, 0); }
+
+    .handle {
+      width: 38px;
+      height: 4px;
+      margin: 0 auto 18px;
+      border-radius: 99px;
+      background: rgba(49,71,95,.18);
+    }
+
+    .place-name {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: .15em;
+      opacity: .66;
+    }
+
+    .song-name {
+      margin: 8px 0 4px;
+      font-size: clamp(24px, 7vw, 34px);
+      line-height: 1.25;
+      font-weight: 650;
+      letter-spacing: .02em;
+    }
+
+    .walk-word {
+      margin: 0 0 18px;
+      font-size: 13px;
+      opacity: .58;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .service {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      color: var(--ink);
+      text-decoration: none;
+      background: rgba(255,255,255,.7);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .next {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 17px;
+      color: white;
+      background: var(--ink);
+      font-weight: 700;
+      letter-spacing: .08em;
+      cursor: pointer;
+    }
+
+    .close {
+      display: block;
+      margin: 13px auto 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      opacity: .58;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
+    .time-morning {
+      --time-overlay: linear-gradient(to bottom, rgba(255,222,166,.13), rgba(255,255,255,0) 46%);
+      --time-filter: brightness(1.04) saturate(.98);
+    }
+
+    .time-day {
+      --time-overlay: rgba(255,255,255,0);
+      --time-filter: none;
+    }
+
+    .time-evening {
+      --time-overlay: linear-gradient(to bottom, rgba(255,160,119,.12), rgba(111,83,153,.11));
+      --time-filter: saturate(.96) contrast(1.01);
+    }
+
+    .time-night {
+      --time-overlay: rgba(29,56,105,.34);
+      --time-filter: brightness(.82) saturate(.84);
+    }
+
+    .time-night .night-lights { opacity: 1; }
+    .time-night .dome-glow { opacity: 1; }
+
+    .season-spring { --season-overlay: linear-gradient(135deg, rgba(255,181,206,.08), transparent 45%); }
+    .season-summer { --season-overlay: linear-gradient(135deg, rgba(255,239,132,.07), rgba(93,211,226,.06)); }
+    .season-autumn { --season-overlay: linear-gradient(135deg, rgba(217,133,65,.08), transparent 56%); }
+    .season-winter { --season-overlay: linear-gradient(135deg, rgba(195,225,255,.12), rgba(255,255,255,.08)); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="topbar">
+      <h1>SNOW MAP</h1>
+      <p class="hint" id="hint">気になる景色をタップ</p>
+    </header>
+
+    <section class="map-shell" aria-label="SNOW MAPの地図">
+      <img class="map-image" src="snow-map-v0.1.jpg" alt="海、街、ドーム、公園、広場、港、花畑がつながるSNOW MAP" />
+      <div class="time-layer"></div>
+      <div class="season-layer"></div>
+      <div class="night-lights"></div>
+      <div class="dome-glow" aria-hidden="true"></div>
+      <div class="pulse" id="pulse" aria-hidden="true"></div>
+
+      <button class="hotspot" style="left:48%;top:16%;" data-place="展望台" aria-label="展望台"></button>
+      <button class="hotspot" style="left:43%;top:29%;" data-place="ビル群" aria-label="ビル群"></button>
+      <button class="hotspot" style="left:69%;top:35%;" data-place="ドーム" aria-label="ドーム"></button>
+      <button class="hotspot" style="left:23%;top:48%;" data-place="公園" aria-label="公園"></button>
+      <button class="hotspot" style="left:50%;top:47%;" data-place="歩道橋" aria-label="歩道橋"></button>
+      <button class="hotspot" style="left:65%;top:57%;" data-place="広場" aria-label="広場"></button>
+      <button class="hotspot" style="left:75%;top:65%;" data-place="カフェ" aria-label="カフェ"></button>
+      <button class="hotspot" style="left:23%;top:70%;" data-place="港" aria-label="港"></button>
+      <button class="hotspot" style="left:61%;top:80%;" data-place="海沿いの道路" aria-label="海沿いの道路"></button>
+      <button class="hotspot" style="left:40%;top:82%;" data-place="花畑" aria-label="花畑"></button>
+    </section>
+  </main>
+
+  <div class="sheet-backdrop" id="backdrop"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="songName">
+    <div class="handle"></div>
+    <p class="place-name" id="placeName"></p>
+    <h2 class="song-name" id="songName"></h2>
+    <p class="walk-word" id="walkWord"></p>
+
+    <div class="services">
+      <a class="service" id="spotifyLink" target="_blank" rel="noopener">Spotify</a>
+      <a class="service" id="appleLink" target="_blank" rel="noopener">Apple Music</a>
+      <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
+    </div>
+
+    <button class="next" id="nextButton">この先へ</button>
+    <button class="close" id="closeButton">地図へ戻る</button>
+  </section>
+
+  <script>
+    "use strict";
+
+    const places = {
+      "展望台": {
+        verb: "見渡す",
+        songs: ["We'll go together", "EVERYTHING IS EVERYTHING", "星のうた", "7%", "SBY"],
+        next: ["歩道橋", "ビル群", "港"]
+      },
+      "ビル群": {
+        verb: "駆け抜ける",
+        songs: ["Spark!!", "BANG‼︎", "I・だって止まらない", "SAVE YOUR HEART", "W"],
+        next: ["歩道橋", "ドーム", "展望台", "港"]
+      },
+      "ドーム": {
+        verb: "帰ってくる",
+        songs: ["P.M.G.", "Party! Party! Party!", "Crazy F-R-E-S-H Beat", "Make It Hot", "守りたい、その笑顔"],
+        next: ["広場", "ビル群", "歩道橋"]
+      },
+      "公園": {
+        verb: "歩く",
+        songs: ["From Today", "A PIECE OF CAKE", "Brand New Smile", "TIKI TIKI", "Days"],
+        next: ["歩道橋", "広場", "港", "花畑"]
+      },
+      "歩道橋": {
+        verb: "選ぶ",
+        songs: ["オトノナルホウヘ", "Don't Hold Back", "グッタイム", "iro iro", "ファンターナモーレ"],
+        next: ["展望台", "ビル群", "ドーム", "公園", "広場"]
+      },
+      "広場": {
+        verb: "出会う",
+        songs: ["Snow World", "Happy Birthday", "NO SURRENDER！", "ナミダの海を越えて行け", "ブラザービート"],
+        next: ["ドーム", "公園", "カフェ", "歩道橋"]
+      },
+      "カフェ": {
+        verb: "休む",
+        songs: ["ANY & EVERY", "Luv Classic", "Big Bang Sweet", "What's your color?", "Color me live..."],
+        next: ["広場", "公園", "花畑", "海沿いの道路"]
+      },
+      "港": {
+        verb: "旅立つ",
+        songs: ["Lock on!", "Wonderful! × Surprise!", "Ready Go Round", "ミッドナイト・トレンディ", "8月の青"],
+        next: ["海沿いの道路", "公園", "展望台", "ビル群"]
+      },
+      "海沿いの道路": {
+        verb: "風を感じる",
+        songs: ["Stories", "REFRESH", "YumYumYum 〜SpicyGirl〜", "DA BOMB", "Hip bounce!!"],
+        next: ["港", "花畑", "カフェ", "ビル群"]
+      },
+      "花畑": {
+        verb: "季節を感じる",
+        songs: ["HELLO HELLO", "オレンジkiss", "君は僕のもの", "いっそ、嫌いになれたら。", "My Sweet Girl"],
+        next: ["海沿いの道路", "カフェ", "公園", "広場"]
+      }
+    };
+
+    const app = document.getElementById("app");
+    const hint = document.getElementById("hint");
+    const pulse = document.getElementById("pulse");
+    const sheet = document.getElementById("sheet");
+    const backdrop = document.getElementById("backdrop");
+    const placeName = document.getElementById("placeName");
+    const songName = document.getElementById("songName");
+    const walkWord = document.getElementById("walkWord");
+    const nextButton = document.getElementById("nextButton");
+    const closeButton = document.getElementById("closeButton");
+    const spotifyLink = document.getElementById("spotifyLink");
+    const appleLink = document.getElementById("appleLink");
+    const youtubeLink = document.getElementById("youtubeLink");
+
+    let currentPlace = null;
+    let previousSong = null;
+
+    function setWorldTime() {
+      const now = new Date();
+      const hour = now.getHours();
+      const month = now.getMonth() + 1;
+
+      const timeClass = hour >= 5 && hour < 10
+        ? "time-morning"
+        : hour >= 10 && hour < 16
+          ? "time-day"
+          : hour >= 16 && hour < 19
+            ? "time-evening"
+            : "time-night";
+
+      const seasonClass = [3,4,5].includes(month)
+        ? "season-spring"
+        : [6,7,8].includes(month)
+          ? "season-summer"
+          : [9,10,11].includes(month)
+            ? "season-autumn"
+            : "season-winter";
+
+      app.classList.add(timeClass, seasonClass);
+    }
+
+    function pick(list, excluded = null) {
+      const candidates = list.filter(item => item !== excluded);
+      const pool = candidates.length ? candidates : list;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function updateLinks(title) {
+      const query = encodeURIComponent(`Snow Man ${title}`);
+      spotifyLink.href = `https://open.spotify.com/search/${query}`;
+      appleLink.href = `https://music.apple.com/jp/search?term=${query}`;
+      youtubeLink.href = `https://www.youtube.com/results?search_query=${query}`;
+    }
+
+    function showSong(place, useSamePlace = true) {
+      currentPlace = place;
+      const data = places[place];
+      const song = pick(data.songs, previousSong);
+      previousSong = song;
+
+      placeName.textContent = place;
+      songName.textContent = song;
+      walkWord.textContent = data.verb;
+      updateLinks(song);
+
+      sheet.classList.add("open");
+      backdrop.classList.add("open");
+      document.body.style.overflow = "hidden";
+      hint.style.opacity = "0";
+      if (pulse) pulse.remove();
+    }
+
+    function continueWalk() {
+      if (!currentPlace) return;
+      const nextPlace = pick(places[currentPlace].next);
+      showSong(nextPlace, false);
+    }
+
+    function closeSheet() {
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll(".hotspot").forEach(button => {
+      button.addEventListener("click", () => showSong(button.dataset.place));
+    });
+
+    nextButton.addEventListener("click", continueWalk);
+    closeButton.addEventListener("click", closeSheet);
+    backdrop.addEventListener("click", closeSheet);
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeSheet();
+    });
+
+    setWorldTime();
+    window.setInterval(setWorldTime, 60 * 1000);
+  </script>
+</body>
+</html>
