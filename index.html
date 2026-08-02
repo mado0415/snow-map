@@ -43,11 +43,15 @@
     }
 
     .topbar {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 2px 8px 12px;
+      padding: 2px 10px 14px;
+    }
+
+    .top-copy {
+      margin: 7px 0 0;
+      font-size: 15px;
+      line-height: 1.7;
+      letter-spacing: .04em;
+      font-weight: 500;
     }
 
     h1 {
@@ -59,18 +63,18 @@
     }
 
     .hint {
-      margin: 0;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      opacity: 0.66;
-      white-space: nowrap;
+      margin: 3px 0 0;
+      font-size: 11px;
+      letter-spacing: .08em;
+      opacity: .56;
       transition: opacity .4s ease;
     }
 
     .map-shell {
       position: relative;
-      width: 100%;
-      border-radius: 26px;
+      width: calc(100% + 18px);
+      margin-left: -9px;
+      border-radius: 24px;
       overflow: hidden;
       background: white;
       box-shadow: var(--shadow);
@@ -155,18 +159,42 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .hotspot::before,
     .hotspot::after {
       content: "";
       position: absolute;
-      inset: 28%;
+      left: 50%;
+      top: 50%;
       border-radius: 50%;
-      background: rgba(255,255,255,.01);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hotspot::before {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid rgba(255,255,255,.92);
+      box-shadow: 0 0 0 1px rgba(59,109,124,.24), 0 3px 12px rgba(42,69,83,.18);
+      background: rgba(255,255,255,.22);
+      animation: hotspot-breathe 2.8s ease-in-out infinite;
+    }
+
+    .hotspot::after {
+      width: 6px;
+      height: 6px;
+      background: rgba(54,102,117,.82);
+      box-shadow: 0 0 9px rgba(255,255,255,.9);
       transition: transform .2s ease, background .2s ease;
     }
 
     .hotspot:active::after {
-      transform: scale(1.35);
-      background: rgba(255,255,255,.34);
+      transform: translate(-50%, -50%) scale(1.7);
+      background: rgba(255,255,255,.95);
+    }
+
+    @keyframes hotspot-breathe {
+      0%,100% { transform: translate(-50%,-50%) scale(.86); opacity:.55; }
+      50% { transform: translate(-50%,-50%) scale(1.18); opacity:1; }
     }
 
     .hotspot:focus-visible {
@@ -176,8 +204,8 @@
 
     .pulse {
       position: absolute;
-      left: 66%;
-      top: 57%;
+      left: 65%;
+      top: 54.6%;
       width: 22px;
       height: 22px;
       z-index: 7;
@@ -240,8 +268,22 @@
       opacity: .66;
     }
 
+    .experience {
+      margin: 7px 0 0;
+      font-size: 14px;
+      letter-spacing: .12em;
+      color: #5d748a;
+      font-weight: 650;
+    }
+
+    .card-divider {
+      height: 1px;
+      margin: 15px 0 13px;
+      background: linear-gradient(90deg, var(--line), transparent);
+    }
+
     .song-name {
-      margin: 8px 0 4px;
+      margin: 0 0 7px;
       font-size: clamp(24px, 7vw, 34px);
       line-height: 1.25;
       font-weight: 650;
@@ -249,9 +291,7 @@
     }
 
     .walk-word {
-      margin: 0 0 18px;
-      font-size: 13px;
-      opacity: .58;
+      display: none;
     }
 
     .services {
@@ -336,27 +376,28 @@
   <main class="app" id="app">
     <header class="topbar">
       <h1>SNOW MAP</h1>
-      <p class="hint" id="hint">気になる景色をタップ</p>
+      <p class="top-copy">今日は、どの景色を歩きますか。</p>
+      <p class="hint" id="hint">小さく光る場所をタップしてください</p>
     </header>
 
     <section class="map-shell" aria-label="SNOW MAPの地図">
-      <img class="map-image" src="snow-map-v0.1.jpg" alt="海、街、ドーム、公園、広場、港、花畑がつながるSNOW MAP" />
+      <img class="map-image" src="snow-map-v0.2.jpg" alt="海、街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP" />
       <div class="time-layer"></div>
       <div class="season-layer"></div>
       <div class="night-lights"></div>
       <div class="dome-glow" aria-hidden="true"></div>
       <div class="pulse" id="pulse" aria-hidden="true"></div>
 
-      <button class="hotspot" style="left:48%;top:16%;" data-place="展望台" aria-label="展望台"></button>
-      <button class="hotspot" style="left:43%;top:29%;" data-place="ビル群" aria-label="ビル群"></button>
-      <button class="hotspot" style="left:69%;top:35%;" data-place="ドーム" aria-label="ドーム"></button>
-      <button class="hotspot" style="left:23%;top:48%;" data-place="公園" aria-label="公園"></button>
-      <button class="hotspot" style="left:50%;top:47%;" data-place="歩道橋" aria-label="歩道橋"></button>
-      <button class="hotspot" style="left:65%;top:57%;" data-place="広場" aria-label="広場"></button>
-      <button class="hotspot" style="left:75%;top:65%;" data-place="カフェ" aria-label="カフェ"></button>
-      <button class="hotspot" style="left:23%;top:70%;" data-place="港" aria-label="港"></button>
-      <button class="hotspot" style="left:61%;top:80%;" data-place="海沿いの道路" aria-label="海沿いの道路"></button>
-      <button class="hotspot" style="left:40%;top:82%;" data-place="花畑" aria-label="花畑"></button>
+      <button class="hotspot" style="left:48%;top:10%;" data-place="展望台" aria-label="展望台"></button>
+      <button class="hotspot" style="left:43%;top:24.1%;" data-place="シティライト" aria-label="シティライト"></button>
+      <button class="hotspot" style="left:69%;top:30.7%;" data-place="Snow Dome" aria-label="Snow Dome"></button>
+      <button class="hotspot" style="left:23%;top:44.8%;" data-place="木漏れ日の道" aria-label="木漏れ日の道"></button>
+      <button class="hotspot" style="left:50%;top:43.8%;" data-place="歩道橋" aria-label="歩道橋"></button>
+      <button class="hotspot" style="left:65%;top:54.6%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
+      <button class="hotspot" style="left:75%;top:63.4%;" data-place="カフェ" aria-label="カフェ"></button>
+      <button class="hotspot" style="left:23%;top:68.8%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
+      <button class="hotspot" style="left:61%;top:79.7%;" data-place="シーサイド" aria-label="シーサイド"></button>
+      <button class="hotspot" style="left:40%;top:81.9%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
     </section>
   </main>
 
@@ -364,6 +405,8 @@
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="songName">
     <div class="handle"></div>
     <p class="place-name" id="placeName"></p>
+    <p class="experience" id="experience"></p>
+    <div class="card-divider"></div>
     <h2 class="song-name" id="songName"></h2>
     <p class="walk-word" id="walkWord"></p>
 
@@ -384,52 +427,52 @@
       "展望台": {
         verb: "見渡す",
         songs: ["We'll go together", "EVERYTHING IS EVERYTHING", "星のうた", "7%", "SBY"],
-        next: ["歩道橋", "ビル群", "港"]
+        next: ["歩道橋", "シティライト", "ブルーハーバー"]
       },
-      "ビル群": {
+      "シティライト": {
         verb: "駆け抜ける",
         songs: ["Spark!!", "BANG‼︎", "I・だって止まらない", "SAVE YOUR HEART", "W"],
-        next: ["歩道橋", "ドーム", "展望台", "港"]
+        next: ["歩道橋", "Snow Dome", "展望台", "ブルーハーバー"]
       },
-      "ドーム": {
+      "Snow Dome": {
         verb: "帰ってくる",
         songs: ["P.M.G.", "Party! Party! Party!", "Crazy F-R-E-S-H Beat", "Make It Hot", "守りたい、その笑顔"],
-        next: ["広場", "ビル群", "歩道橋"]
+        next: ["はじまりの広場", "シティライト", "歩道橋"]
       },
-      "公園": {
+      "木漏れ日の道": {
         verb: "歩く",
         songs: ["From Today", "A PIECE OF CAKE", "Brand New Smile", "TIKI TIKI", "Days"],
-        next: ["歩道橋", "広場", "港", "花畑"]
+        next: ["歩道橋", "はじまりの広場", "ブルーハーバー", "シーズンガーデン"]
       },
       "歩道橋": {
         verb: "選ぶ",
         songs: ["オトノナルホウヘ", "Don't Hold Back", "グッタイム", "iro iro", "ファンターナモーレ"],
-        next: ["展望台", "ビル群", "ドーム", "公園", "広場"]
+        next: ["展望台", "シティライト", "Snow Dome", "木漏れ日の道", "はじまりの広場"]
       },
-      "広場": {
+      "はじまりの広場": {
         verb: "出会う",
         songs: ["Snow World", "Happy Birthday", "NO SURRENDER！", "ナミダの海を越えて行け", "ブラザービート"],
-        next: ["ドーム", "公園", "カフェ", "歩道橋"]
+        next: ["Snow Dome", "木漏れ日の道", "カフェ", "歩道橋"]
       },
       "カフェ": {
         verb: "休む",
         songs: ["ANY & EVERY", "Luv Classic", "Big Bang Sweet", "What's your color?", "Color me live..."],
-        next: ["広場", "公園", "花畑", "海沿いの道路"]
+        next: ["はじまりの広場", "木漏れ日の道", "シーズンガーデン", "シーサイド"]
       },
-      "港": {
+      "ブルーハーバー": {
         verb: "旅立つ",
         songs: ["Lock on!", "Wonderful! × Surprise!", "Ready Go Round", "ミッドナイト・トレンディ", "8月の青"],
-        next: ["海沿いの道路", "公園", "展望台", "ビル群"]
+        next: ["シーサイド", "木漏れ日の道", "展望台", "シティライト"]
       },
-      "海沿いの道路": {
+      "シーサイド": {
         verb: "風を感じる",
         songs: ["Stories", "REFRESH", "YumYumYum 〜SpicyGirl〜", "DA BOMB", "Hip bounce!!"],
-        next: ["港", "花畑", "カフェ", "ビル群"]
+        next: ["ブルーハーバー", "シーズンガーデン", "カフェ", "シティライト"]
       },
-      "花畑": {
+      "シーズンガーデン": {
         verb: "季節を感じる",
         songs: ["HELLO HELLO", "オレンジkiss", "君は僕のもの", "いっそ、嫌いになれたら。", "My Sweet Girl"],
-        next: ["海沿いの道路", "カフェ", "公園", "広場"]
+        next: ["シーサイド", "カフェ", "木漏れ日の道", "はじまりの広場"]
       }
     };
 
@@ -440,6 +483,7 @@
     const backdrop = document.getElementById("backdrop");
     const placeName = document.getElementById("placeName");
     const songName = document.getElementById("songName");
+    const experience = document.getElementById("experience");
     const walkWord = document.getElementById("walkWord");
     const nextButton = document.getElementById("nextButton");
     const closeButton = document.getElementById("closeButton");
@@ -494,6 +538,7 @@
       previousSong = song;
 
       placeName.textContent = place;
+      experience.textContent = data.verb;
       songName.textContent = song;
       walkWord.textContent = data.verb;
       updateLinks(song);
