@@ -409,7 +409,7 @@
       position: absolute;
       inset: 2px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(173,221,241,.78) 0%, rgba(203,236,249,.42) 40%, rgba(226,246,253,.16) 58%, transparent 76%);
+      background: radial-gradient(circle, rgba(176,229,250,.88) 0%, rgba(201,238,252,.56) 38%, rgba(225,247,255,.24) 60%, transparent 80%);
       filter: blur(8px);
     }
     .intro-snow {
@@ -417,13 +417,16 @@
       z-index: 1;
       width: 31px;
       height: 31px;
-      color: rgba(153,196,216,.38);
-      filter: drop-shadow(0 0 1px rgba(255,255,255,.96)) drop-shadow(0 0 10px rgba(115,194,229,.84));
+      color: rgba(249,253,255,.96);
+      filter:
+        drop-shadow(0 0 2px rgba(255,255,255,1))
+        drop-shadow(0 0 7px rgba(139,213,244,.96))
+        drop-shadow(0 0 15px rgba(116,193,229,.72));
     }
     .intro-snow line {
       vector-effect: non-scaling-stroke;
       stroke: currentColor;
-      stroke-width: .34;
+      stroke-width: .28;
       stroke-linecap: round;
     }
     @keyframes introFlakeGlow {
@@ -468,7 +471,7 @@
 
   <audio id="ambWind" src="ambient-wind.mp3" loop preload="auto"></audio>
   <audio id="ambWaves" src="ambient-waves.mp3" loop preload="auto"></audio>
-  <audio id="ambBirds" src="ambient-birds.mp3" loop preload="auto"></audio>
+  <audio id="ambBirds" src="ambient-birds.mp3" preload="auto"></audio>
   <audio id="ambCrowd" src="ambient-crowd.mp3" loop preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
@@ -636,8 +639,8 @@
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const ambWind=document.getElementById("ambWind"), ambWaves=document.getElementById("ambWaves"), ambBirds=document.getElementById("ambBirds"), ambCrowd=document.getElementById("ambCrowd");
-    const ambientTracks=[ambWind,ambWaves,ambBirds,ambCrowd];
-    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
+    const ambientTracks=[ambWind,ambWaves,ambCrowd];
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, birdTimer=null, birdStopTimer=null;
     const songQueues = {};
     const strollSteps = {};
     const strollViews = [
@@ -664,15 +667,42 @@
       }
       requestAnimationFrame(step);
     }
+    function stopBirds(){
+      clearTimeout(birdTimer);
+      clearTimeout(birdStopTimer);
+      birdTimer=null; birdStopTimer=null;
+      ambBirds.pause();
+      ambBirds.volume=0;
+    }
+    function scheduleBirds(place=currentPlace, immediate=false){
+      stopBirds();
+      const enabledHere=["ブルーハーバー","シーサイド","展望台","木漏れ日の道"].includes(place);
+      if(!soundEnabled || !enabledHere) return;
+      const delay=immediate ? 3200+Math.random()*3500 : 18000+Math.random()*27000;
+      birdTimer=setTimeout(async()=>{
+        if(!soundEnabled || !["ブルーハーバー","シーサイド","展望台","木漏れ日の道"].includes(currentPlace)) return;
+        try{
+          const duration=Number.isFinite(ambBirds.duration) ? ambBirds.duration : 24;
+          ambBirds.currentTime=Math.max(0,Math.random()*Math.max(1,duration-5));
+          ambBirds.playbackRate=.90+Math.random()*.18;
+          ambBirds.volume=.028+Math.random()*.018;
+          await ambBirds.play();
+          birdStopTimer=setTimeout(()=>{
+            ambBirds.pause();
+            ambBirds.volume=0;
+            scheduleBirds(currentPlace,false);
+          },2200+Math.random()*2100);
+        }catch(_){ scheduleBirds(currentPlace,false); }
+      },delay);
+    }
     function ambientMix(place=currentPlace){
       if(!soundEnabled) return;
       const seaside=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(place);
-      const birds=["ブルーハーバー","シーサイド","展望台","木漏れ日の道"].includes(place);
       const dome=place==="Snow Dome";
       setTrackVolume(ambWind, .18);
       setTrackVolume(ambWaves, seaside ? .28 : .07);
-      setTrackVolume(ambBirds, birds ? .13 : .02);
-      setTrackVolume(ambCrowd, dome ? .18 : .025);
+      setTrackVolume(ambCrowd, dome ? .30 : .04);
+      scheduleBirds(place,true);
     }
     async function enableAmbient(){
       try{
@@ -690,6 +720,7 @@
     }
     function disableAmbient(){
       soundEnabled=false;
+      stopBirds();
       ambientTracks.forEach(t=>{ setTrackVolume(t,0,300); setTimeout(()=>t.pause(),340); });
       soundToggle.classList.remove("on");
       soundToggle.setAttribute("aria-pressed","false");
@@ -909,6 +940,7 @@
       if(!beacon) return;
       isTransitioning=true;
       currentPlace=place;
+      ambientMix(place);
       closeSheet({keepZoom:true});
       walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
       walkStatus.classList.add("show");
@@ -916,7 +948,7 @@
       isZoomed=true;
       requestAnimationFrame(()=>mapStage?.classList.add("walking"));
       setTimeout(()=>centerBeacon(beacon),90);
-      setTimeout(()=>beacon.classList.add("arriving"),2550);
+      setTimeout(()=>beacon.classList.add("arriving"),2180);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
