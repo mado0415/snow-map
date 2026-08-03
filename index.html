@@ -486,6 +486,13 @@
   <audio id="cityCar1" src="city-car-pass-1-v0105.mp3" preload="auto"></audio>
   <audio id="cityCar2" src="city-car-pass-2-v0105.mp3" preload="auto"></audio>
   <audio id="cityCar3" src="city-car-pass-3-v0105.mp3" preload="auto"></audio>
+  <audio id="ambLeaves" src="ambient-leaves-soft-v012.mp3" loop preload="auto"></audio>
+  <audio id="ambCity" src="ambient-city-soft-v012.mp3" loop preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012.mp3" preload="auto"></audio>
+  <audio id="birdFlock" src="birds-flock-far-v012.mp3" preload="auto"></audio>
+  <audio id="cafeClink" src="cafe-clink-soft-v012.mp3" preload="auto"></audio>
+  <audio id="domeCrowd" src="dome-crowd-light-v012.mp3" loop preload="auto"></audio>
+  <audio id="domeCheer" src="dome-cheer-far-v012.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -655,6 +662,9 @@
     const waveClips=[document.getElementById("harborWave1"),document.getElementById("harborWave2")];
     const seasideWave=document.getElementById("seasideWave1");
     const cityCars=[document.getElementById("cityCar1"),document.getElementById("cityCar2"),document.getElementById("cityCar3")];
+    const ambLeaves=document.getElementById("ambLeaves"), ambCity=document.getElementById("ambCity");
+    const harborHorn=document.getElementById("harborHorn"), birdFlock=document.getElementById("birdFlock");
+    const cafeClink=document.getElementById("cafeClink"), domeCrowd=document.getElementById("domeCrowd"), domeCheer=document.getElementById("domeCheer");
 
     // Soundscape engine v2.1 — intermittent waves by place
     // 現在同梱している音源：wind / waves / birds
@@ -666,9 +676,9 @@
       wind:{audio:ambWind,kind:"loop"},
       birds:{audio:ambBirds,kind:"event"}
     };
-    const ambientTracks=[ambWind];
+    const ambientTracks=[ambWind,ambLeaves,ambCity,domeCrowd];
     let currentPlace=null, activeSoundPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
-    let eventTimers={birds:null,cars:null,waves:null}, eventStopTimers={birds:null,cars:null,waves:null};
+    let eventTimers={birds:null,cars:null,waves:null,horn:null,cafe:null,cheer:null}, eventStopTimers={birds:null,cars:null,waves:null,horn:null,cafe:null,cheer:null};
     const songQueues = {};
     const strollSteps = {};
     const strollViews = [
@@ -721,244 +731,112 @@
       }
       requestAnimationFrame(step);
     }
-    // 場所別Soundscapeミキサー。
-    // wind は加工済みの静かなベッド音。主役音より後ろに置く。
+    // Soundscape v3: 場所 × 時間帯。ベース音と、まれな象徴音を分けて管理する。
     const PLACE_SOUND_MIX = {
-      // 音源自体の大きさを揃えた上で、場所ごとの聞こえ方を調整。
-      map: { wind:.18 },
-
-      "はじまりの広場": { wind:.24, birds:{volume:.18, morning:[14000,26000], day:[26000,44000]} },
-      "歩道橋": { wind:.32 },
-      "木漏れ日の道": { wind:.27, birds:{volume:.22, morning:[9000,19000], day:[22000,38000]} },
-      "カフェ": { wind:.20, birds:{volume:.12, morning:[26000,46000], day:[42000,70000]} },
-
-      "ブルーハーバー": {
-        wind:.10,
-        waves:{mode:"harbor", volume:.62, first:[900,1700], gap:[4200,8200]},
-        birds:{volume:.035, morning:[26000,46000], day:[46000,76000], night:[70000,120000]}
+      map:{ base:{wind:.22} },
+      "はじまりの広場":{
+        morning:{base:{wind:.28}, birds:{volume:.12,gap:[15000,28000]}},
+        day:{base:{wind:.25}, birds:{volume:.08,gap:[30000,52000]}},
+        evening:{base:{wind:.28}}, night:{base:{wind:.20}}
       },
-      "シーサイド": {
-        wind:.13,
-        waves:{mode:"seaside", volume:.58, first:[450,900], gap:[1500,3400]},
-        birds:{volume:.045, morning:[18000,34000], day:[30000,52000]}
+      "歩道橋":{
+        morning:{base:{wind:.34}}, day:{base:{wind:.32}}, evening:{base:{wind:.38}}, night:{base:{wind:.26}}
       },
-
-      "展望台": { wind:.40, birds:{volume:.08, morning:[30000,52000], day:[52000,85000]} },
-      "シティライト": { wind:.14, cars:{volume:.30, morning:[6500,12000], day:[8500,15000], evening:[6000,11000], night:[13000,23000]} },
-      "Snow Dome": { wind:.22 },
-      "シーズンガーデン": { wind:.25, birds:{volume:.16, morning:[12000,24000], day:[28000,48000]} }
+      "木漏れ日の道":{
+        morning:{base:{wind:.18,leaves:.34}, birds:{volume:.14,gap:[10000,22000]}},
+        day:{base:{wind:.16,leaves:.31}, birds:{volume:.09,gap:[26000,45000]}},
+        evening:{base:{wind:.19,leaves:.38}}, night:{base:{wind:.11,leaves:.20}}
+      },
+      "カフェ":{
+        morning:{base:{wind:.17}, cafe:{volume:.16,gap:[25000,52000]}},
+        day:{base:{wind:.16}, cafe:{volume:.18,gap:[18000,42000]}},
+        evening:{base:{wind:.15}, cafe:{volume:.14,gap:[26000,54000]}},
+        night:{base:{wind:.10}, cafe:{volume:.09,gap:[45000,80000]}}
+      },
+      "ブルーハーバー":{
+        morning:{base:{wind:.10}, waves:{mode:"harbor",volume:.42,first:[600,1200],gap:[4500,8500]}, birds:{volume:.055,gap:[26000,50000]}, horn:{volume:.13,gap:[150000,300000]}},
+        day:{base:{wind:.09}, waves:{mode:"harbor",volume:.40,first:[700,1400],gap:[5200,9500]}, birds:{volume:.042,gap:[42000,76000]}, horn:{volume:.12,gap:[180000,360000]}},
+        evening:{base:{wind:.11}, waves:{mode:"harbor",volume:.38,first:[800,1500],gap:[6000,10500]}, horn:{volume:.11,gap:[220000,420000]}},
+        night:{base:{wind:.06}, waves:{mode:"harbor",volume:.34,first:[900,1700],gap:[7000,12500]}, horn:{volume:.09,gap:[300000,540000]}}
+      },
+      "シーサイド":{
+        morning:{base:{wind:.13}, waves:{mode:"seaside",volume:.38,first:[350,750],gap:[1600,3200]}, birds:{volume:.052,gap:[22000,42000]}},
+        day:{base:{wind:.12}, waves:{mode:"seaside",volume:.36,first:[400,800],gap:[1800,3500]}, birds:{volume:.04,gap:[34000,60000]}},
+        evening:{base:{wind:.14}, waves:{mode:"seaside",volume:.34,first:[450,900],gap:[2100,3900]}},
+        night:{base:{wind:.08}, waves:{mode:"seaside",volume:.30,first:[550,1000],gap:[2500,4600]}}
+      },
+      "展望台":{
+        morning:{base:{wind:.42}, birds:{volume:.06,gap:[38000,68000]}},
+        day:{base:{wind:.39}}, evening:{base:{wind:.48}}, night:{base:{wind:.31}}
+      },
+      "シティライト":{
+        morning:{base:{wind:.08,city:.18}, cars:{volume:.25,gap:[9000,16000]}},
+        day:{base:{wind:.07,city:.22}, cars:{volume:.28,gap:[7000,13500]}},
+        evening:{base:{wind:.08,city:.25}, cars:{volume:.30,gap:[5500,11000]}},
+        night:{base:{wind:.05,city:.27}, cars:{volume:.27,gap:[11000,21000]}}
+      },
+      "Snow Dome":{
+        morning:{base:{wind:.14,crowd:.05}},
+        day:{base:{wind:.13,crowd:.10}, cheer:{volume:.08,gap:[90000,180000]}},
+        evening:{base:{wind:.12,crowd:.18}, cheer:{volume:.16,gap:[45000,95000]}},
+        night:{base:{wind:.10,crowd:.25}, cheer:{volume:.24,gap:[22000,60000]}}
+      },
+      "シーズンガーデン":{
+        morning:{base:{wind:.20,leaves:.18}, birds:{volume:.11,gap:[16000,30000]}},
+        day:{base:{wind:.22,leaves:.16}, birds:{volume:.07,gap:[32000,56000]}},
+        evening:{base:{wind:.26,leaves:.20}}, night:{base:{wind:.15,leaves:.10}}
+      }
     };
 
     function soundMixFor(place=currentPlace){
-      return PLACE_SOUND_MIX[place || "map"] || PLACE_SOUND_MIX.map;
+      const item=PLACE_SOUND_MIX[place||"map"] || PLACE_SOUND_MIX.map;
+      if(place==null) return item;
+      return item[timeBand()] || item.day || item;
     }
+    function randomInRange(range,fallback=[10000,20000]){ const [a,b]=range||fallback; return a+Math.random()*Math.max(0,b-a); }
+    function clearEvent(name){ clearTimeout(eventTimers[name]); clearTimeout(eventStopTimers[name]); eventTimers[name]=eventStopTimers[name]=null; }
+    function stopAudio(audio){ if(!audio)return; audio.pause(); audio.currentTime=0; audio.volume=0; }
+    function stopWaveEvents(){ clearEvent("waves"); [...waveClips,seasideWave].forEach(stopAudio); }
+    function stopCityCars(){ clearEvent("cars"); cityCars.forEach(stopAudio); }
+    function stopOneShots(){ ["birds","horn","cafe","cheer"].forEach(clearEvent); [ambBirds,birdFlock,harborHorn,cafeClink,domeCheer].forEach(stopAudio); }
+    function stopLoop(track){ if(!track)return; volumeFadeTokens.set(track,(volumeFadeTokens.get(track)||0)+1); track.volume=0; track.pause(); }
+    async function setLoop(track,volume,duration=900){ if(!track||!soundEnabled)return; const v=clamp(volume||0,0,1); if(v<=0){stopLoop(track);return;} try{if(track.paused){track.volume=0;await track.play();} setTrackVolume(track,v,duration);}catch(_){} }
 
-    function randomInRange(range, fallback=[10000,20000]){
-      const [min,max]=Array.isArray(range)?range:fallback;
-      return min+Math.random()*Math.max(0,max-min);
-    }
-
-    function clearEvent(name){
-      clearTimeout(eventTimers[name]);
-      clearTimeout(eventStopTimers[name]);
-      eventTimers[name]=null; eventStopTimers[name]=null;
-      const audio=SOUND_ASSETS[name]?.audio;
-      if(audio){ audio.pause(); audio.volume=0; }
-    }
-    function stopWaveEvents(){
-      clearTimeout(eventTimers.waves);
-      clearTimeout(eventStopTimers.waves);
-      eventTimers.waves=null; eventStopTimers.waves=null;
-      [...waveClips,seasideWave].forEach(audio=>{
-        if(!audio) return;
-        audio.pause(); audio.currentTime=0; audio.volume=0;
-      });
-    }
-    function waveMode(place=currentPlace){
-      return soundMixFor(place).waves?.mode || null;
-    }
     function scheduleWaves(place=currentPlace,first=false){
-      stopWaveEvents();
-      if(!soundEnabled) return;
-      const mix=soundMixFor(place);
-      const wave=mix.waves;
-      if(!wave) return;
-      const mode=wave.mode;
-      const delay=first ? randomInRange(wave.first,[300,900]) : randomInRange(wave.gap,[2500,6000]);
-      eventTimers.waves=setTimeout(async()=>{
-        if(!soundEnabled || currentPlace!==place || waveMode(currentPlace)!==mode) return;
-        const audio=mode==="harbor" ? waveClips[Math.floor(Math.random()*waveClips.length)] : seasideWave;
-        try{
-          audio.pause();
-          audio.currentTime=0;
-          audio.playbackRate=mode==="harbor" ? (.94+Math.random()*.035) : (.99+Math.random()*.045);
-          audio.volume=Math.max(0,Math.min(1,wave.volume));
-          await audio.play();
-          const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
-          eventStopTimers.waves=setTimeout(()=>{
-            audio.pause(); audio.currentTime=0; audio.volume=0;
-            if(currentPlace===place) scheduleWaves(place,false);
-          },fullDuration+80);
-        }catch(_){ if(currentPlace===place) scheduleWaves(place,false); }
-      },delay);
-    }
-
-    function birdsAllowed(place=currentPlace){
-      const bird=soundMixFor(place).birds;
-      if(!bird) return false;
-      const band=timeBand();
-      return Boolean(bird[band]);
+      stopWaveEvents(); const mix=soundMixFor(place), w=mix.waves; if(!soundEnabled||!w)return;
+      eventTimers.waves=setTimeout(async()=>{ if(!soundEnabled||currentPlace!==place)return; const a=w.mode==="harbor"?waveClips[Math.floor(Math.random()*waveClips.length)]:seasideWave; try{a.currentTime=0;a.playbackRate=w.mode==="harbor"?.96+Math.random()*.03:1+Math.random()*.035;a.volume=w.volume;await a.play();const d=(Number.isFinite(a.duration)?a.duration:6)*1000;eventStopTimers.waves=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleWaves(place,false);},d+80);}catch(_){if(currentPlace===place)scheduleWaves(place,false);}},first?randomInRange(w.first,[400,900]):randomInRange(w.gap));
     }
     function scheduleBirds(place=currentPlace,first=false){
-      clearEvent("birds");
-      if(!soundEnabled || !birdsAllowed(place)) return;
-      const band=timeBand();
-      const bird=soundMixFor(place).birds;
-      const range=bird[band];
-      const delay=first ? Math.min(9000,randomInRange(range)*.35) : randomInRange(range);
-      eventTimers.birds=setTimeout(async()=>{
-        if(!soundEnabled || currentPlace!==place || !birdsAllowed(place)) return;
-        const audio=ambBirds;
-        try{
-          const duration=Number.isFinite(audio.duration)?audio.duration:24;
-          audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
-          audio.playbackRate=.95+Math.random()*.07;
-          audio.volume=Math.max(0,Math.min(1,bird.volume*(.88+Math.random()*.22)));
-          await audio.play();
-          eventStopTimers.birds=setTimeout(()=>{
-            audio.pause(); audio.volume=0;
-            if(currentPlace===place) scheduleBirds(place,false);
-          },1500+Math.random()*1600);
-        }catch(_){ if(currentPlace===place) scheduleBirds(place,false); }
-      },delay);
+      clearEvent("birds"); const b=soundMixFor(place).birds; if(!soundEnabled||!b)return;
+      eventTimers.birds=setTimeout(async()=>{if(!soundEnabled||currentPlace!==place)return;const a=birdFlock||ambBirds;try{a.currentTime=0;a.volume=b.volume*(.9+Math.random()*.15);await a.play();const d=(Number.isFinite(a.duration)?a.duration:6)*1000;eventStopTimers.birds=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleBirds(place,false);},d+100);}catch(_){if(currentPlace===place)scheduleBirds(place,false);}},first?Math.min(9000,randomInRange(b.gap)*.3):randomInRange(b.gap));
     }
-
-    function cityCarsAllowed(place=currentPlace){
-      return Boolean(soundMixFor(place).cars);
+    function scheduleCars(place=currentPlace,first=false){
+      stopCityCars();const c=soundMixFor(place).cars;if(!soundEnabled||!c)return;
+      eventTimers.cars=setTimeout(async()=>{if(!soundEnabled||currentPlace!==place)return;const a=cityCars[Math.floor(Math.random()*cityCars.length)];try{a.currentTime=0;a.playbackRate=.97+Math.random()*.06;a.volume=c.volume*(.92+Math.random()*.12);await a.play();const d=(Number.isFinite(a.duration)?a.duration:4)*1000;eventStopTimers.cars=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleCars(place,false);},d+100);}catch(_){if(currentPlace===place)scheduleCars(place,false);}},first?1800+Math.random()*1800:randomInRange(c.gap));
     }
-    function stopCityCars(){
-      clearTimeout(eventTimers.cars);
-      clearTimeout(eventStopTimers.cars);
-      eventTimers.cars=null; eventStopTimers.cars=null;
-      cityCars.forEach(audio=>{
-        if(!audio) return;
-        audio.pause();
-        audio.currentTime=0;
-        audio.volume=0;
-      });
+    function scheduleSimple(name,audio,place,config,firstDelay=5000){
+      clearEvent(name);if(!soundEnabled||!config||!audio)return;
+      eventTimers[name]=setTimeout(async()=>{if(!soundEnabled||currentPlace!==place)return;try{audio.currentTime=0;audio.volume=config.volume;await audio.play();const d=(Number.isFinite(audio.duration)?audio.duration:4)*1000;eventStopTimers[name]=setTimeout(()=>{stopAudio(audio);if(currentPlace===place)scheduleSimple(name,audio,place,config,firstDelay);},d+100);}catch(_){if(currentPlace===place)scheduleSimple(name,audio,place,config,firstDelay);}},firstDelay?Math.min(firstDelay,randomInRange(config.gap)*.25):randomInRange(config.gap));
     }
-    function scheduleCityCars(place=currentPlace,first=false){
-      stopCityCars();
-      if(!soundEnabled || !cityCarsAllowed(place)) return;
-      const band=timeBand();
-      const car=soundMixFor(place).cars;
-      const range=car[band] || car.day;
-      const delay=first ? 1800+Math.random()*2200 : randomInRange(range,[9000,16000]);
-      eventTimers.cars=setTimeout(async()=>{
-        if(!soundEnabled || currentPlace!==place || !cityCarsAllowed(place)) return;
-        const audio=cityCars[Math.floor(Math.random()*cityCars.length)];
-        try{
-          audio.pause();
-          audio.currentTime=0;
-          audio.playbackRate=.97+Math.random()*.06;
-          audio.volume=Math.max(0,Math.min(1,car.volume*(.9+Math.random()*.16)));
-          await audio.play();
-          const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
-          eventStopTimers.cars=setTimeout(()=>{
-            audio.pause(); audio.currentTime=0; audio.volume=0;
-            if(currentPlace===place) scheduleCityCars(place,false);
-          },duration+120);
-        }catch(_){ if(currentPlace===place) scheduleCityCars(place,false); }
-      },delay);
-    }
-
-    function stopWindBed(){
-      if(!ambWind) return;
-      volumeFadeTokens.set(ambWind,(volumeFadeTokens.get(ambWind)||0)+1);
-      ambWind.volume=0;
-      ambWind.pause();
-    }
-
-    async function setWindBed(volume,duration=900){
-      if(!ambWind || !soundEnabled) return;
-      const target=Math.max(0,Math.min(1,volume));
-      if(target<=0){ stopWindBed(); return; }
-      try{
-        if(ambWind.paused){ ambWind.volume=0; await ambWind.play(); }
-        setTrackVolume(ambWind,target,duration);
-      }catch(_){}
-    }
-
     function ambientMix(place=currentPlace,{duration=1700,force=false}={}){
-      if(!soundEnabled) return;
-      const nextSoundPlace=place || null;
-      if(!force && activeSoundPlace===nextSoundPlace) return;
-      activeSoundPlace=nextSoundPlace;
-
-      stopCityCars();
-      stopWaveEvents();
-      clearEvent("birds");
-
-      const mix=soundMixFor(place);
-      setWindBed(mix.wind || 0,duration);
-      if(mix.waves) scheduleWaves(place,true);
-      if(mix.birds) scheduleBirds(place,true);
-      if(mix.cars) scheduleCityCars(place,true);
+      if(!soundEnabled)return;const key=`${place||"map"}:${timeBand()}`;if(!force&&activeSoundPlace===key)return;activeSoundPlace=key;
+      stopWaveEvents();stopCityCars();stopOneShots();
+      const m=soundMixFor(place),b=m.base||{};
+      setLoop(ambWind,b.wind||0,duration);setLoop(ambLeaves,b.leaves||0,duration);setLoop(ambCity,b.city||0,duration);setLoop(domeCrowd,b.crowd||0,duration);
+      if(m.waves)scheduleWaves(place,true);if(m.birds)scheduleBirds(place,true);if(m.cars)scheduleCars(place,true);
+      if(m.horn)scheduleSimple("horn",harborHorn,place,m.horn,18000);
+      if(m.cafe)scheduleSimple("cafe",cafeClink,place,m.cafe,9000);
+      if(m.cheer)scheduleSimple("cheer",domeCheer,place,m.cheer,7000);
     }
-    function pauseAllAudioForBackground(){
-      clearEvent("birds");
-      stopWaveEvents();
-      stopCityCars();
-      ambientTracks.forEach(track=>{
-        volumeFadeTokens.set(track,(volumeFadeTokens.get(track)||0)+1);
-        track.pause();
-      });
-    }
-
-    async function resumeAudioAfterBackground(){
-      if(!soundEnabled || document.hidden) return;
-      // 現在の場所に合わせて、必要な音だけ再開する。
-      activeSoundPlace=Symbol("resume");
-      ambientMix(currentPlace,{duration:500,force:true});
-    }
-
-    document.addEventListener("visibilitychange",()=>{
-      if(document.hidden){
-        pauseAllAudioForBackground();
-      }else{
-        resumeAudioAfterBackground();
-      }
-    });
+    function pauseAllAudioForBackground(){ stopWaveEvents();stopCityCars();stopOneShots();ambientTracks.forEach(t=>t.pause()); }
+    function resumeAudioAfterBackground(){ if(!soundEnabled||document.hidden)return;activeSoundPlace=null;ambientMix(currentPlace,{duration:500,force:true}); }
+    document.addEventListener("visibilitychange",()=>document.hidden?pauseAllAudioForBackground():resumeAudioAfterBackground());
     window.addEventListener("pagehide",pauseAllAudioForBackground);
-
     async function enableAmbient(){
-      try{
-        ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
-        soundEnabled=true;
-        // 全景時だけ共通風を開始する。エリア内では最初から再生しない。
-        if(!currentPlace) await Promise.all(ambientTracks.map(t=>t.play()));
-        soundToggle.classList.add("on");
-        soundToggle.setAttribute("aria-pressed","true");
-        soundToggle.setAttribute("aria-label","街の音をオフにする");
-        ambientMix(currentPlace,{duration:1100,force:true});
-        showSoundNote("街の音をオンにしました");
-      }catch(err){
-        showSoundNote("音声を再生できませんでした");
-      }
+      try{ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});soundEnabled=true;soundToggle.classList.add("on");soundToggle.setAttribute("aria-pressed","true");soundToggle.setAttribute("aria-label","街の音をオフにする");ambientMix(currentPlace,{duration:1100,force:true});showSoundNote("街の音をオンにしました");}catch(_){showSoundNote("音声を再生できませんでした");}
     }
-    function disableAmbient(){
-      soundEnabled=false;
-      activeSoundPlace=null;
-      clearEvent("birds");
-      stopWaveEvents();
-      stopCityCars();
-      stopWindBed();
-      soundToggle.classList.remove("on");
-      soundToggle.setAttribute("aria-pressed","false");
-      soundToggle.setAttribute("aria-label","街の音をオンにする");
-      showSoundNote("街の音をオフにしました");
-    }
-    function toggleAmbient(){ soundEnabled ? disableAmbient() : enableAmbient(); }
+    function disableAmbient(){soundEnabled=false;activeSoundPlace=null;stopWaveEvents();stopCityCars();stopOneShots();ambientTracks.forEach(stopLoop);soundToggle.classList.remove("on");soundToggle.setAttribute("aria-pressed","false");soundToggle.setAttribute("aria-label","街の音をオンにする");showSoundNote("街の音をオフにしました");}
+    function toggleAmbient(){soundEnabled?disableAmbient():enableAmbient();}
 
     function getTimeKey(){
       const h=new Date().getHours();
