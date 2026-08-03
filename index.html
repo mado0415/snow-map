@@ -662,7 +662,7 @@
     // Soundscape engine v2.1 — intermittent waves by place
     // Soundscape v3.1: 不自然な仮音源は使わず、採用済みの風・波・車・汽笛だけで構成する。
     const ambientTracks=[ambWind,ambAir];
-    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundPlace=null;
     let eventTimers={cars:null,waves:null,horn:null}, eventStopTimers={cars:null,waves:null,horn:null};
     const songQueues = {};
     const strollSteps = {};
@@ -806,7 +806,23 @@
     document.addEventListener("visibilitychange",()=>document.hidden?pauseAllAudioForBackground():resumeAudioAfterBackground());
     window.addEventListener("pagehide",pauseAllAudioForBackground);
     async function enableAmbient(){
-      try{ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});soundEnabled=true;soundToggle.classList.add("on");soundToggle.setAttribute("aria-pressed","true");soundToggle.setAttribute("aria-label","街の音をオフにする");ambientMix(currentPlace,{duration:1100,force:true});showSoundNote("街の音をオンにしました");}catch(_){showSoundNote("音声を再生できませんでした");}
+      try{
+        ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
+        soundEnabled=true;
+        activeSoundPlace=null;
+        soundToggle.classList.add("on");
+        soundToggle.setAttribute("aria-pressed","true");
+        soundToggle.setAttribute("aria-label","街の音をオフにする");
+        ambientMix(currentPlace,{duration:1100,force:true});
+        showSoundNote("街の音をオンにしました");
+      }catch(_){
+        soundEnabled=false;
+        activeSoundPlace=null;
+        soundToggle.classList.remove("on");
+        soundToggle.setAttribute("aria-pressed","false");
+        soundToggle.setAttribute("aria-label","街の音をオンにする");
+        showSoundNote("音声を再生できませんでした");
+      }
     }
     function disableAmbient(){soundEnabled=false;activeSoundPlace=null;stopWaveEvents();stopCityCars();stopOneShots();ambientTracks.forEach(stopLoop);soundToggle.classList.remove("on");soundToggle.setAttribute("aria-pressed","false");soundToggle.setAttribute("aria-label","街の音をオンにする");showSoundNote("街の音をオフにしました");}
     function toggleAmbient(){soundEnabled?disableAmbient():enableAmbient();}
