@@ -1,12 +1,5 @@
-SNOW MAP v0.12.0 Soundscape
+SNOW MAP v0.12.1
 
-新規音源:
-- ambient-leaves-soft-v012.mp3 葉擦れ
-- ambient-city-soft-v012.mp3 遠い街の空気
-- harbor-horn-far-v012.mp3 遠い汽笛
-- birds-flock-far-v012.mp3 遠くの海鳥・小鳥の群れ
-- cafe-clink-soft-v012.mp3 食器の小さな音
-- dome-crowd-light-v012.mp3 明るいざわめき
-- dome-cheer-far-v012.mp3 遠い歓声
-
-時間帯（朝・昼・夕方・夜）で場所ごとの音量・頻度が変わります。
+不自然だった仮音源（葉擦れ、街ノイズ、食器、群れの海鳥、Snow Domeのノイズ状音源）を撤去しました。
+採用中：低い風、柔らかい高い風、港の水音3種、明るめの海岸波、車3種、遠い汽笛。
+海鳥・食器・歓声は、適切な音源が見つかるまで無理に代用していません。

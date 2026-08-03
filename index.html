@@ -479,20 +479,15 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <audio id="ambWind" src="ambient-wind-bed-v0112.mp3" loop preload="auto"></audio>
-  <audio id="harborWave1" src="harbor-water-1-v0112.mp3" preload="auto"></audio>
-  <audio id="harborWave2" src="harbor-water-2-v0112.mp3" preload="auto"></audio>
-  <audio id="seasideWave1" src="seaside-wave-v0112.mp3" preload="auto"></audio>
-  <audio id="ambBirds" src="ambient-birds-soft-v2.mp3" preload="auto"></audio>
+  <audio id="ambAir" src="ambient-wind-air-v0121.mp3" loop preload="auto"></audio>
+  <audio id="harborWave1" src="harbor-water-soft-1-v0121.mp3" preload="auto"></audio>
+  <audio id="harborWave2" src="harbor-water-soft-2-v0121.mp3" preload="auto"></audio>
+  <audio id="harborWave3" src="harbor-water-high-v0121.mp3" preload="auto"></audio>
+  <audio id="seasideWave1" src="seaside-wave-bright-v0121.mp3" preload="auto"></audio>
   <audio id="cityCar1" src="city-car-pass-1-v0105.mp3" preload="auto"></audio>
   <audio id="cityCar2" src="city-car-pass-2-v0105.mp3" preload="auto"></audio>
   <audio id="cityCar3" src="city-car-pass-3-v0105.mp3" preload="auto"></audio>
-  <audio id="ambLeaves" src="ambient-leaves-soft-v012.mp3" loop preload="auto"></audio>
-  <audio id="ambCity" src="ambient-city-soft-v012.mp3" loop preload="auto"></audio>
   <audio id="harborHorn" src="harbor-horn-far-v012.mp3" preload="auto"></audio>
-  <audio id="birdFlock" src="birds-flock-far-v012.mp3" preload="auto"></audio>
-  <audio id="cafeClink" src="cafe-clink-soft-v012.mp3" preload="auto"></audio>
-  <audio id="domeCrowd" src="dome-crowd-light-v012.mp3" loop preload="auto"></audio>
-  <audio id="domeCheer" src="dome-cheer-far-v012.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -658,27 +653,17 @@
     const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
-    const ambWind=document.getElementById("ambWind"), ambBirds=document.getElementById("ambBirds");
-    const waveClips=[document.getElementById("harborWave1"),document.getElementById("harborWave2")];
+    const ambWind=document.getElementById("ambWind"), ambAir=document.getElementById("ambAir");
+    const waveClips=[document.getElementById("harborWave1"),document.getElementById("harborWave2"),document.getElementById("harborWave3")];
     const seasideWave=document.getElementById("seasideWave1");
     const cityCars=[document.getElementById("cityCar1"),document.getElementById("cityCar2"),document.getElementById("cityCar3")];
-    const ambLeaves=document.getElementById("ambLeaves"), ambCity=document.getElementById("ambCity");
-    const harborHorn=document.getElementById("harborHorn"), birdFlock=document.getElementById("birdFlock");
-    const cafeClink=document.getElementById("cafeClink"), domeCrowd=document.getElementById("domeCrowd"), domeCheer=document.getElementById("domeCheer");
+    const harborHorn=document.getElementById("harborHorn");
 
     // Soundscape engine v2.1 — intermittent waves by place
-    // 現在同梱している音源：wind / waves / birds
-    // 将来は下記のファイルを追加し、SOUND_ASSETSへ登録するだけで拡張できます。
-    // ambient-leaves.mp3 / ambient-car-1.mp3 / ambient-car-2.mp3 /
-    // ambient-fountain.mp3 / ambient-city.mp3 / ambient-cafe.mp3 /
-    // ambient-crowd-light.mp3 / ambient-cheer-far.mp3 / ambient-horn-far.mp3
-    const SOUND_ASSETS={
-      wind:{audio:ambWind,kind:"loop"},
-      birds:{audio:ambBirds,kind:"event"}
-    };
-    const ambientTracks=[ambWind,ambLeaves,ambCity,domeCrowd];
-    let currentPlace=null, activeSoundPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
-    let eventTimers={birds:null,cars:null,waves:null,horn:null,cafe:null,cheer:null}, eventStopTimers={birds:null,cars:null,waves:null,horn:null,cafe:null,cheer:null};
+    // Soundscape v3.1: 不自然な仮音源は使わず、採用済みの風・波・車・汽笛だけで構成する。
+    const ambientTracks=[ambWind,ambAir];
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
+    let eventTimers={cars:null,waves:null,horn:null}, eventStopTimers={cars:null,waves:null,horn:null};
     const songQueues = {};
     const strollSteps = {};
     const strollViews = [
@@ -731,60 +716,54 @@
       }
       requestAnimationFrame(step);
     }
-    // Soundscape v3: 場所 × 時間帯。ベース音と、まれな象徴音を分けて管理する。
+    // 場所 × 時間帯のミックス。wind は低めの風、air は高く柔らかい空気感。
     const PLACE_SOUND_MIX = {
-      map:{ base:{wind:.22} },
+      map:{ base:{wind:.24,air:.035} },
       "はじまりの広場":{
-        morning:{base:{wind:.28}, birds:{volume:.12,gap:[15000,28000]}},
-        day:{base:{wind:.25}, birds:{volume:.08,gap:[30000,52000]}},
-        evening:{base:{wind:.28}}, night:{base:{wind:.20}}
+        morning:{base:{wind:.24,air:.085}}, day:{base:{wind:.22,air:.070}},
+        evening:{base:{wind:.25,air:.080}}, night:{base:{wind:.18,air:.040}}
       },
       "歩道橋":{
-        morning:{base:{wind:.34}}, day:{base:{wind:.32}}, evening:{base:{wind:.38}}, night:{base:{wind:.26}}
+        morning:{base:{wind:.29,air:.105}}, day:{base:{wind:.27,air:.095}},
+        evening:{base:{wind:.32,air:.115}}, night:{base:{wind:.22,air:.060}}
       },
       "木漏れ日の道":{
-        morning:{base:{wind:.18,leaves:.34}, birds:{volume:.14,gap:[10000,22000]}},
-        day:{base:{wind:.16,leaves:.31}, birds:{volume:.09,gap:[26000,45000]}},
-        evening:{base:{wind:.19,leaves:.38}}, night:{base:{wind:.11,leaves:.20}}
+        morning:{base:{wind:.115,air:.175}}, day:{base:{wind:.105,air:.155}},
+        evening:{base:{wind:.125,air:.170}}, night:{base:{wind:.075,air:.075}}
       },
       "カフェ":{
-        morning:{base:{wind:.17}, cafe:{volume:.16,gap:[25000,52000]}},
-        day:{base:{wind:.16}, cafe:{volume:.18,gap:[18000,42000]}},
-        evening:{base:{wind:.15}, cafe:{volume:.14,gap:[26000,54000]}},
-        night:{base:{wind:.10}, cafe:{volume:.09,gap:[45000,80000]}}
+        morning:{base:{wind:.135,air:.080}}, day:{base:{wind:.125,air:.070}},
+        evening:{base:{wind:.115,air:.065}}, night:{base:{wind:.075,air:.035}}
       },
       "ブルーハーバー":{
-        morning:{base:{wind:.10}, waves:{mode:"harbor",volume:.42,first:[600,1200],gap:[4500,8500]}, birds:{volume:.055,gap:[26000,50000]}, horn:{volume:.13,gap:[150000,300000]}},
-        day:{base:{wind:.09}, waves:{mode:"harbor",volume:.40,first:[700,1400],gap:[5200,9500]}, birds:{volume:.042,gap:[42000,76000]}, horn:{volume:.12,gap:[180000,360000]}},
-        evening:{base:{wind:.11}, waves:{mode:"harbor",volume:.38,first:[800,1500],gap:[6000,10500]}, horn:{volume:.11,gap:[220000,420000]}},
-        night:{base:{wind:.06}, waves:{mode:"harbor",volume:.34,first:[900,1700],gap:[7000,12500]}, horn:{volume:.09,gap:[300000,540000]}}
+        morning:{base:{wind:.060,air:.025},waves:{mode:"harbor",volume:.35,first:[500,1000],gap:[4200,7800]},horn:{volume:.075,gap:[45000,90000]}},
+        day:{base:{wind:.055,air:.022},waves:{mode:"harbor",volume:.34,first:[600,1100],gap:[4800,8500]},horn:{volume:.070,gap:[55000,105000]}},
+        evening:{base:{wind:.065,air:.026},waves:{mode:"harbor",volume:.33,first:[650,1200],gap:[5200,9200]},horn:{volume:.065,gap:[65000,120000]}},
+        night:{base:{wind:.038,air:.014},waves:{mode:"harbor",volume:.30,first:[800,1400],gap:[6500,11000]},horn:{volume:.055,gap:[75000,135000]}}
       },
       "シーサイド":{
-        morning:{base:{wind:.13}, waves:{mode:"seaside",volume:.38,first:[350,750],gap:[1600,3200]}, birds:{volume:.052,gap:[22000,42000]}},
-        day:{base:{wind:.12}, waves:{mode:"seaside",volume:.36,first:[400,800],gap:[1800,3500]}, birds:{volume:.04,gap:[34000,60000]}},
-        evening:{base:{wind:.14}, waves:{mode:"seaside",volume:.34,first:[450,900],gap:[2100,3900]}},
-        night:{base:{wind:.08}, waves:{mode:"seaside",volume:.30,first:[550,1000],gap:[2500,4600]}}
+        morning:{base:{wind:.072,air:.048},waves:{mode:"seaside",volume:.31,first:[350,700],gap:[1800,3300]}},
+        day:{base:{wind:.068,air:.044},waves:{mode:"seaside",volume:.30,first:[400,750],gap:[2000,3600]}},
+        evening:{base:{wind:.080,air:.052},waves:{mode:"seaside",volume:.29,first:[450,850],gap:[2200,3900]}},
+        night:{base:{wind:.046,air:.025},waves:{mode:"seaside",volume:.26,first:[550,1000],gap:[2700,4600]}}
       },
       "展望台":{
-        morning:{base:{wind:.42}, birds:{volume:.06,gap:[38000,68000]}},
-        day:{base:{wind:.39}}, evening:{base:{wind:.48}}, night:{base:{wind:.31}}
+        morning:{base:{wind:.235,air:.220}}, day:{base:{wind:.220,air:.205}},
+        evening:{base:{wind:.265,air:.240}}, night:{base:{wind:.170,air:.125}}
       },
       "シティライト":{
-        morning:{base:{wind:.08,city:.18}, cars:{volume:.25,gap:[9000,16000]}},
-        day:{base:{wind:.07,city:.22}, cars:{volume:.28,gap:[7000,13500]}},
-        evening:{base:{wind:.08,city:.25}, cars:{volume:.30,gap:[5500,11000]}},
-        night:{base:{wind:.05,city:.27}, cars:{volume:.27,gap:[11000,21000]}}
+        morning:{base:{wind:.050,air:.025},cars:{volume:.21,gap:[9000,16000]}},
+        day:{base:{wind:.046,air:.022},cars:{volume:.23,gap:[7500,14000]}},
+        evening:{base:{wind:.050,air:.025},cars:{volume:.25,gap:[6000,11500]}},
+        night:{base:{wind:.032,air:.015},cars:{volume:.22,gap:[11000,21000]}}
       },
       "Snow Dome":{
-        morning:{base:{wind:.14,crowd:.05}},
-        day:{base:{wind:.13,crowd:.10}, cheer:{volume:.08,gap:[90000,180000]}},
-        evening:{base:{wind:.12,crowd:.18}, cheer:{volume:.16,gap:[45000,95000]}},
-        night:{base:{wind:.10,crowd:.25}, cheer:{volume:.24,gap:[22000,60000]}}
+        morning:{base:{wind:.120,air:.050}}, day:{base:{wind:.115,air:.050}},
+        evening:{base:{wind:.110,air:.055}}, night:{base:{wind:.090,air:.045}}
       },
       "シーズンガーデン":{
-        morning:{base:{wind:.20,leaves:.18}, birds:{volume:.11,gap:[16000,30000]}},
-        day:{base:{wind:.22,leaves:.16}, birds:{volume:.07,gap:[32000,56000]}},
-        evening:{base:{wind:.26,leaves:.20}}, night:{base:{wind:.15,leaves:.10}}
+        morning:{base:{wind:.095,air:.190}}, day:{base:{wind:.090,air:.175}},
+        evening:{base:{wind:.105,air:.195}}, night:{base:{wind:.060,air:.085}}
       }
     };
 
@@ -798,17 +777,13 @@
     function stopAudio(audio){ if(!audio)return; audio.pause(); audio.currentTime=0; audio.volume=0; }
     function stopWaveEvents(){ clearEvent("waves"); [...waveClips,seasideWave].forEach(stopAudio); }
     function stopCityCars(){ clearEvent("cars"); cityCars.forEach(stopAudio); }
-    function stopOneShots(){ ["birds","horn","cafe","cheer"].forEach(clearEvent); [ambBirds,birdFlock,harborHorn,cafeClink,domeCheer].forEach(stopAudio); }
+    function stopOneShots(){ ["horn"].forEach(clearEvent); [harborHorn].forEach(stopAudio); }
     function stopLoop(track){ if(!track)return; volumeFadeTokens.set(track,(volumeFadeTokens.get(track)||0)+1); track.volume=0; track.pause(); }
     async function setLoop(track,volume,duration=900){ if(!track||!soundEnabled)return; const v=clamp(volume||0,0,1); if(v<=0){stopLoop(track);return;} try{if(track.paused){track.volume=0;await track.play();} setTrackVolume(track,v,duration);}catch(_){} }
 
     function scheduleWaves(place=currentPlace,first=false){
       stopWaveEvents(); const mix=soundMixFor(place), w=mix.waves; if(!soundEnabled||!w)return;
-      eventTimers.waves=setTimeout(async()=>{ if(!soundEnabled||currentPlace!==place)return; const a=w.mode==="harbor"?waveClips[Math.floor(Math.random()*waveClips.length)]:seasideWave; try{a.currentTime=0;a.playbackRate=w.mode==="harbor"?.96+Math.random()*.03:1+Math.random()*.035;a.volume=w.volume;await a.play();const d=(Number.isFinite(a.duration)?a.duration:6)*1000;eventStopTimers.waves=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleWaves(place,false);},d+80);}catch(_){if(currentPlace===place)scheduleWaves(place,false);}},first?randomInRange(w.first,[400,900]):randomInRange(w.gap));
-    }
-    function scheduleBirds(place=currentPlace,first=false){
-      clearEvent("birds"); const b=soundMixFor(place).birds; if(!soundEnabled||!b)return;
-      eventTimers.birds=setTimeout(async()=>{if(!soundEnabled||currentPlace!==place)return;const a=birdFlock||ambBirds;try{a.currentTime=0;a.volume=b.volume*(.9+Math.random()*.15);await a.play();const d=(Number.isFinite(a.duration)?a.duration:6)*1000;eventStopTimers.birds=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleBirds(place,false);},d+100);}catch(_){if(currentPlace===place)scheduleBirds(place,false);}},first?Math.min(9000,randomInRange(b.gap)*.3):randomInRange(b.gap));
+      eventTimers.waves=setTimeout(async()=>{ if(!soundEnabled||currentPlace!==place)return; const a=w.mode==="harbor"?waveClips[Math.floor(Math.random()*waveClips.length)]:seasideWave; try{a.currentTime=0;a.playbackRate=w.mode==="harbor"?(.98+Math.random()*.025):(1.01+Math.random()*.025);a.volume=w.volume;await a.play();const d=(Number.isFinite(a.duration)?a.duration:6)*1000;eventStopTimers.waves=setTimeout(()=>{stopAudio(a);if(currentPlace===place)scheduleWaves(place,false);},d+80);}catch(_){if(currentPlace===place)scheduleWaves(place,false);}},first?randomInRange(w.first,[400,900]):randomInRange(w.gap));
     }
     function scheduleCars(place=currentPlace,first=false){
       stopCityCars();const c=soundMixFor(place).cars;if(!soundEnabled||!c)return;
@@ -822,11 +797,9 @@
       if(!soundEnabled)return;const key=`${place||"map"}:${timeBand()}`;if(!force&&activeSoundPlace===key)return;activeSoundPlace=key;
       stopWaveEvents();stopCityCars();stopOneShots();
       const m=soundMixFor(place),b=m.base||{};
-      setLoop(ambWind,b.wind||0,duration);setLoop(ambLeaves,b.leaves||0,duration);setLoop(ambCity,b.city||0,duration);setLoop(domeCrowd,b.crowd||0,duration);
-      if(m.waves)scheduleWaves(place,true);if(m.birds)scheduleBirds(place,true);if(m.cars)scheduleCars(place,true);
-      if(m.horn)scheduleSimple("horn",harborHorn,place,m.horn,18000);
-      if(m.cafe)scheduleSimple("cafe",cafeClink,place,m.cafe,9000);
-      if(m.cheer)scheduleSimple("cheer",domeCheer,place,m.cheer,7000);
+      setLoop(ambWind,b.wind||0,duration);setLoop(ambAir,b.air||0,duration);
+      if(m.waves)scheduleWaves(place,true);if(m.cars)scheduleCars(place,true);
+      if(m.horn)scheduleSimple("horn",harborHorn,place,m.horn,12000);
     }
     function pauseAllAudioForBackground(){ stopWaveEvents();stopCityCars();stopOneShots();ambientTracks.forEach(t=>t.pause()); }
     function resumeAudioAfterBackground(){ if(!soundEnabled||document.hidden)return;activeSoundPlace=null;ambientMix(currentPlace,{duration:500,force:true}); }
