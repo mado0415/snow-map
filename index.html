@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.6: 景色間の歩行トランジション -->
+  <!-- SNOW MAP v0.6.2: 全景選択後はズームを維持して散歩 -->
   <style>
     :root {
       --ink: #31475f;
@@ -75,11 +75,11 @@
       margin-left: -6%;
       transform: scale(1);
       transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
-      transition: transform 1.15s cubic-bezier(.22,.72,.22,1);
+      transition: transform 1.05s cubic-bezier(.22,.72,.22,1), transform-origin 1.05s cubic-bezier(.22,.72,.22,1);
       will-change: transform;
     }
     .map-stage.walking {
-      transform: scale(1.22);
+      transform: scale(1.28);
     }
 
     .map-images {
@@ -518,7 +518,7 @@
     const walkStatus=document.getElementById("walkStatus"), walkText=document.getElementById("walkText");
     const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
-    let currentPlace=null, previousSong=null;
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false;
 
     function getTimeKey(){
       const h=new Date().getHours();
@@ -549,17 +549,25 @@
     function showSong(place){
       currentPlace=place;
       const data=places[place], song=pick(data.songs,previousSong);
-      previousSong=song; placeName.textContent=place; experience.textContent=data.verb; placeCopy.textContent=data.copy; songName.textContent=song; updateLinks(song);
-      sheet.classList.add("open"); backdrop.classList.add("open"); document.body.style.overflow="hidden"; hint.style.opacity="0";
+      previousSong=song;
+      placeName.textContent=place;
+      experience.textContent=data.verb;
+      placeCopy.textContent=data.copy;
+      songName.textContent=song;
+      updateLinks(song);
+      sheet.classList.add("open");
+      backdrop.classList.add("open");
+      document.body.style.overflow="hidden";
+      hint.style.opacity="0";
     }
     function getBeacon(place){
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
     }
-    function centerBeacon(beacon){
+    function centerBeacon(beacon, behavior="smooth"){
       if(!beacon) return;
       const rect=beacon.getBoundingClientRect();
-      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.39;
-      window.scrollTo({top:Math.max(0,targetY),behavior:"smooth"});
+      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.43;
+      window.scrollTo({top:Math.max(0,targetY),behavior});
     }
     function setWalkFocus(beacon){
       if(!beacon || !mapStage) return;
@@ -568,31 +576,57 @@
       mapStage.style.setProperty("--walk-x", `${x}%`);
       mapStage.style.setProperty("--walk-y", `${y}%`);
     }
-    function continueWalk(){
-      if(!currentPlace) return;
-      const destination=pick(places[currentPlace].next);
-      const beacon=getBeacon(destination);
-      closeSheet();
-      walkText.textContent=`${destination}へ`;
+    function closeSheet({keepZoom=true}={}){
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+      document.body.style.overflow="";
+      if(!keepZoom) returnToMap();
+    }
+
+    function returnToMap(){
+      isZoomed=false;
+      mapStage?.classList.remove("walking");
+      mapStage?.style.setProperty("--walk-x", "50%");
+      mapStage?.style.setProperty("--walk-y", "50%");
+      window.scrollTo({top:0, behavior:"smooth"});
+      hint.style.opacity=".5";
+    }
+
+    function arriveAt(place,{fromMap=false}={}){
+      if(isTransitioning) return;
+      const beacon=getBeacon(place);
+      if(!beacon) return;
+      isTransitioning=true;
+      currentPlace=place;
+      closeSheet({keepZoom:true});
+      walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
       walkStatus.classList.add("show");
       setWalkFocus(beacon);
+      isZoomed=true;
       requestAnimationFrame(()=>mapStage?.classList.add("walking"));
-      setTimeout(()=>centerBeacon(beacon),120);
-      setTimeout(()=>beacon?.classList.add("arriving"),1050);
+      setTimeout(()=>centerBeacon(beacon),90);
+      setTimeout(()=>beacon.classList.add("arriving"),850);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
-        beacon?.classList.remove("arriving");
-        mapStage?.classList.remove("walking");
-        showSong(destination);
-      },3150);
+        beacon.classList.remove("arriving");
+        showSong(place);
+        isTransitioning=false;
+      },2850);
     }
-    function closeSheet(){ sheet.classList.remove("open"); backdrop.classList.remove("open"); document.body.style.overflow=""; }
+
+    function continueWalk(){
+      if(!currentPlace || isTransitioning) return;
+      const destination=pick(places[currentPlace].next);
+      arriveAt(destination,{fromMap:false});
+    }
 
     document.querySelectorAll(".beacon").forEach(b=>{
-      b.addEventListener("click",()=>showSong(b.dataset.place));
+      b.addEventListener("click",()=>arriveAt(b.dataset.place,{fromMap:!isZoomed}));
     });
-    nextButton.addEventListener("click",continueWalk); closeButton.addEventListener("click",closeSheet); backdrop.addEventListener("click",closeSheet);
-    document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+    nextButton.addEventListener("click",continueWalk);
+    closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
+    backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
+    document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
     setWorldTime(); setInterval(setWorldTime,60000);
     window.addEventListener("load",()=>setTimeout(()=>intro.classList.add("hide"),2000));
   </script>
