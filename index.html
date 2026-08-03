@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.9.2: 港とシーサイドの音の差を強化 -->
+  <!-- SNOW MAP v0.10.2: エリア滞在中は島全体の風を完全停止 -->
   <style>
     :root {
       --ink: #31475f;
@@ -878,21 +878,40 @@
       },delay);
     }
 
+    function stopIslandAir(){
+      if(!ambWind) return;
+      // 進行中の音量フェードを無効化し、iOSでも確実に無音になるよう再生自体を止める。
+      volumeFadeTokens.set(ambWind,(volumeFadeTokens.get(ambWind)||0)+1);
+      ambWind.volume=0;
+      ambWind.pause();
+    }
+
+    async function startIslandAir(duration=900){
+      if(!ambWind || !soundEnabled) return;
+      volumeFadeTokens.set(ambWind,(volumeFadeTokens.get(ambWind)||0)+1);
+      ambWind.volume=0;
+      try{
+        if(ambWind.paused) await ambWind.play();
+        setTrackVolume(ambWind,.002,duration);
+      }catch(_){
+        // 再生できない場合も、場所固有音の動作は継続する。
+      }
+    }
+
     function ambientMix(place=currentPlace,{duration=1700}={}){
       if(!soundEnabled) return;
 
-      // 全景では、ごく小さな「島の空気」だけを残す。
-      // どこかのエリアへ入ったら、この共通風レイヤーは完全に止め、
-      // 波・車・海鳥など場所固有の音だけを鳴らす。
+      // 全景では、ごく小さな「島の空気」だけを再生する。
       if(!place){
         stopCityCars();
         stopWaveEvents();
         clearEvent("birds");
-        setTrackVolume(ambWind,.002,duration);
+        startIslandAir(duration);
         return;
       }
 
-      setTrackVolume(ambWind,0,duration);
+      // エリア滞在中は共通風を音量0にするだけでなく、再生自体を完全停止する。
+      stopIslandAir();
 
       if(place==="シティライト"){
         stopWaveEvents();
@@ -908,8 +927,9 @@
     async function enableAmbient(){
       try{
         ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
-        await Promise.all(ambientTracks.map(t=>t.play()));
         soundEnabled=true;
+        // 全景時だけ共通風を開始する。エリア内では最初から再生しない。
+        if(!currentPlace) await Promise.all(ambientTracks.map(t=>t.play()));
         soundToggle.classList.add("on");
         soundToggle.setAttribute("aria-pressed","true");
         soundToggle.setAttribute("aria-label","街の音をオフにする");
