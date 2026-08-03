@@ -472,7 +472,6 @@
   <audio id="ambWind" src="ambient-wind.mp3" loop preload="auto"></audio>
   <audio id="ambWaves" src="ambient-waves.mp3" loop preload="auto"></audio>
   <audio id="ambBirds" src="ambient-birds.mp3" preload="auto"></audio>
-  <audio id="ambCrowd" src="ambient-crowd.mp3" loop preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -483,7 +482,7 @@
       <h1>SNOW MAP</h1>
       <p class="top-copy">今日は、どの景色を歩きますか。</p>
       <p class="hint" id="hint">小さく光る景色に触れてみてください</p>
-      <button class="sound-toggle" id="soundToggle" type="button" aria-label="環境音をオンにする" aria-pressed="false">
+      <button class="sound-toggle" id="soundToggle" type="button" aria-label="街の音をオンにする" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 10h3l4-3v10l-4-3H5z"/>
           <path d="M15 9.5c1.1 1.2 1.1 3.8 0 5"/>
@@ -638,9 +637,22 @@
     const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
-    const ambWind=document.getElementById("ambWind"), ambWaves=document.getElementById("ambWaves"), ambBirds=document.getElementById("ambBirds"), ambCrowd=document.getElementById("ambCrowd");
-    const ambientTracks=[ambWind,ambWaves,ambCrowd];
-    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, birdTimer=null, birdStopTimer=null;
+    const ambWind=document.getElementById("ambWind"), ambWaves=document.getElementById("ambWaves"), ambBirds=document.getElementById("ambBirds");
+
+    // Soundscape engine v1
+    // 現在同梱している音源：wind / waves / birds
+    // 将来は下記のファイルを追加し、SOUND_ASSETSへ登録するだけで拡張できます。
+    // ambient-leaves.mp3 / ambient-car-1.mp3 / ambient-car-2.mp3 /
+    // ambient-fountain.mp3 / ambient-city.mp3 / ambient-cafe.mp3 /
+    // ambient-crowd-light.mp3 / ambient-cheer-far.mp3 / ambient-horn-far.mp3
+    const SOUND_ASSETS={
+      wind:{audio:ambWind,kind:"loop"},
+      waves:{audio:ambWaves,kind:"loop"},
+      birds:{audio:ambBirds,kind:"event"}
+    };
+    const ambientTracks=[ambWind,ambWaves];
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
+    let eventTimers={birds:null}, eventStopTimers={birds:null};
     const songQueues = {};
     const strollSteps = {};
     const strollViews = [
@@ -657,75 +669,105 @@
       clearTimeout(soundNoteTimer);
       soundNoteTimer=setTimeout(()=>soundNote.classList.remove("show"),1500);
     }
-    function setTrackVolume(track,value,duration=700){
-      const start=track.volume, target=Math.max(0,Math.min(1,value));
+    function timeBand(){
+      const h=new Date().getHours();
+      if(h>=5&&h<11) return "morning";
+      if(h>=11&&h<16) return "day";
+      if(h>=16&&h<19) return "evening";
+      return "night";
+    }
+    function setTrackVolume(track,value,duration=1400){
+      if(!track) return;
+      const start=Number.isFinite(track.volume)?track.volume:0;
+      const target=Math.max(0,Math.min(1,value));
       const t0=performance.now();
       function step(now){
         const t=Math.min(1,(now-t0)/duration);
-        track.volume=start+(target-start)*(1-Math.pow(1-t,3));
+        const eased=t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+        track.volume=start+(target-start)*eased;
         if(t<1) requestAnimationFrame(step);
       }
       requestAnimationFrame(step);
     }
-    function stopBirds(){
-      clearTimeout(birdTimer);
-      clearTimeout(birdStopTimer);
-      birdTimer=null; birdStopTimer=null;
-      ambBirds.pause();
-      ambBirds.volume=0;
+    function baseMix(place=currentPlace){
+      const band=timeBand();
+      const sea=["ブルーハーバー","シーサイド"].includes(place);
+      const nearSea=["展望台","シーズンガーデン","はじまりの広場"].includes(place);
+      const sheltered=["カフェ","木漏れ日の道"].includes(place);
+      const city=["シティライト","歩道橋","Snow Dome"].includes(place);
+      let wind={morning:.115,day:.105,evening:.145,night:.085}[band];
+      if(sea||place==="展望台") wind+=.035;
+      if(sheltered) wind-=.035;
+      if(city) wind-=.015;
+      let waves=sea ? (place==="シーサイド"?.19:.15) : nearSea?.045:.012;
+      if(band==="night") waves*=.82;
+      if(band==="evening") waves*=1.08;
+      return {wind:Math.max(.025,wind),waves};
     }
-    function scheduleBirds(place=currentPlace, immediate=false){
-      stopBirds();
-      const enabledHere=["ブルーハーバー","シーサイド","展望台","木漏れ日の道"].includes(place);
-      if(!soundEnabled || !enabledHere) return;
-      const delay=immediate ? 3200+Math.random()*3500 : 18000+Math.random()*27000;
-      birdTimer=setTimeout(async()=>{
-        if(!soundEnabled || !["ブルーハーバー","シーサイド","展望台","木漏れ日の道"].includes(currentPlace)) return;
+    function clearEvent(name){
+      clearTimeout(eventTimers[name]);
+      clearTimeout(eventStopTimers[name]);
+      eventTimers[name]=null; eventStopTimers[name]=null;
+      const audio=SOUND_ASSETS[name]?.audio;
+      if(audio){ audio.pause(); audio.volume=0; }
+    }
+    function birdsAllowed(place=currentPlace){
+      const band=timeBand();
+      return band!=="night" && ["ブルーハーバー","シーサイド","展望台","木漏れ日の道","シーズンガーデン"].includes(place);
+    }
+    function scheduleBirds(place=currentPlace,first=false){
+      clearEvent("birds");
+      if(!soundEnabled || !birdsAllowed(place)) return;
+      const band=timeBand();
+      const delay=first ? 7000+Math.random()*9000 : (band==="morning"?18000:28000)+Math.random()*(band==="morning"?24000:38000);
+      eventTimers.birds=setTimeout(async()=>{
+        if(!soundEnabled || !birdsAllowed(currentPlace)) return;
+        const audio=ambBirds;
         try{
-          const duration=Number.isFinite(ambBirds.duration) ? ambBirds.duration : 24;
-          ambBirds.currentTime=Math.max(0,Math.random()*Math.max(1,duration-5));
-          ambBirds.playbackRate=.90+Math.random()*.18;
-          ambBirds.volume=.028+Math.random()*.018;
-          await ambBirds.play();
-          birdStopTimer=setTimeout(()=>{
-            ambBirds.pause();
-            ambBirds.volume=0;
+          const duration=Number.isFinite(audio.duration)?audio.duration:24;
+          audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
+          audio.playbackRate=.94+Math.random()*.09;
+          audio.volume=(band==="morning"?.018:.012)+Math.random()*.007;
+          await audio.play();
+          eventStopTimers.birds=setTimeout(()=>{
+            audio.pause(); audio.volume=0;
             scheduleBirds(currentPlace,false);
-          },2200+Math.random()*2100);
+          },1300+Math.random()*1700);
         }catch(_){ scheduleBirds(currentPlace,false); }
       },delay);
     }
-    function ambientMix(place=currentPlace){
+    function ambientMix(place=currentPlace,{duration=1700}={}){
       if(!soundEnabled) return;
-      const seaside=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(place);
-      const dome=place==="Snow Dome";
-      setTrackVolume(ambWind, .18);
-      setTrackVolume(ambWaves, seaside ? .28 : .07);
-      setTrackVolume(ambCrowd, dome ? .30 : .04);
+      const mix=baseMix(place);
+      setTrackVolume(ambWind,mix.wind,duration);
+      setTrackVolume(ambWaves,mix.waves,duration);
       scheduleBirds(place,true);
     }
     async function enableAmbient(){
       try{
-        ambientTracks.forEach(t=>{ t.volume=0; t.playbackRate=1; });
+        ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
         await Promise.all(ambientTracks.map(t=>t.play()));
         soundEnabled=true;
         soundToggle.classList.add("on");
         soundToggle.setAttribute("aria-pressed","true");
-        soundToggle.setAttribute("aria-label","環境音をオフにする");
-        ambientMix();
-        showSoundNote("環境音をオンにしました");
+        soundToggle.setAttribute("aria-label","街の音をオフにする");
+        ambientMix(currentPlace,{duration:1100});
+        showSoundNote("街の音をオンにしました");
       }catch(err){
         showSoundNote("音声を再生できませんでした");
       }
     }
     function disableAmbient(){
       soundEnabled=false;
-      stopBirds();
-      ambientTracks.forEach(t=>{ setTrackVolume(t,0,300); setTimeout(()=>t.pause(),340); });
+      clearEvent("birds");
+      ambientTracks.forEach(t=>{
+        setTrackVolume(t,0,500);
+        setTimeout(()=>t.pause(),560);
+      });
       soundToggle.classList.remove("on");
       soundToggle.setAttribute("aria-pressed","false");
-      soundToggle.setAttribute("aria-label","環境音をオンにする");
-      showSoundNote("環境音をオフにしました");
+      soundToggle.setAttribute("aria-label","街の音をオンにする");
+      showSoundNote("街の音をオフにしました");
     }
     function toggleAmbient(){ soundEnabled ? disableAmbient() : enableAmbient(); }
 
@@ -840,7 +882,7 @@
     }
     function showSong(place){
       currentPlace=place;
-      ambientMix(place);
+      ambientMix(place,{duration:1900});
       const data=places[place], song=nextSongFor(place);
       placeName.textContent=place;
       experience.textContent=data.verb;
@@ -940,7 +982,7 @@
       if(!beacon) return;
       isTransitioning=true;
       currentPlace=place;
-      ambientMix(place);
+      ambientMix(place,{duration:2400});
       closeSheet({keepZoom:true});
       walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
       walkStatus.classList.add("show");
@@ -972,7 +1014,7 @@
     closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
     backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
-    setWorldTime(); setInterval(setWorldTime,60000);
+    setWorldTime(); setInterval(()=>{ setWorldTime(); if(soundEnabled) ambientMix(currentPlace,{duration:60000}); },60000);
     window.addEventListener("resize",()=>{
       if(isZoomed && currentPlace){
         const beacon=getBeacon(currentPlace);
