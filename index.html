@@ -472,6 +472,9 @@
   <audio id="ambWind" src="ambient-wind-soft-v2.mp3" loop preload="auto"></audio>
   <audio id="ambWaves" src="ambient-waves-soft-v2.mp3" loop preload="auto"></audio>
   <audio id="ambBirds" src="ambient-birds-soft-v2.mp3" preload="auto"></audio>
+  <audio id="cityCar1" src="city-car-pass-1.mp3" preload="auto"></audio>
+  <audio id="cityCar2" src="city-car-pass-2.mp3" preload="auto"></audio>
+  <audio id="cityCar3" src="city-car-pass-3.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -638,8 +641,9 @@
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const ambWind=document.getElementById("ambWind"), ambWaves=document.getElementById("ambWaves"), ambBirds=document.getElementById("ambBirds");
+    const cityCars=[document.getElementById("cityCar1"),document.getElementById("cityCar2"),document.getElementById("cityCar3")];
 
-    // Soundscape engine v1.1 — remastered assets / cache-busted filenames
+    // Soundscape engine v2 — Citylight place-specific sound
     // 現在同梱している音源：wind / waves / birds
     // 将来は下記のファイルを追加し、SOUND_ASSETSへ登録するだけで拡張できます。
     // ambient-leaves.mp3 / ambient-car-1.mp3 / ambient-car-2.mp3 /
@@ -652,7 +656,7 @@
     };
     const ambientTracks=[ambWind,ambWaves];
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
-    let eventTimers={birds:null}, eventStopTimers={birds:null};
+    let eventTimers={birds:null,cars:null}, eventStopTimers={birds:null,cars:null};
     const songQueues = {};
     const strollSteps = {};
     const strollViews = [
@@ -748,9 +752,66 @@
         }catch(_){ scheduleBirds(currentPlace,false); }
       },delay);
     }
+
+    function cityCarsAllowed(place=currentPlace){
+      return place==="シティライト";
+    }
+    function stopCityCars(){
+      clearTimeout(eventTimers.cars);
+      clearTimeout(eventStopTimers.cars);
+      eventTimers.cars=null; eventStopTimers.cars=null;
+      cityCars.forEach(audio=>{
+        if(!audio) return;
+        audio.pause();
+        audio.currentTime=0;
+        audio.volume=0;
+      });
+    }
+    function scheduleCityCars(place=currentPlace,first=false){
+      stopCityCars();
+      if(!soundEnabled || !cityCarsAllowed(place)) return;
+      const band=timeBand();
+      const ranges={
+        morning:[5500,10500],
+        day:[7000,13500],
+        evening:[4500,9500],
+        night:[10000,19000]
+      }[band];
+      const delay=first ? 1200+Math.random()*1800 : ranges[0]+Math.random()*(ranges[1]-ranges[0]);
+      eventTimers.cars=setTimeout(async()=>{
+        if(!soundEnabled || !cityCarsAllowed(currentPlace)) return;
+        const audio=cityCars[Math.floor(Math.random()*cityCars.length)];
+        try{
+          audio.pause();
+          audio.currentTime=0;
+          audio.playbackRate=.96+Math.random()*.08;
+          audio.volume=band==="night" ? .19 : .23;
+          await audio.play();
+          const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
+          eventStopTimers.cars=setTimeout(()=>{
+            audio.pause();
+            audio.currentTime=0;
+            audio.volume=0;
+            scheduleCityCars(currentPlace,false);
+          },duration+150);
+        }catch(_){
+          scheduleCityCars(currentPlace,false);
+        }
+      },delay);
+    }
+
     function ambientMix(place=currentPlace,{duration=1700}={}){
       if(!soundEnabled) return;
       const mix=baseMix(place);
+      if(place==="シティライト"){
+        // Citylight has no sea layer. Quiet wind + passing cars define the place.
+        setTrackVolume(ambWind,.028,duration);
+        setTrackVolume(ambWaves,0,duration);
+        clearEvent("birds");
+        scheduleCityCars(place,true);
+        return;
+      }
+      stopCityCars();
       setTrackVolume(ambWind,mix.wind,duration);
       setTrackVolume(ambWaves,mix.waves,duration);
       scheduleBirds(place,true);
@@ -772,6 +833,7 @@
     function disableAmbient(){
       soundEnabled=false;
       clearEvent("birds");
+      stopCityCars();
       ambientTracks.forEach(t=>{
         setTrackVolume(t,0,500);
         setTimeout(()=>t.pause(),560);

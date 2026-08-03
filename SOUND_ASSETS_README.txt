@@ -1,12 +1,5 @@
-SNOW MAP Soundscape v0.8.2
+SNOW MAP v0.9 — シティライト音源
 
-This version uses remastered, cache-busted audio filenames.
-- ambient-wind-soft-v2.mp3: wind reduced by 5 dB
-- ambient-waves-soft-v2.mp3: waves reduced by 22 dB and low rumble filtered
-- ambient-birds-soft-v2.mp3: birds reduced by 12 dB
-
-Wave mix:
-- Seaside: audible but behind wind
-- Blue Harbor: very soft
-- Lookout / Season Garden / Starting Plaza: barely audible
-- Other areas: completely silent
+city-car-pass-1.mp3 / 2 / 3 はシティライト専用の静かな通過車両音です。
+シティライトでは波・海鳥を完全に停止し、弱い風とランダムな車音だけを再生します。
+他の場所のSoundscapeは今後、場所ごとに順番に完成させます。
