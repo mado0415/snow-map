@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f8fbfb" />
+  <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.6.2: 全景選択後はズームを維持して散歩 -->
+  <!-- SNOW MAP v0.6.3: カード点滅修正・次の景色へ・時間連動背景 -->
   <style>
     :root {
       --ink: #31475f;
@@ -18,7 +18,8 @@
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
     body {
-      background: var(--paper);
+      background: var(--world-bg, var(--paper));
+      transition: background-color .75s ease;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
@@ -27,6 +28,8 @@
 
     .app {
       width: min(100%, 560px);
+      background: var(--world-bg, transparent);
+      transition: background-color .75s ease;
       min-height: 100svh;
       margin: 0 auto;
       padding: max(10px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
@@ -66,8 +69,14 @@
       margin-top: -2px;
       overflow: hidden;
       isolation: isolate;
-      background: #ffffff;
+      background: transparent;
     }
+
+
+    body.time-morning, .app.time-morning { --world-bg: #eef8fb; }
+    body.time-day, .app.time-day { --world-bg: #f8fbfb; }
+    body.time-evening, .app.time-evening { --world-bg: #f6ece8; }
+    body.time-night, .app.time-night { --world-bg: #26394c; }
 
     .map-stage {
       position: relative;
@@ -217,11 +226,7 @@
       opacity: 0;
       transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
     }
-    .sheet.open { transform: translate(-50%,0); opacity: 1; animation: placeCard .42s cubic-bezier(.18,.82,.24,1); }
-    @keyframes placeCard {
-      0% { transform: translate(-50%, 22px) scale(.985); opacity: 0; }
-      100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
-    }
+    .sheet.open { transform: translate(-50%,0); opacity: 1; }
     .handle { width: 30px; height: 4px; margin: 0 auto 8px; border-radius: 99px; background: rgba(49,71,95,.17); }
     .place-label { margin: 0; font-size: 9px; letter-spacing: .16em; opacity: .46; }
     .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(20px,5.4vw,25px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
@@ -415,7 +420,7 @@
       <a class="service" id="appleLink" target="_blank" rel="noopener">Apple Music</a>
       <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
     </div>
-    <button class="next" id="nextButton">この景色を歩く</button>
+    <button class="next" id="nextButton">次の景色へ</button>
     <button class="close" id="closeButton">地図へ戻る</button>
   </section>
 
@@ -504,6 +509,7 @@
     };
 
     const app=document.getElementById("app"), intro=document.getElementById("intro"), hint=document.getElementById("hint");
+    const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
       morning:"snow-map-morning.png",
@@ -530,7 +536,11 @@
     function setWorldTime(){
       const key=getTimeKey();
       app.classList.remove("time-morning","time-day","time-evening","time-night");
+      document.body.classList.remove("time-morning","time-day","time-evening","time-night");
       app.classList.add(`time-${key}`);
+      document.body.classList.add(`time-${key}`);
+      const bgColors={morning:"#eef8fb",day:"#f8fbfb",evening:"#f6ece8",night:"#26394c"};
+      themeColor?.setAttribute("content",bgColors[key]);
       if(key===currentTimeKey) return;
       currentTimeKey=key;
       const nextSrc=timeImages[key];
@@ -555,10 +565,13 @@
       placeCopy.textContent=data.copy;
       songName.textContent=song;
       updateLinks(song);
-      sheet.classList.add("open");
-      backdrop.classList.add("open");
       document.body.style.overflow="hidden";
       hint.style.opacity="0";
+      backdrop.classList.add("open");
+      sheet.classList.remove("open");
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>sheet.classList.add("open"));
+      });
     }
     function getBeacon(place){
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
