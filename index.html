@@ -479,13 +479,13 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <audio id="ambWind" src="ambient-wind-soft-v2.mp3" loop preload="auto"></audio>
-  <audio id="harborWave1" src="harbor-wave-1-v01031.mp3" preload="auto"></audio>
-  <audio id="harborWave2" src="harbor-wave-2-v01031.mp3" preload="auto"></audio>
-  <audio id="seasideWave1" src="seaside-wave-1-v01031.mp3" preload="auto"></audio>
+  <audio id="harborWave1" src="harbor-water-1-v0105.mp3" preload="auto"></audio>
+  <audio id="harborWave2" src="harbor-water-2-v0105.mp3" preload="auto"></audio>
+  <audio id="seasideWave1" src="seaside-wave-v0105.mp3" preload="auto"></audio>
   <audio id="ambBirds" src="ambient-birds-soft-v2.mp3" preload="auto"></audio>
-  <audio id="cityCar1" src="city-car-pass-1-v01031.mp3" preload="auto"></audio>
-  <audio id="cityCar2" src="city-car-pass-2-v01031.mp3" preload="auto"></audio>
-  <audio id="cityCar3" src="city-car-pass-3-v01031.mp3" preload="auto"></audio>
+  <audio id="cityCar1" src="city-car-pass-1-v0105.mp3" preload="auto"></audio>
+  <audio id="cityCar2" src="city-car-pass-2-v0105.mp3" preload="auto"></audio>
+  <audio id="cityCar3" src="city-car-pass-3-v0105.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -779,12 +779,10 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
-          audio.volume=mode==="harbor" ? .42 : .48;
+          audio.volume=1;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
-          const heardDuration=mode==="harbor"
-            ? Math.min(fullDuration, 2600+Math.random()*1500)
-            : fullDuration;
+          const heardDuration=fullDuration;
           eventStopTimers.waves=setTimeout(()=>{
             audio.pause(); audio.currentTime=0; audio.volume=0;
             scheduleWaves(currentPlace,false);
@@ -863,7 +861,7 @@
           audio.pause();
           audio.currentTime=0;
           audio.playbackRate=.96+Math.random()*.08;
-          audio.volume=band==="night" ? .035 : .045;
+          audio.volume=1;
           await audio.play();
           const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
           eventStopTimers.cars=setTimeout(()=>{
@@ -930,6 +928,32 @@
       scheduleWaves(place,true);
       scheduleBirds(place,true);
     }
+    function pauseAllAudioForBackground(){
+      clearEvent("birds");
+      stopWaveEvents();
+      stopCityCars();
+      ambientTracks.forEach(track=>{
+        volumeFadeTokens.set(track,(volumeFadeTokens.get(track)||0)+1);
+        track.pause();
+      });
+    }
+
+    async function resumeAudioAfterBackground(){
+      if(!soundEnabled || document.hidden) return;
+      // 現在の場所に合わせて、必要な音だけ再開する。
+      activeSoundPlace=Symbol("resume");
+      ambientMix(currentPlace,{duration:500,force:true});
+    }
+
+    document.addEventListener("visibilitychange",()=>{
+      if(document.hidden){
+        pauseAllAudioForBackground();
+      }else{
+        resumeAudioAfterBackground();
+      }
+    });
+    window.addEventListener("pagehide",pauseAllAudioForBackground);
+
     async function enableAmbient(){
       try{
         ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
