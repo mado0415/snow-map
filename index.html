@@ -16,18 +16,36 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
-    body {
+    :root {
       --world-top: #f8fbfb;
       --world-mid: #f8fbfb;
       --world-bottom: #f8fbfb;
       --top-ink: #31475f;
       --top-muted: rgba(49,71,95,.50);
-      background: linear-gradient(180deg, var(--world-top) 0%, var(--world-mid) 48%, var(--world-bottom) 100%);
-      transition: background .9s linear;
+    }
+    html {
+      margin: 0;
+      min-height: 100%;
+      background: var(--world-bottom);
+      transition: background-color .9s linear;
+    }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      position: relative;
+      background: transparent;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -100;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--world-top) 0%, var(--world-mid) 48%, var(--world-bottom) 100%);
+      transition: background .9s linear;
     }
     button, a { font: inherit; }
 
@@ -595,13 +613,15 @@
     function setSkyGradient(now=new Date()){
       const minute=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
       const sky=skyAt(minute);
-      const root=document.body.style;
+      const root=document.documentElement.style;
       root.setProperty("--world-top",sky.top);
       root.setProperty("--world-mid",sky.mid);
       root.setProperty("--world-bottom",sky.bottom);
       root.setProperty("--top-ink",sky.text);
       root.setProperty("--top-muted",sky.muted);
-      themeColor?.setAttribute("content",sky.top);
+      document.documentElement.style.backgroundColor=sky.bottom;
+      document.body.style.backgroundColor=sky.bottom;
+      themeColor?.setAttribute("content",sky.bottom);
     }
     function setWorldTime(){
       const now=new Date();
