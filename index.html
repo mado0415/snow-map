@@ -676,16 +676,21 @@
       if(h>=16&&h<19) return "evening";
       return "night";
     }
+    const volumeFadeTokens=new WeakMap();
     function setTrackVolume(track,value,duration=1400){
       if(!track) return;
+      const token=(volumeFadeTokens.get(track)||0)+1;
+      volumeFadeTokens.set(track,token);
       const start=Number.isFinite(track.volume)?track.volume:0;
       const target=Math.max(0,Math.min(1,value));
       const t0=performance.now();
       function step(now){
+        if(volumeFadeTokens.get(track)!==token) return;
         const t=Math.min(1,(now-t0)/duration);
         const eased=t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
         track.volume=start+(target-start)*eased;
         if(t<1) requestAnimationFrame(step);
+        else track.volume=target;
       }
       requestAnimationFrame(step);
     }
@@ -695,13 +700,20 @@
       const nearSea=["展望台","シーズンガーデン","はじまりの広場"].includes(place);
       const sheltered=["カフェ","木漏れ日の道"].includes(place);
       const city=["シティライト","歩道橋","Snow Dome"].includes(place);
-      let wind={morning:.115,day:.105,evening:.145,night:.085}[band];
-      if(sea||place==="展望台") wind+=.035;
-      if(sheltered) wind-=.035;
-      if(city) wind-=.015;
-      let waves=sea ? (place==="シーサイド"?.19:.15) : nearSea?.045:.012;
-      if(band==="night") waves*=.82;
-      if(band==="evening") waves*=1.08;
+      let wind={morning:.105,day:.095,evening:.125,night:.075}[band];
+      if(sea||place==="展望台") wind+=.020;
+      if(sheltered) wind-=.025;
+      if(city) wind-=.010;
+
+      // 波音源そのものの音圧が高いため、数値をかなり低く設定する。
+      // 海から離れた場所ではほぼ聞こえず、港・海沿いで初めて存在が分かる差にする。
+      let waves=0;
+      if(place==="シーサイド") waves=.038;
+      else if(place==="ブルーハーバー") waves=.026;
+      else if(nearSea) waves=.006;
+      else waves=.0015;
+      if(band==="night") waves*=.72;
+      if(band==="evening") waves*=.92;
       return {wind:Math.max(.025,wind),waves};
     }
     function clearEvent(name){

@@ -1,18 +1,11 @@
-SNOW MAP Soundscape v1
+SNOW MAP Soundscape v0.8.1
 
-現在同梱：
-- ambient-wind.mp3
-- ambient-waves.mp3
-- ambient-birds.mp3
+同梱音源:
+- ambient-wind.mp3  : 常時の風
+- ambient-waves.mp3 : 海辺の波（音源の音圧が高いためコード側でかなり小さく設定）
+- ambient-birds.mp3 : 朝〜夕方の断続的な鳥
 
-ambient-crowd.mp3 は、不自然な一定の重低音だったため使用・同梱を停止しました。
-
-今後追加予定（同名で置き、index.html 内の SOUND_ASSETS に登録）：
-- ambient-leaves.mp3
-- ambient-car-1.mp3 / ambient-car-2.mp3
-- ambient-fountain.mp3
-- ambient-city.mp3
-- ambient-cafe.mp3
-- ambient-crowd-light.mp3
-- ambient-cheer-far.mp3
-- ambient-horn-far.mp3
+v0.8.1 調整:
+- 波音を大幅に下げました。
+- シーサイド > ブルーハーバー > 海に近い場所 > その他、の差を広げました。
+- 場所移動時に古い音量フェードを停止し、新しいクロスフェードだけが動くよう修正しました。
