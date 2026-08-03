@@ -667,7 +667,7 @@
       birds:{audio:ambBirds,kind:"event"}
     };
     const ambientTracks=[ambWind];
-    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
+    let currentPlace=null, activeSoundPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null;
     let eventTimers={birds:null,cars:null,waves:null}, eventStopTimers={birds:null,cars:null,waves:null};
     const songQueues = {};
     const strollSteps = {};
@@ -898,8 +898,14 @@
       }
     }
 
-    function ambientMix(place=currentPlace,{duration=1700}={}){
+    function ambientMix(place=currentPlace,{duration=1700,force=false}={}){
       if(!soundEnabled) return;
+
+      // 同じ場所のカードを開き直すだけなら、再生中の音を初期化しない。
+      // これにより、カード表示の瞬間に波・車・海鳥がぶつ切りになるのを防ぐ。
+      const nextSoundPlace=place || null;
+      if(!force && activeSoundPlace===nextSoundPlace) return;
+      activeSoundPlace=nextSoundPlace;
 
       // 全景では、ごく小さな「島の空気」だけを再生する。
       if(!place){
@@ -910,7 +916,7 @@
         return;
       }
 
-      // エリア滞在中は共通風を音量0にするだけでなく、再生自体を完全停止する。
+      // エリア滞在中は共通風を完全停止する。
       stopIslandAir();
 
       if(place==="シティライト"){
@@ -933,7 +939,7 @@
         soundToggle.classList.add("on");
         soundToggle.setAttribute("aria-pressed","true");
         soundToggle.setAttribute("aria-label","街の音をオフにする");
-        ambientMix(currentPlace,{duration:1100});
+        ambientMix(currentPlace,{duration:1100,force:true});
         showSoundNote("街の音をオンにしました");
       }catch(err){
         showSoundNote("音声を再生できませんでした");
@@ -941,6 +947,7 @@
     }
     function disableAmbient(){
       soundEnabled=false;
+      activeSoundPlace=null;
       clearEvent("birds");
       stopWaveEvents();
       stopCityCars();
@@ -1066,7 +1073,7 @@
     }
     function showSong(place){
       currentPlace=place;
-      ambientMix(place,{duration:1900});
+      // カード表示ではSoundscapeを再起動しない。場所移動時の音をそのまま継続する。
       const data=places[place], song=nextSongFor(place);
       placeName.textContent=place;
       experience.textContent=data.verb;
