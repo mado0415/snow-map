@@ -656,7 +656,7 @@
     const seasideWave=document.getElementById("seasideWave1");
     const cityCars=[document.getElementById("cityCar1"),document.getElementById("cityCar2"),document.getElementById("cityCar3")];
 
-    // Soundscape engine v3 — island bed + independent place mixers
+    // Soundscape engine v2.1 — intermittent waves by place
     // 現在同梱している音源：wind / waves / birds
     // 将来は下記のファイルを追加し、SOUND_ASSETSへ登録するだけで拡張できます。
     // ambient-leaves.mp3 / ambient-car-1.mp3 / ambient-car-2.mp3 /
@@ -721,26 +721,20 @@
       }
       requestAnimationFrame(step);
     }
-    // 場所別Soundscapeミキサー。
-    // island は全景時の「ほぼ無音の空気」。各場所へ入ったときだけ固有音を立ち上げる。
-    const PLACE_MIXER={
-      island:{wind:.0008},
-      "はじまりの広場":{wind:.0040},
-      "歩道橋":{wind:.0050},
-      "木漏れ日の道":{wind:.0030},
-      "カフェ":{wind:.0025},
-      "ブルーハーバー":{wind:.0015},
-      "シーサイド":{wind:.0022},
-      "展望台":{wind:.0060},
-      "シティライト":{wind:.0028},
-      "Snow Dome":{wind:.0032},
-      "シーズンガーデン":{wind:.0035}
-    };
-    const TIME_WIND_FACTOR={morning:1.05,day:1,evening:1.08,night:.82};
     function baseMix(place=currentPlace){
-      const key=place && PLACE_MIXER[place] ? place : "island";
-      const base=PLACE_MIXER[key].wind;
-      return {wind:Math.max(0,base*TIME_WIND_FACTOR[timeBand()])};
+      const band=timeBand();
+      const sea=["ブルーハーバー","シーサイド"].includes(place);
+      const sheltered=["カフェ","木漏れ日の道"].includes(place);
+      const city=["シティライト","歩道橋","Snow Dome"].includes(place);
+      let wind={morning:.070,day:.060,evening:.078,night:.050}[band];
+      if(sea||place==="展望台") wind+=.012;
+      if(sheltered) wind-=.018;
+      if(city) wind-=.006;
+      // 海辺の風音源は音圧が強いため、場所ごとにかなり控えめにする。
+      // ブルーハーバーは水面のチャプチャプを主役に、シーサイドも波を主役にする。
+      if(place==="ブルーハーバー") wind={morning:.009,day:.008,evening:.010,night:.006}[band];
+      if(place==="シーサイド") wind={morning:.018,day:.016,evening:.020,night:.012}[band];
+      return {wind:Math.max(.004,wind)};
     }
     function clearEvent(name){
       clearTimeout(eventTimers[name]);
@@ -785,7 +779,7 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
-          audio.volume=mode==="harbor" ? .18 : .54;
+          audio.volume=mode==="harbor" ? .105 : .54;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
@@ -827,7 +821,7 @@
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
           audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(place==="シーサイド"?.0032:place==="ブルーハーバー"?(band==="night"?.00045:.0008):(band==="morning"?.0045:.003))+Math.random()*.0005;
+          audio.volume=(place==="シーサイド"?.0065:place==="ブルーハーバー"?(band==="night"?.0012:.0022):(band==="morning"?.008:.005))+Math.random()*.0012;
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
@@ -886,16 +880,28 @@
 
     function ambientMix(place=currentPlace,{duration=1700}={}){
       if(!soundEnabled) return;
-      const mix=baseMix(place);
+
+      // 全景では、ごく小さな「島の空気」だけを残す。
+      // どこかのエリアへ入ったら、この共通風レイヤーは完全に止め、
+      // 波・車・海鳥など場所固有の音だけを鳴らす。
+      if(!place){
+        stopCityCars();
+        stopWaveEvents();
+        clearEvent("birds");
+        setTrackVolume(ambWind,.002,duration);
+        return;
+      }
+
+      setTrackVolume(ambWind,0,duration);
+
       if(place==="シティライト"){
-        setTrackVolume(ambWind,mix.wind,duration);
         stopWaveEvents();
         clearEvent("birds");
         scheduleCityCars(place,true);
         return;
       }
+
       stopCityCars();
-      setTrackVolume(ambWind,mix.wind,duration);
       scheduleWaves(place,true);
       scheduleBirds(place,true);
     }
@@ -1140,7 +1146,6 @@
     function returnToMap(){
       isZoomed=false;
       currentPlace=null;
-      ambientMix(null,{duration:1800});
       mapStage?.classList.remove("walking");
       mapStage?.style.setProperty("--walk-x", "50%");
       mapStage?.style.setProperty("--walk-y", "50%");
@@ -1149,6 +1154,7 @@
       mapStage?.style.setProperty("--pan-x", "0px");
       window.scrollTo({top:0, behavior:"smooth"});
       hint.style.opacity=".5";
+      if(soundEnabled) ambientMix(null,{duration:1200});
     }
 
     function arriveAt(place,{fromMap=false}={}){
