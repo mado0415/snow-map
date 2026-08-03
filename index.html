@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.7.1: 散策時に景色を見る間を追加・ぼかしを軽減 -->
+  <!-- SNOW MAP v0.7.2: 移動速度を調整・散策時の視点移動を拡大・シーサイド座標修正 -->
   <style>
     :root {
       --ink: #31475f;
@@ -84,14 +84,15 @@
       margin-left: -6%;
       transform: scale(1);
       transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
-      transition: transform 1.05s cubic-bezier(.22,.72,.22,1), transform-origin 1.05s cubic-bezier(.22,.72,.22,1);
+      transition: transform 1.65s cubic-bezier(.22,.72,.22,1), transform-origin 1.65s cubic-bezier(.22,.72,.22,1);
       will-change: transform;
     }
     .map-stage.walking {
       transform: scale(1.28);
     }
     .map-stage.strolling {
-      transition-duration: .72s;
+      transition-duration: 1.45s;
+      transform: scale(1.31);
     }
 
     .map-images {
@@ -406,7 +407,7 @@
         <button class="beacon" style="left:67.3%;top:49.2%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
         <button class="beacon" style="left:72.1%;top:59.2%;" data-place="カフェ" aria-label="カフェ"></button>
         <button class="beacon" style="left:25.8%;top:65.7%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
-        <button class="beacon" style="left:64.4%;top:78.8%;" data-place="シーサイド" aria-label="シーサイド"></button>
+        <button class="beacon" style="left:70.2%;top:73.2%;" data-place="シーサイド" aria-label="シーサイド"></button>
         <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
       </div>
     </section>
@@ -628,8 +629,8 @@
         if(beacon){
           const baseX=parseFloat(beacon.style.left||"50");
           const baseY=parseFloat(beacon.style.top||"50");
-          const x=baseX + (Math.random()*5-2.5);
-          const y=baseY + (Math.random()*4-2);
+          const x=baseX + (Math.random()*10-5);
+          const y=baseY + (Math.random()*8-4);
           mapStage.classList.add("strolling");
           mapStage.style.setProperty("--walk-x",`${x}%`);
           mapStage.style.setProperty("--walk-y",`${y}%`);
@@ -643,7 +644,7 @@
           requestAnimationFrame(()=>requestAnimationFrame(()=>sheet.classList.add("open")));
           mapStage.classList.remove("strolling");
           isTransitioning=false;
-        },720);
+        },1500);
       },850);
     }
     function getBeacon(place){
@@ -691,13 +692,13 @@
       isZoomed=true;
       requestAnimationFrame(()=>mapStage?.classList.add("walking"));
       setTimeout(()=>centerBeacon(beacon),90);
-      setTimeout(()=>beacon.classList.add("arriving"),850);
+      setTimeout(()=>beacon.classList.add("arriving"),1500);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
         showSong(place);
         isTransitioning=false;
-      },2850);
+      },3550);
     }
 
     function continueWalk(){
