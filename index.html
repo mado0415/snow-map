@@ -765,11 +765,11 @@
       const band=timeBand();
       // 港は「静かな間」を長く、シーサイドは波がほぼ途切れないようにする。
       // 夜でも耳だけで区別できるよう、時間帯より場所差を優先する。
-      const harborRange=band==="night"?[16000,28000]:[11000,21000];
-      const seasideRange=band==="night"?[700,2100]:[350,1500];
+      const harborRange=band==="night"?[6500,12500]:[4500,9500];
+      const seasideRange=band==="night"?[1200,3000]:[800,2400];
       const range=mode==="harbor"?harborRange:seasideRange;
       const delay=first
-        ? (mode==="harbor" ? 3200+Math.random()*2200 : 120+Math.random()*380)
+        ? (mode==="harbor" ? 900+Math.random()*900 : 250+Math.random()*550)
         : range[0]+Math.random()*(range[1]-range[0]);
       eventTimers.waves=setTimeout(async()=>{
         if(!soundEnabled || waveMode(currentPlace)!==mode) return;
@@ -779,7 +779,7 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
-          audio.volume=mode==="harbor" ? .105 : .54;
+          audio.volume=mode==="harbor" ? .24 : .34;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
@@ -863,7 +863,7 @@
           audio.pause();
           audio.currentTime=0;
           audio.playbackRate=.96+Math.random()*.08;
-          audio.volume=band==="night" ? .19 : .23;
+          audio.volume=band==="night" ? .075 : .095;
           await audio.play();
           const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
           eventStopTimers.cars=setTimeout(()=>{
