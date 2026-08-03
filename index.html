@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.7.3: 初期表示を全景化・ズーム時の横方向センタリングを追加 -->
+  <!-- SNOW MAP v0.7.3.1: 横方向センタリングの参照漏れを修正 -->
   <style>
     :root {
       --ink: #31475f;
@@ -533,6 +533,7 @@
     const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
     const exploreButton=document.getElementById("exploreButton"), nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
     const walkStatus=document.getElementById("walkStatus"), walkText=document.getElementById("walkText");
+    const mapViewport=document.querySelector(".map-viewport");
     const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false;
