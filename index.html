@@ -84,15 +84,18 @@
       margin-left: 0;
       transform: translate3d(var(--pan-x, 0px), 0, 0) scale(1);
       transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
-      transition: transform 1.75s cubic-bezier(.22,.72,.22,1), transform-origin 1.75s cubic-bezier(.22,.72,.22,1);
+      transition:
+        transform 2.25s cubic-bezier(.18,.72,.16,1),
+        transform-origin 2.25s cubic-bezier(.18,.72,.16,1);
       will-change: transform;
     }
     .map-stage.walking {
       transform: translate3d(var(--pan-x, 0px), 0, 0) scale(1.38);
     }
     .map-stage.strolling {
-      transition-duration: 1.65s;
-      transform: translate3d(var(--pan-x, 0px), 0, 0) scale(1.42);
+      transition-duration: 2.15s;
+      transition-timing-function: cubic-bezier(.18,.72,.16,1);
+      transform: translate3d(var(--pan-x, 0px), 0, 0) scale(var(--stroll-scale, 1.46));
     }
 
     .map-images {
@@ -147,7 +150,7 @@
         0 0 0 2px rgba(255,255,255,.62),
         0 0 7px 3px rgba(255,224,112,.78),
         0 0 16px 7px rgba(255,205,76,.34);
-      animation: beaconGlow 2.7s ease-in-out infinite;
+      animation: beaconGlow 3.6s ease-in-out infinite;
       pointer-events: none;
     }
     .beacon:nth-of-type(3n)::before { animation-delay: -.8s; }
@@ -166,12 +169,14 @@
 
     @keyframes beaconGlow {
       0%,100% {
-        opacity: .58;
-        transform: translate(-50%,-50%) scale(.78);
+        opacity: .42;
+        transform: translate(-50%,-50%) scale(.72);
+        filter: blur(.15px);
       }
       50% {
         opacity: 1;
-        transform: translate(-50%,-50%) scale(1.08);
+        transform: translate(-50%,-50%) scale(1.22);
+        filter: blur(0);
       }
     }
 
@@ -538,6 +543,14 @@
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false;
     const songQueues = {};
+    const strollSteps = {};
+    const strollViews = [
+      {dx:-8.5, dy:-5.5, scale:1.48},
+      {dx: 8.0, dy:-3.0, scale:1.45},
+      {dx: 6.0, dy: 6.0, scale:1.50},
+      {dx:-7.0, dy: 5.0, scale:1.46},
+      {dx: 0.0, dy:-7.0, scale:1.51}
+    ];
 
     function getTimeKey(){
       const h=new Date().getHours();
@@ -626,12 +639,16 @@
       document.body.style.overflow="";
 
       setTimeout(()=>{
-        // 約0.6秒、景色だけを見せたあと同じ場所の中を少し散策する
+        // 約0.6秒、景色だけを見せたあと、同じ場所の中をゆっくり大きく散策する
         if(beacon){
           const baseX=parseFloat(beacon.style.left||"50");
           const baseY=parseFloat(beacon.style.top||"50");
-          const x=baseX + (Math.random()*10-5);
-          const y=baseY + (Math.random()*8-4);
+          const step=strollSteps[currentPlace]||0;
+          const view=strollViews[step % strollViews.length];
+          strollSteps[currentPlace]=step+1;
+          const x=Math.max(8,Math.min(92,baseX+view.dx));
+          const y=Math.max(8,Math.min(92,baseY+view.dy));
+          mapStage.style.setProperty("--stroll-scale", String(view.scale));
           mapStage.classList.add("strolling");
           setMapFocus(x,y);
         }
@@ -644,8 +661,8 @@
           requestAnimationFrame(()=>requestAnimationFrame(()=>sheet.classList.add("open")));
           mapStage.classList.remove("strolling");
           isTransitioning=false;
-        },1500);
-      },850);
+        },2250);
+      },800);
     }
     function getBeacon(place){
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
@@ -702,13 +719,13 @@
       isZoomed=true;
       requestAnimationFrame(()=>mapStage?.classList.add("walking"));
       setTimeout(()=>centerBeacon(beacon),90);
-      setTimeout(()=>beacon.classList.add("arriving"),1500);
+      setTimeout(()=>beacon.classList.add("arriving"),2250);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
         showSong(place);
         isTransitioning=false;
-      },3550);
+      },4450);
     }
 
     function continueWalk(){
