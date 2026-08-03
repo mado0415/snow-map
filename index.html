@@ -144,6 +144,15 @@
       transform: translate3d(var(--pan-x, 0px), 0, 0) scale(var(--stroll-scale, 1.46));
     }
 
+    .map-viewport.free-roam {
+      touch-action: none;
+      cursor: grab;
+    }
+    .map-viewport.free-roam.dragging { cursor: grabbing; }
+    .map-stage.free-panning {
+      transition: none !important;
+    }
+
     .map-images {
       position: relative;
       width: 100%;
@@ -670,6 +679,15 @@
       {dx: 0.0, dy:-7.0, scale:1.51}
     ];
 
+    let currentPanX=0;
+    let freePan={active:false,moved:false,pointerId:null,startX:0,startY:0,startPanX:0,startScrollY:0};
+
+    function clamp(value,min,max){ return Math.max(min,Math.min(max,value)); }
+
+    function setFreeRoam(enabled){
+      mapViewport?.classList.toggle("free-roam",Boolean(enabled));
+    }
+
     function showSoundNote(message){
       soundNote.textContent=message;
       soundNote.classList.add("show");
@@ -755,7 +773,7 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は小さく短く、シーサイドは明確に前へ出す。
-          audio.volume=mode==="harbor" ? .105 : .62;
+          audio.volume=mode==="harbor" ? .055 : .54;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
@@ -797,7 +815,7 @@
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
           audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(place==="シーサイド"?.032:place==="ブルーハーバー"?(band==="night"?.010:.018):(band==="morning"?.030:.020))+Math.random()*.006;
+          audio.volume=(place==="シーサイド"?.012:place==="ブルーハーバー"?(band==="night"?.0025:.0045):(band==="morning"?.012:.008))+Math.random()*.0025;
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
@@ -1017,6 +1035,7 @@
       placeCopy.textContent=data.copy;
       renderSong(song);
       exploreButton.textContent="この場所を散策する";
+      setFreeRoam(false);
       document.body.style.overflow="hidden";
       hint.style.opacity="0";
       backdrop.classList.add("open");
@@ -1077,9 +1096,10 @@
       const viewportWidth=mapViewport?.clientWidth || stageWidth;
       const targetX=stageWidth*(x/100);
       const panX=viewportWidth/2-targetX;
+      currentPanX=panX;
       mapStage.style.setProperty("--walk-x", `${x}%`);
       mapStage.style.setProperty("--walk-y", `${y}%`);
-      mapStage.style.setProperty("--pan-x", `${panX}px`);
+      mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
     }
     function setWalkFocus(beacon){
       if(!beacon || !mapStage) return;
@@ -1091,7 +1111,12 @@
       sheet.classList.remove("open");
       backdrop.classList.remove("open");
       document.body.style.overflow="";
-      if(!keepZoom) returnToMap();
+      if(!keepZoom){
+        setFreeRoam(false);
+        returnToMap();
+        return;
+      }
+      if(isZoomed) setFreeRoam(true);
     }
 
     function returnToMap(){
@@ -1099,6 +1124,8 @@
       mapStage?.classList.remove("walking");
       mapStage?.style.setProperty("--walk-x", "50%");
       mapStage?.style.setProperty("--walk-y", "50%");
+      currentPanX=0;
+      setFreeRoam(false);
       mapStage?.style.setProperty("--pan-x", "0px");
       window.scrollTo({top:0, behavior:"smooth"});
       hint.style.opacity=".5";
@@ -1109,6 +1136,7 @@
       const beacon=getBeacon(place);
       if(!beacon) return;
       isTransitioning=true;
+      setFreeRoam(false);
       currentPlace=place;
       ambientMix(place,{duration:2400});
       closeSheet({keepZoom:true});
@@ -1133,6 +1161,43 @@
       arriveAt(destination,{fromMap:false});
     }
 
+    mapViewport?.addEventListener("pointerdown",e=>{
+      if(!isZoomed || sheet.classList.contains("open") || isTransitioning) return;
+      freePan={active:true,moved:false,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,startPanX:currentPanX,startScrollY:window.scrollY};
+      mapViewport.setPointerCapture?.(e.pointerId);
+      mapViewport.classList.add("dragging");
+      mapStage.classList.add("free-panning");
+    });
+
+    mapViewport?.addEventListener("pointermove",e=>{
+      if(!freePan.active || e.pointerId!==freePan.pointerId) return;
+      const dx=e.clientX-freePan.startX;
+      const dy=e.clientY-freePan.startY;
+      if(Math.hypot(dx,dy)>5) freePan.moved=true;
+      const stageWidth=mapStage.offsetWidth||1;
+      const maxPan=stageWidth*.38;
+      currentPanX=clamp(freePan.startPanX+dx,-maxPan,maxPan);
+      mapStage.style.setProperty("--pan-x",`${currentPanX}px`);
+      const maxScroll=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+      window.scrollTo({top:clamp(freePan.startScrollY-dy,0,maxScroll),behavior:"auto"});
+      if(freePan.moved) e.preventDefault();
+    });
+
+    function finishFreePan(e){
+      if(!freePan.active || (e?.pointerId!=null && e.pointerId!==freePan.pointerId)) return;
+      const moved=freePan.moved;
+      freePan.active=false;
+      mapViewport?.classList.remove("dragging");
+      mapStage?.classList.remove("free-panning");
+      if(e?.pointerId!=null) mapViewport?.releasePointerCapture?.(e.pointerId);
+      if(moved){
+        const suppress=event=>{ event.preventDefault(); event.stopPropagation(); };
+        mapViewport?.addEventListener("click",suppress,{capture:true,once:true});
+      }
+    }
+    mapViewport?.addEventListener("pointerup",finishFreePan);
+    mapViewport?.addEventListener("pointercancel",finishFreePan);
+
     document.querySelectorAll(".beacon").forEach(b=>{
       b.addEventListener("click",()=>arriveAt(b.dataset.place,{fromMap:!isZoomed}));
     });
@@ -1144,7 +1209,7 @@
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
     setWorldTime(); setInterval(()=>{ setWorldTime(); if(soundEnabled) ambientMix(currentPlace,{duration:60000}); },60000);
     window.addEventListener("resize",()=>{
-      if(isZoomed && currentPlace){
+      if(isZoomed && currentPlace && !mapViewport.classList.contains("free-roam")){
         const beacon=getBeacon(currentPlace);
         if(beacon) setWalkFocus(beacon);
       }
