@@ -479,13 +479,13 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <audio id="ambWind" src="ambient-wind-soft-v2.mp3" loop preload="auto"></audio>
-  <audio id="harborWave1" src="harbor-wave-1.mp3" preload="auto"></audio>
-  <audio id="harborWave2" src="harbor-wave-2.mp3" preload="auto"></audio>
-  <audio id="seasideWave1" src="seaside-wave-1.mp3" preload="auto"></audio>
+  <audio id="harborWave1" src="harbor-wave-1-v01031.mp3" preload="auto"></audio>
+  <audio id="harborWave2" src="harbor-wave-2-v01031.mp3" preload="auto"></audio>
+  <audio id="seasideWave1" src="seaside-wave-1-v01031.mp3" preload="auto"></audio>
   <audio id="ambBirds" src="ambient-birds-soft-v2.mp3" preload="auto"></audio>
-  <audio id="cityCar1" src="city-car-pass-1.mp3" preload="auto"></audio>
-  <audio id="cityCar2" src="city-car-pass-2.mp3" preload="auto"></audio>
-  <audio id="cityCar3" src="city-car-pass-3.mp3" preload="auto"></audio>
+  <audio id="cityCar1" src="city-car-pass-1-v01031.mp3" preload="auto"></audio>
+  <audio id="cityCar2" src="city-car-pass-2-v01031.mp3" preload="auto"></audio>
+  <audio id="cityCar3" src="city-car-pass-3-v01031.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -765,8 +765,8 @@
       const band=timeBand();
       // 港は「静かな間」を長く、シーサイドは波がほぼ途切れないようにする。
       // 夜でも耳だけで区別できるよう、時間帯より場所差を優先する。
-      const harborRange=band==="night"?[6500,12500]:[4500,9500];
-      const seasideRange=band==="night"?[1200,3000]:[800,2400];
+      const harborRange=band==="night"?[3500,7000]:[2500,6000];
+      const seasideRange=band==="night"?[700,1800]:[500,1500];
       const range=mode==="harbor"?harborRange:seasideRange;
       const delay=first
         ? (mode==="harbor" ? 900+Math.random()*900 : 250+Math.random()*550)
@@ -779,7 +779,7 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
-          audio.volume=mode==="harbor" ? .24 : .34;
+          audio.volume=mode==="harbor" ? .42 : .48;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
@@ -863,7 +863,7 @@
           audio.pause();
           audio.currentTime=0;
           audio.playbackRate=.96+Math.random()*.08;
-          audio.volume=band==="night" ? .075 : .095;
+          audio.volume=band==="night" ? .035 : .045;
           await audio.play();
           const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
           eventStopTimers.cars=setTimeout(()=>{
