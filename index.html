@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.6.3: カード点滅修正・次の景色へ・時間連動背景 -->
+  <!-- SNOW MAP v0.7: 同じ場所を散策・曲切替・留まる選択を主役に -->
   <style>
     :root {
       --ink: #31475f;
@@ -234,7 +234,12 @@
     .place-copy { margin: 8px 0 0; max-width: 31em; font-size: 12px; line-height: 1.6; letter-spacing: .045em; color: rgba(49,71,95,.78); }
     .divider { height: 1px; margin: 10px 0 9px; background: linear-gradient(90deg,var(--line),transparent); }
     .song-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .16em; opacity: .44; }
-    .song-name { margin: 2px 0 9px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; }
+    .song-name { margin: 2px 0 9px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; transition: opacity .18s ease, transform .22s ease; }
+    .song-name.changing { opacity: 0; transform: translateY(4px); }
+    .actions { display: grid; gap: 7px; }
+    .move-next { width: 100%; min-height: 34px; border: 1px solid rgba(49,71,95,.14); border-radius: 13px; color: var(--ink); background: rgba(255,255,255,.48); font-size: 11px; font-weight: 650; letter-spacing: .08em; cursor: pointer; }
+    .move-next:active, .next:active { transform: translateY(1px); }
+    .stay-note { margin: 1px 0 0; text-align: center; font-size: 9px; letter-spacing: .06em; color: rgba(49,71,95,.48); }
     .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 8px; }
     .service {
       display: flex; align-items: center; justify-content: center;
@@ -420,7 +425,11 @@
       <a class="service" id="appleLink" target="_blank" rel="noopener">Apple Music</a>
       <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
     </div>
-    <button class="next" id="nextButton">次の景色へ</button>
+    <div class="actions">
+      <button class="next" id="exploreButton">この場所を散策する</button>
+      <button class="move-next" id="nextButton">次の景色へ</button>
+      <p class="stay-note">何度でも、この場所に留まれます</p>
+    </div>
     <button class="close" id="closeButton">地図へ戻る</button>
   </section>
 
@@ -520,11 +529,12 @@
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
     const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
-    const nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
+    const exploreButton=document.getElementById("exploreButton"), nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
     const walkStatus=document.getElementById("walkStatus"), walkText=document.getElementById("walkText");
     const mapStage=document.querySelector(".map-stage");
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false;
+    const songQueues = {};
 
     function getTimeKey(){
       const h=new Date().getHours();
@@ -556,15 +566,43 @@
     }
     function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
     function updateLinks(title){ const q=encodeURIComponent(`Snow Man ${title}`); spotifyLink.href=`https://open.spotify.com/search/${q}`; appleLink.href=`https://music.apple.com/jp/search?term=${q}`; youtubeLink.href=`https://www.youtube.com/results?search_query=${q}`; }
+    function shuffled(list){
+      const copy=[...list];
+      for(let i=copy.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [copy[i],copy[j]]=[copy[j],copy[i]];
+      }
+      return copy;
+    }
+    function nextSongFor(place){
+      const songs=places[place].songs;
+      if(!songQueues[place] || songQueues[place].length===0){
+        songQueues[place]=shuffled(songs);
+        if(songQueues[place][0]===previousSong && songQueues[place].length>1){
+          songQueues[place].push(songQueues[place].shift());
+        }
+      }
+      return songQueues[place].shift();
+    }
+    function renderSong(song,{animate=false}={}){
+      const apply=()=>{
+        previousSong=song;
+        songName.textContent=song;
+        updateLinks(song);
+        songName.classList.remove("changing");
+      };
+      if(!animate){ apply(); return; }
+      songName.classList.add("changing");
+      setTimeout(apply,180);
+    }
     function showSong(place){
       currentPlace=place;
-      const data=places[place], song=pick(data.songs,previousSong);
-      previousSong=song;
+      const data=places[place], song=nextSongFor(place);
       placeName.textContent=place;
       experience.textContent=data.verb;
       placeCopy.textContent=data.copy;
-      songName.textContent=song;
-      updateLinks(song);
+      renderSong(song);
+      exploreButton.textContent="この場所を散策する";
       document.body.style.overflow="hidden";
       hint.style.opacity="0";
       backdrop.classList.add("open");
@@ -572,6 +610,19 @@
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>sheet.classList.add("open"));
       });
+    }
+    function exploreCurrentPlace(){
+      if(!currentPlace || isTransitioning) return;
+      const song=nextSongFor(currentPlace);
+      renderSong(song,{animate:true});
+      exploreButton.textContent="もう少し散策する";
+      const beacon=getBeacon(currentPlace);
+      if(beacon){
+        const x=parseFloat(beacon.style.left||"50") + (Math.random()*4-2);
+        const y=parseFloat(beacon.style.top||"50") + (Math.random()*3-1.5);
+        mapStage.style.setProperty("--walk-x",`${x}%`);
+        mapStage.style.setProperty("--walk-y",`${y}%`);
+      }
     }
     function getBeacon(place){
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
@@ -636,6 +687,7 @@
     document.querySelectorAll(".beacon").forEach(b=>{
       b.addEventListener("click",()=>arriveAt(b.dataset.place,{fromMap:!isZoomed}));
     });
+    exploreButton.addEventListener("click",exploreCurrentPlace);
     nextButton.addEventListener("click",continueWalk);
     closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
     backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
