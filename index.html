@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.6: Web Audioマスターゲインで全体音量を増幅 -->
+  <!-- SNOW MAP v0.12.7: 音源ファイル自体を増幅 -->
   <style>
     :root {
       --ink: #31475f;
@@ -478,16 +478,16 @@
 
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
-  <audio id="ambWind" src="ambient-wind-bed-v0112.mp3" loop preload="auto"></audio>
-  <audio id="ambAir" src="ambient-wind-air-v0121.mp3" loop preload="auto"></audio>
-  <audio id="harborWave1" src="harbor-water-soft-1-v0121.mp3" preload="auto"></audio>
-  <audio id="harborWave2" src="harbor-water-soft-2-v0121.mp3" preload="auto"></audio>
-  <audio id="harborWave3" src="harbor-water-high-v0121.mp3" preload="auto"></audio>
-  <audio id="seasideWave1" src="seaside-wave-bright-v0121.mp3" preload="auto"></audio>
-  <audio id="cityCar1" src="city-car-pass-1-v0105.mp3" preload="auto"></audio>
-  <audio id="cityCar2" src="city-car-pass-2-v0105.mp3" preload="auto"></audio>
-  <audio id="cityCar3" src="city-car-pass-3-v0105.mp3" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012.mp3" preload="auto"></audio>
+  <audio id="ambWind" src="ambient-wind-bed-v0112-loud-v0127.mp3" loop preload="auto"></audio>
+  <audio id="ambAir" src="ambient-wind-air-v0121-loud-v0127.mp3" loop preload="auto"></audio>
+  <audio id="harborWave1" src="harbor-water-soft-1-v0121-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="harborWave2" src="harbor-water-soft-2-v0121-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="harborWave3" src="harbor-water-high-v0121-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="seasideWave1" src="seaside-wave-bright-v0121-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="cityCar1" src="city-car-pass-1-v0105-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="cityCar2" src="city-car-pass-2-v0105-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="cityCar3" src="city-car-pass-3-v0105-loud-v0127.mp3" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0127.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -662,44 +662,6 @@
     // Soundscape engine v2.1 — intermittent waves by place
     // Soundscape v3.1: 不自然な仮音源は使わず、採用済みの風・波・車・汽笛だけで構成する。
     const ambientTracks=[ambWind,ambAir];
-
-    // HTMLAudioElement.volume は最大1までのため、元音源が小さい場合は
-    // Web Audio APIのGainNodeで最終出力をまとめて増幅する。
-    const MASTER_OUTPUT_GAIN = 1.8;
-    let audioContext = null;
-    let masterGainNode = null;
-    let audioGraphReady = false;
-
-    function ensureAudioGraph(){
-      if(audioGraphReady) return true;
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if(!AudioContextClass) return false;
-
-      try{
-        audioContext = audioContext || new AudioContextClass();
-        masterGainNode = audioContext.createGain();
-        masterGainNode.gain.value = MASTER_OUTPUT_GAIN;
-        masterGainNode.connect(audioContext.destination);
-
-        document.querySelectorAll("audio").forEach(audio=>{
-          const source = audioContext.createMediaElementSource(audio);
-          source.connect(masterGainNode);
-        });
-
-        audioGraphReady = true;
-        return true;
-      }catch(error){
-        console.warn("Web Audio graph setup failed:", error);
-        return false;
-      }
-    }
-
-    async function resumeAudioContext(){
-      if(!ensureAudioGraph()) return;
-      if(audioContext && audioContext.state === "suspended"){
-        try{ await audioContext.resume(); }catch(_){}
-      }
-    }
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundPlace=null;
     let eventTimers={cars:null,waves:null,horn:null}, eventStopTimers={cars:null,waves:null,horn:null};
     const songQueues = {};
@@ -840,12 +802,11 @@
       if(m.horn)scheduleSimple("horn",harborHorn,place,m.horn,12000);
     }
     function pauseAllAudioForBackground(){ stopWaveEvents();stopCityCars();stopOneShots();ambientTracks.forEach(t=>t.pause()); }
-    async function resumeAudioAfterBackground(){ if(!soundEnabled||document.hidden)return;await resumeAudioContext();activeSoundPlace=null;ambientMix(currentPlace,{duration:500,force:true}); }
+    function resumeAudioAfterBackground(){ if(!soundEnabled||document.hidden)return;activeSoundPlace=null;ambientMix(currentPlace,{duration:500,force:true}); }
     document.addEventListener("visibilitychange",()=>document.hidden?pauseAllAudioForBackground():resumeAudioAfterBackground());
     window.addEventListener("pagehide",pauseAllAudioForBackground);
     async function enableAmbient(){
       try{
-        await resumeAudioContext();
         ambientTracks.forEach(t=>{t.volume=0;t.playbackRate=1;});
         soundEnabled=true;
         activeSoundPlace=null;
