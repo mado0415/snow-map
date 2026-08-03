@@ -469,9 +469,9 @@
 
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
-  <audio id="ambWind" src="ambient-wind.mp3" loop preload="auto"></audio>
-  <audio id="ambWaves" src="ambient-waves.mp3" loop preload="auto"></audio>
-  <audio id="ambBirds" src="ambient-birds.mp3" preload="auto"></audio>
+  <audio id="ambWind" src="ambient-wind-soft-v2.mp3" loop preload="auto"></audio>
+  <audio id="ambWaves" src="ambient-waves-soft-v2.mp3" loop preload="auto"></audio>
+  <audio id="ambBirds" src="ambient-birds-soft-v2.mp3" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -639,7 +639,7 @@
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const ambWind=document.getElementById("ambWind"), ambWaves=document.getElementById("ambWaves"), ambBirds=document.getElementById("ambBirds");
 
-    // Soundscape engine v1
+    // Soundscape engine v1.1 — remastered assets / cache-busted filenames
     // 現在同梱している音源：wind / waves / birds
     // 将来は下記のファイルを追加し、SOUND_ASSETSへ登録するだけで拡張できます。
     // ambient-leaves.mp3 / ambient-car-1.mp3 / ambient-car-2.mp3 /
@@ -700,21 +700,21 @@
       const nearSea=["展望台","シーズンガーデン","はじまりの広場"].includes(place);
       const sheltered=["カフェ","木漏れ日の道"].includes(place);
       const city=["シティライト","歩道橋","Snow Dome"].includes(place);
-      let wind={morning:.105,day:.095,evening:.125,night:.075}[band];
-      if(sea||place==="展望台") wind+=.020;
-      if(sheltered) wind-=.025;
-      if(city) wind-=.010;
+      let wind={morning:.070,day:.060,evening:.078,night:.050}[band];
+      if(sea||place==="展望台") wind+=.012;
+      if(sheltered) wind-=.018;
+      if(city) wind-=.006;
 
       // 波音源そのものの音圧が高いため、数値をかなり低く設定する。
       // 海から離れた場所ではほぼ聞こえず、港・海沿いで初めて存在が分かる差にする。
       let waves=0;
-      if(place==="シーサイド") waves=.038;
-      else if(place==="ブルーハーバー") waves=.026;
-      else if(nearSea) waves=.006;
-      else waves=.0015;
+      if(place==="シーサイド") waves=.018;
+      else if(place==="ブルーハーバー") waves=.010;
+      else if(nearSea) waves=.002;
+      else waves=0;
       if(band==="night") waves*=.72;
       if(band==="evening") waves*=.92;
-      return {wind:Math.max(.025,wind),waves};
+      return {wind:Math.max(.018,wind),waves};
     }
     function clearEvent(name){
       clearTimeout(eventTimers[name]);
@@ -739,7 +739,7 @@
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
           audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(band==="morning"?.018:.012)+Math.random()*.007;
+          audio.volume=(band==="morning"?.055:.035)+Math.random()*.012;
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
