@@ -718,52 +718,52 @@
     }
     // 場所 × 時間帯のミックス。wind は低めの風、air は高く柔らかい空気感。
     const PLACE_SOUND_MIX = {
-      map:{ base:{wind:.24,air:.035} },
+      map:{ base:{wind:.30,air:.044} },
       "はじまりの広場":{
-        morning:{base:{wind:.24,air:.085}}, day:{base:{wind:.22,air:.070}},
-        evening:{base:{wind:.25,air:.080}}, night:{base:{wind:.18,air:.040}}
+        morning:{base:{wind:.312,air:.111}}, day:{base:{wind:.286,air:.091}},
+        evening:{base:{wind:.325,air:.104}}, night:{base:{wind:.234,air:.052}}
       },
       "歩道橋":{
-        morning:{base:{wind:.29,air:.105}}, day:{base:{wind:.27,air:.095}},
-        evening:{base:{wind:.32,air:.115}}, night:{base:{wind:.22,air:.060}}
+        morning:{base:{wind:.377,air:.137}}, day:{base:{wind:.351,air:.124}},
+        evening:{base:{wind:.416,air:.150}}, night:{base:{wind:.286,air:.078}}
       },
       "木漏れ日の道":{
-        morning:{base:{wind:.115,air:.175}}, day:{base:{wind:.105,air:.155}},
-        evening:{base:{wind:.125,air:.170}}, night:{base:{wind:.075,air:.075}}
+        morning:{base:{wind:.150,air:.228}}, day:{base:{wind:.137,air:.202}},
+        evening:{base:{wind:.163,air:.221}}, night:{base:{wind:.098,air:.098}}
       },
       "カフェ":{
-        morning:{base:{wind:.135,air:.080}}, day:{base:{wind:.125,air:.070}},
-        evening:{base:{wind:.115,air:.065}}, night:{base:{wind:.075,air:.035}}
+        morning:{base:{wind:.169,air:.100}}, day:{base:{wind:.156,air:.088}},
+        evening:{base:{wind:.144,air:.081}}, night:{base:{wind:.094,air:.044}}
       },
       "ブルーハーバー":{
-        morning:{base:{wind:.060,air:.025},waves:{mode:"harbor",volume:.35,first:[500,1000],gap:[4200,7800]},horn:{volume:.075,gap:[45000,90000]}},
-        day:{base:{wind:.055,air:.022},waves:{mode:"harbor",volume:.34,first:[600,1100],gap:[4800,8500]},horn:{volume:.070,gap:[55000,105000]}},
-        evening:{base:{wind:.065,air:.026},waves:{mode:"harbor",volume:.33,first:[650,1200],gap:[5200,9200]},horn:{volume:.065,gap:[65000,120000]}},
-        night:{base:{wind:.038,air:.014},waves:{mode:"harbor",volume:.30,first:[800,1400],gap:[6500,11000]},horn:{volume:.055,gap:[75000,135000]}}
+        morning:{base:{wind:.066,air:.028},waves:{mode:"harbor",volume:.385,first:[500,1000],gap:[4200,7800]},horn:{volume:.083,gap:[45000,90000]}},
+        day:{base:{wind:.061,air:.024},waves:{mode:"harbor",volume:.374,first:[600,1100],gap:[4800,8500]},horn:{volume:.077,gap:[55000,105000]}},
+        evening:{base:{wind:.072,air:.029},waves:{mode:"harbor",volume:.363,first:[650,1200],gap:[5200,9200]},horn:{volume:.072,gap:[65000,120000]}},
+        night:{base:{wind:.042,air:.015},waves:{mode:"harbor",volume:.330,first:[800,1400],gap:[6500,11000]},horn:{volume:.061,gap:[75000,135000]}}
       },
       "シーサイド":{
-        morning:{base:{wind:.072,air:.048},waves:{mode:"seaside",volume:.31,first:[350,700],gap:[1800,3300]}},
-        day:{base:{wind:.068,air:.044},waves:{mode:"seaside",volume:.30,first:[400,750],gap:[2000,3600]}},
-        evening:{base:{wind:.080,air:.052},waves:{mode:"seaside",volume:.29,first:[450,850],gap:[2200,3900]}},
-        night:{base:{wind:.046,air:.025},waves:{mode:"seaside",volume:.26,first:[550,1000],gap:[2700,4600]}}
+        morning:{base:{wind:.086,air:.058},waves:{mode:"seaside",volume:.372,first:[350,700],gap:[1800,3300]}},
+        day:{base:{wind:.082,air:.053},waves:{mode:"seaside",volume:.360,first:[400,750],gap:[2000,3600]}},
+        evening:{base:{wind:.096,air:.062},waves:{mode:"seaside",volume:.348,first:[450,850],gap:[2200,3900]}},
+        night:{base:{wind:.055,air:.030},waves:{mode:"seaside",volume:.312,first:[550,1000],gap:[2700,4600]}}
       },
       "展望台":{
-        morning:{base:{wind:.235,air:.220}}, day:{base:{wind:.220,air:.205}},
-        evening:{base:{wind:.265,air:.240}}, night:{base:{wind:.170,air:.125}}
+        morning:{base:{wind:.306,air:.286}}, day:{base:{wind:.286,air:.267}},
+        evening:{base:{wind:.345,air:.312}}, night:{base:{wind:.221,air:.163}}
       },
       "シティライト":{
-        morning:{base:{wind:.050,air:.025},cars:{volume:.21,gap:[9000,16000]}},
-        day:{base:{wind:.046,air:.022},cars:{volume:.23,gap:[7500,14000]}},
-        evening:{base:{wind:.050,air:.025},cars:{volume:.25,gap:[6000,11500]}},
-        night:{base:{wind:.032,air:.015},cars:{volume:.22,gap:[11000,21000]}}
+        morning:{base:{wind:.063,air:.031},cars:{volume:.263,gap:[9000,16000]}},
+        day:{base:{wind:.058,air:.028},cars:{volume:.288,gap:[7500,14000]}},
+        evening:{base:{wind:.063,air:.031},cars:{volume:.313,gap:[6000,11500]}},
+        night:{base:{wind:.040,air:.019},cars:{volume:.275,gap:[11000,21000]}}
       },
       "Snow Dome":{
-        morning:{base:{wind:.120,air:.050}}, day:{base:{wind:.115,air:.050}},
-        evening:{base:{wind:.110,air:.055}}, night:{base:{wind:.090,air:.045}}
+        morning:{base:{wind:.150,air:.063}}, day:{base:{wind:.144,air:.063}},
+        evening:{base:{wind:.138,air:.069}}, night:{base:{wind:.113,air:.056}}
       },
       "シーズンガーデン":{
-        morning:{base:{wind:.095,air:.190}}, day:{base:{wind:.090,air:.175}},
-        evening:{base:{wind:.105,air:.195}}, night:{base:{wind:.060,air:.085}}
+        morning:{base:{wind:.124,air:.247}}, day:{base:{wind:.117,air:.228}},
+        evening:{base:{wind:.137,air:.254}}, night:{base:{wind:.078,air:.111}}
       }
     };
 
