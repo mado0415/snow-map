@@ -556,6 +556,8 @@
   <script>
     "use strict";
 
+    const MASTER_GAIN = 1.5;
+
     const snowflakeLines = [
       [12,3,12,21],[4.2,7.5,19.8,16.5],[4.2,16.5,19.8,7.5],
       [12,3,10.6,5.2],[12,3,13.4,5.2],[12,21,10.6,18.8],[12,21,13.4,18.8],
@@ -704,7 +706,7 @@
       const token=(volumeFadeTokens.get(track)||0)+1;
       volumeFadeTokens.set(track,token);
       const start=Number.isFinite(track.volume)?track.volume:0;
-      const target=Math.max(0,Math.min(1,value));
+      const target=Math.max(0,Math.min(1,value*MASTER_GAIN));
       const t0=performance.now();
       function step(now){
         if(volumeFadeTokens.get(track)!==token) return;
