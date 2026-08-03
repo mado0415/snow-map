@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.7.6: カメラ質感・導入結晶・環境音・夜間灯り -->
+  <!-- SNOW MAP v0.9.2: 港とシーサイドの音の差を強化 -->
   <style>
     :root {
       --ink: #31475f;
@@ -739,29 +739,41 @@
       const mode=waveMode(place);
       if(!mode) return;
       const band=timeBand();
-      const harborRange=band==="night"?[9000,17000]:[6500,12500];
-      const seasideRange=band==="night"?[3500,7000]:[1800,4500];
+      // 港は「静かな間」を長く、シーサイドは波がほぼ途切れないようにする。
+      // 夜でも耳だけで区別できるよう、時間帯より場所差を優先する。
+      const harborRange=band==="night"?[16000,28000]:[11000,21000];
+      const seasideRange=band==="night"?[700,2100]:[350,1500];
       const range=mode==="harbor"?harborRange:seasideRange;
-      const delay=first ? (mode==="harbor"?900:300) : range[0]+Math.random()*(range[1]-range[0]);
+      const delay=first
+        ? (mode==="harbor" ? 3200+Math.random()*2200 : 120+Math.random()*380)
+        : range[0]+Math.random()*(range[1]-range[0]);
       eventTimers.waves=setTimeout(async()=>{
         if(!soundEnabled || waveMode(currentPlace)!==mode) return;
         const audio=mode==="harbor" ? waveClips[Math.floor(Math.random()*waveClips.length)] : seasideWave;
         try{
-          audio.pause(); audio.currentTime=0; audio.playbackRate=.96+Math.random()*.07;
-          audio.volume=mode==="harbor" ? .26 : .48;
+          audio.pause();
+          audio.currentTime=0;
+          audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
+          // 港は小さく短く、シーサイドは明確に前へ出す。
+          audio.volume=mode==="harbor" ? .105 : .62;
           await audio.play();
-          const duration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
+          const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
+          const heardDuration=mode==="harbor"
+            ? Math.min(fullDuration, 2600+Math.random()*1500)
+            : fullDuration;
           eventStopTimers.waves=setTimeout(()=>{
             audio.pause(); audio.currentTime=0; audio.volume=0;
             scheduleWaves(currentPlace,false);
-          },duration+80);
+          },heardDuration+60);
         }catch(_){ scheduleWaves(currentPlace,false); }
       },delay);
     }
 
     function birdsAllowed(place=currentPlace){
       const band=timeBand();
-      return band!=="night" && ["ブルーハーバー","シーサイド","展望台","木漏れ日の道","シーズンガーデン"].includes(place);
+      // 夜は港でだけ、ごくまれに遠い海鳥を残す。
+      if(band==="night") return place==="ブルーハーバー";
+      return ["ブルーハーバー","シーサイド","展望台","木漏れ日の道","シーズンガーデン"].includes(place);
     }
     function scheduleBirds(place=currentPlace,first=false){
       clearEvent("birds");
@@ -770,9 +782,14 @@
       const isHarbor=place==="ブルーハーバー";
       const isSeaside=place==="シーサイド";
       let baseMin=band==="morning"?18000:28000, spread=band==="morning"?24000:38000;
-      if(isHarbor){ baseMin=band==="morning"?22000:36000; spread=26000; }
-      if(isSeaside){ baseMin=band==="morning"?12000:22000; spread=22000; }
-      const delay=first ? (isSeaside?4500:isHarbor?8500:7000)+Math.random()*7000 : baseMin+Math.random()*spread;
+      if(isHarbor){
+        baseMin=band==="night" ? 52000 : (band==="morning"?26000:42000);
+        spread=band==="night" ? 42000 : 32000;
+      }
+      if(isSeaside){ baseMin=band==="morning"?10000:18000; spread=19000; }
+      const delay=first
+        ? (isSeaside?3500:isHarbor?(band==="night"?28000:10000):7000)+Math.random()*7000
+        : baseMin+Math.random()*spread;
       eventTimers.birds=setTimeout(async()=>{
         if(!soundEnabled || !birdsAllowed(currentPlace)) return;
         const audio=ambBirds;
@@ -780,7 +797,7 @@
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
           audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(place==="シーサイド"?.035:place==="ブルーハーバー"?.024:(band==="morning"?.030:.020))+Math.random()*.008;
+          audio.volume=(place==="シーサイド"?.032:place==="ブルーハーバー"?(band==="night"?.010:.018):(band==="morning"?.030:.020))+Math.random()*.006;
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
