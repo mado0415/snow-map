@@ -478,7 +478,7 @@
 
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
-  <audio id="ambWind" src="ambient-wind-soft-v2.mp3" loop preload="auto"></audio>
+  <audio id="ambWind" src="ambient-wind-bed-v0110.mp3" loop preload="auto"></audio>
   <audio id="harborWave1" src="harbor-water-1-v0105.mp3" preload="auto"></audio>
   <audio id="harborWave2" src="harbor-water-2-v0105.mp3" preload="auto"></audio>
   <audio id="seasideWave1" src="seaside-wave-v0105.mp3" preload="auto"></audio>
@@ -721,21 +721,31 @@
       }
       requestAnimationFrame(step);
     }
-    function baseMix(place=currentPlace){
-      const band=timeBand();
-      const sea=["ブルーハーバー","シーサイド"].includes(place);
-      const sheltered=["カフェ","木漏れ日の道"].includes(place);
-      const city=["シティライト","歩道橋","Snow Dome"].includes(place);
-      let wind={morning:.070,day:.060,evening:.078,night:.050}[band];
-      if(sea||place==="展望台") wind+=.012;
-      if(sheltered) wind-=.018;
-      if(city) wind-=.006;
-      // 海辺の風音源は音圧が強いため、場所ごとにかなり控えめにする。
-      // ブルーハーバーは水面のチャプチャプを主役に、シーサイドも波を主役にする。
-      if(place==="ブルーハーバー") wind={morning:.009,day:.008,evening:.010,night:.006}[band];
-      if(place==="シーサイド") wind={morning:.018,day:.016,evening:.020,night:.012}[band];
-      return {wind:Math.max(.004,wind)};
+    // 場所別Soundscapeミキサー。
+    // wind は加工済みの静かなベッド音。主役音より後ろに置く。
+    const PLACE_SOUND_MIX = {
+      map: { wind:.08 },
+      "はじまりの広場": { wind:.16, birds:{volume:.12, morning:[14000,26000], day:[26000,44000]} },
+      "歩道橋": { wind:.24 },
+      "木漏れ日の道": { wind:.18, birds:{volume:.15, morning:[9000,19000], day:[22000,38000]} },
+      "カフェ": { wind:.10, birds:{volume:.07, morning:[26000,46000], day:[42000,70000]} },
+      "ブルーハーバー": { wind:.08, waves:{mode:"harbor", volume:.58, first:[700,1400], gap:[3500,7000]}, birds:{volume:.055, morning:[24000,42000], day:[42000,70000], night:[65000,110000]} },
+      "シーサイド": { wind:.12, waves:{mode:"seaside", volume:.48, first:[250,650], gap:[900,2300]}, birds:{volume:.075, morning:[15000,30000], day:[26000,48000]} },
+      "展望台": { wind:.42, birds:{volume:.045, morning:[30000,52000], day:[52000,85000]} },
+      "シティライト": { wind:.06, cars:{volume:.62, morning:[6500,12000], day:[8500,15000], evening:[6000,11000], night:[13000,23000]} },
+      "Snow Dome": { wind:.09 },
+      "シーズンガーデン": { wind:.15, birds:{volume:.10, morning:[12000,24000], day:[28000,48000]} }
+    };
+
+    function soundMixFor(place=currentPlace){
+      return PLACE_SOUND_MIX[place || "map"] || PLACE_SOUND_MIX.map;
     }
+
+    function randomInRange(range, fallback=[10000,20000]){
+      const [min,max]=Array.isArray(range)?range:fallback;
+      return min+Math.random()*Math.max(0,max-min);
+    }
+
     function clearEvent(name){
       clearTimeout(eventTimers[name]);
       clearTimeout(eventStopTimers[name]);
@@ -753,84 +763,66 @@
       });
     }
     function waveMode(place=currentPlace){
-      if(place==="ブルーハーバー") return "harbor";
-      if(place==="シーサイド") return "seaside";
-      return null;
+      return soundMixFor(place).waves?.mode || null;
     }
     function scheduleWaves(place=currentPlace,first=false){
       stopWaveEvents();
       if(!soundEnabled) return;
-      const mode=waveMode(place);
-      if(!mode) return;
-      const band=timeBand();
-      // 港は「静かな間」を長く、シーサイドは波がほぼ途切れないようにする。
-      // 夜でも耳だけで区別できるよう、時間帯より場所差を優先する。
-      const harborRange=band==="night"?[3500,7000]:[2500,6000];
-      const seasideRange=band==="night"?[700,1800]:[500,1500];
-      const range=mode==="harbor"?harborRange:seasideRange;
-      const delay=first
-        ? (mode==="harbor" ? 900+Math.random()*900 : 250+Math.random()*550)
-        : range[0]+Math.random()*(range[1]-range[0]);
+      const mix=soundMixFor(place);
+      const wave=mix.waves;
+      if(!wave) return;
+      const mode=wave.mode;
+      const delay=first ? randomInRange(wave.first,[300,900]) : randomInRange(wave.gap,[2500,6000]);
       eventTimers.waves=setTimeout(async()=>{
-        if(!soundEnabled || waveMode(currentPlace)!==mode) return;
+        if(!soundEnabled || currentPlace!==place || waveMode(currentPlace)!==mode) return;
         const audio=mode==="harbor" ? waveClips[Math.floor(Math.random()*waveClips.length)] : seasideWave;
         try{
           audio.pause();
           audio.currentTime=0;
-          audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
-          // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
-          audio.volume=1;
+          audio.playbackRate=mode==="harbor" ? (.94+Math.random()*.035) : (.99+Math.random()*.045);
+          audio.volume=Math.max(0,Math.min(1,wave.volume));
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
-          const heardDuration=fullDuration;
           eventStopTimers.waves=setTimeout(()=>{
             audio.pause(); audio.currentTime=0; audio.volume=0;
-            scheduleWaves(currentPlace,false);
-          },heardDuration+60);
-        }catch(_){ scheduleWaves(currentPlace,false); }
+            if(currentPlace===place) scheduleWaves(place,false);
+          },fullDuration+80);
+        }catch(_){ if(currentPlace===place) scheduleWaves(place,false); }
       },delay);
     }
 
     function birdsAllowed(place=currentPlace){
+      const bird=soundMixFor(place).birds;
+      if(!bird) return false;
       const band=timeBand();
-      // 夜は港でだけ、ごくまれに遠い海鳥を残す。
-      if(band==="night") return place==="ブルーハーバー";
-      return ["ブルーハーバー","シーサイド","展望台","木漏れ日の道","シーズンガーデン"].includes(place);
+      return Boolean(bird[band]);
     }
     function scheduleBirds(place=currentPlace,first=false){
       clearEvent("birds");
       if(!soundEnabled || !birdsAllowed(place)) return;
       const band=timeBand();
-      const isHarbor=place==="ブルーハーバー";
-      const isSeaside=place==="シーサイド";
-      let baseMin=band==="morning"?18000:28000, spread=band==="morning"?24000:38000;
-      if(isHarbor){
-        baseMin=band==="night" ? 52000 : (band==="morning"?26000:42000);
-        spread=band==="night" ? 42000 : 32000;
-      }
-      if(isSeaside){ baseMin=band==="morning"?10000:18000; spread=19000; }
-      const delay=first
-        ? (isSeaside?3500:isHarbor?(band==="night"?28000:10000):7000)+Math.random()*7000
-        : baseMin+Math.random()*spread;
+      const bird=soundMixFor(place).birds;
+      const range=bird[band];
+      const delay=first ? Math.min(9000,randomInRange(range)*.35) : randomInRange(range);
       eventTimers.birds=setTimeout(async()=>{
-        if(!soundEnabled || !birdsAllowed(currentPlace)) return;
+        if(!soundEnabled || currentPlace!==place || !birdsAllowed(place)) return;
         const audio=ambBirds;
         try{
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
-          audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(place==="シーサイド"?.0065:place==="ブルーハーバー"?(band==="night"?.0012:.0022):(band==="morning"?.008:.005))+Math.random()*.0012;
+          audio.playbackRate=.95+Math.random()*.07;
+          audio.volume=Math.max(0,Math.min(1,bird.volume*(.88+Math.random()*.22)));
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
-            scheduleBirds(currentPlace,false);
-          },1300+Math.random()*1700);
-        }catch(_){ scheduleBirds(currentPlace,false); }
+            if(currentPlace===place) scheduleBirds(place,false);
+          },1500+Math.random()*1600);
+        }catch(_){ if(currentPlace===place) scheduleBirds(place,false); }
       },delay);
     }
 
     function cityCarsAllowed(place=currentPlace){
-      return place==="シティライト";
+      return Boolean(soundMixFor(place).cars);
     }
     function stopCityCars(){
       clearTimeout(eventTimers.cars);
@@ -847,86 +839,59 @@
       stopCityCars();
       if(!soundEnabled || !cityCarsAllowed(place)) return;
       const band=timeBand();
-      const ranges={
-        morning:[5500,10500],
-        day:[7000,13500],
-        evening:[4500,9500],
-        night:[10000,19000]
-      }[band];
-      const delay=first ? 1200+Math.random()*1800 : ranges[0]+Math.random()*(ranges[1]-ranges[0]);
+      const car=soundMixFor(place).cars;
+      const range=car[band] || car.day;
+      const delay=first ? 1800+Math.random()*2200 : randomInRange(range,[9000,16000]);
       eventTimers.cars=setTimeout(async()=>{
-        if(!soundEnabled || !cityCarsAllowed(currentPlace)) return;
+        if(!soundEnabled || currentPlace!==place || !cityCarsAllowed(place)) return;
         const audio=cityCars[Math.floor(Math.random()*cityCars.length)];
         try{
           audio.pause();
           audio.currentTime=0;
-          audio.playbackRate=.96+Math.random()*.08;
-          audio.volume=1;
+          audio.playbackRate=.97+Math.random()*.06;
+          audio.volume=Math.max(0,Math.min(1,car.volume*(.9+Math.random()*.16)));
           await audio.play();
           const duration=(Number.isFinite(audio.duration)?audio.duration:4.5)*1000;
           eventStopTimers.cars=setTimeout(()=>{
-            audio.pause();
-            audio.currentTime=0;
-            audio.volume=0;
-            scheduleCityCars(currentPlace,false);
-          },duration+150);
-        }catch(_){
-          scheduleCityCars(currentPlace,false);
-        }
+            audio.pause(); audio.currentTime=0; audio.volume=0;
+            if(currentPlace===place) scheduleCityCars(place,false);
+          },duration+120);
+        }catch(_){ if(currentPlace===place) scheduleCityCars(place,false); }
       },delay);
     }
 
-    function stopIslandAir(){
+    function stopWindBed(){
       if(!ambWind) return;
-      // 進行中の音量フェードを無効化し、iOSでも確実に無音になるよう再生自体を止める。
       volumeFadeTokens.set(ambWind,(volumeFadeTokens.get(ambWind)||0)+1);
       ambWind.volume=0;
       ambWind.pause();
     }
 
-    async function startIslandAir(duration=900){
+    async function setWindBed(volume,duration=900){
       if(!ambWind || !soundEnabled) return;
-      volumeFadeTokens.set(ambWind,(volumeFadeTokens.get(ambWind)||0)+1);
-      ambWind.volume=0;
+      const target=Math.max(0,Math.min(1,volume));
+      if(target<=0){ stopWindBed(); return; }
       try{
-        if(ambWind.paused) await ambWind.play();
-        setTrackVolume(ambWind,.002,duration);
-      }catch(_){
-        // 再生できない場合も、場所固有音の動作は継続する。
-      }
+        if(ambWind.paused){ ambWind.volume=0; await ambWind.play(); }
+        setTrackVolume(ambWind,target,duration);
+      }catch(_){}
     }
 
     function ambientMix(place=currentPlace,{duration=1700,force=false}={}){
       if(!soundEnabled) return;
-
-      // 同じ場所のカードを開き直すだけなら、再生中の音を初期化しない。
-      // これにより、カード表示の瞬間に波・車・海鳥がぶつ切りになるのを防ぐ。
       const nextSoundPlace=place || null;
       if(!force && activeSoundPlace===nextSoundPlace) return;
       activeSoundPlace=nextSoundPlace;
 
-      // 全景では、ごく小さな「島の空気」だけを再生する。
-      if(!place){
-        stopCityCars();
-        stopWaveEvents();
-        clearEvent("birds");
-        startIslandAir(duration);
-        return;
-      }
-
-      // エリア滞在中は共通風を完全停止する。
-      stopIslandAir();
-
-      if(place==="シティライト"){
-        stopWaveEvents();
-        clearEvent("birds");
-        scheduleCityCars(place,true);
-        return;
-      }
-
       stopCityCars();
-      scheduleWaves(place,true);
-      scheduleBirds(place,true);
+      stopWaveEvents();
+      clearEvent("birds");
+
+      const mix=soundMixFor(place);
+      setWindBed(mix.wind || 0,duration);
+      if(mix.waves) scheduleWaves(place,true);
+      if(mix.birds) scheduleBirds(place,true);
+      if(mix.cars) scheduleCityCars(place,true);
     }
     function pauseAllAudioForBackground(){
       clearEvent("birds");
@@ -975,10 +940,7 @@
       clearEvent("birds");
       stopWaveEvents();
       stopCityCars();
-      ambientTracks.forEach(t=>{
-        setTrackVolume(t,0,500);
-        setTimeout(()=>t.pause(),560);
-      });
+      stopWindBed();
       soundToggle.classList.remove("on");
       soundToggle.setAttribute("aria-pressed","false");
       soundToggle.setAttribute("aria-label","街の音をオンにする");
