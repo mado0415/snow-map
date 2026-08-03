@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.7: 同じ場所を散策・曲切替・留まる選択を主役に -->
+  <!-- SNOW MAP v0.7.1: 散策時に景色を見る間を追加・ぼかしを軽減 -->
   <style>
     :root {
       --ink: #31475f;
@@ -89,6 +89,9 @@
     }
     .map-stage.walking {
       transform: scale(1.28);
+    }
+    .map-stage.strolling {
+      transition-duration: .72s;
     }
 
     .map-images {
@@ -200,8 +203,8 @@
       position: fixed;
       inset: 0;
       z-index: 20;
-      background: rgba(28,40,51,.14);
-      backdrop-filter: blur(7px) saturate(.92);
+      background: rgba(28,40,51,.09);
+      backdrop-filter: blur(2.5px) saturate(.96);
       opacity: 0;
       pointer-events: none;
       transition: opacity .24s ease;
@@ -239,7 +242,6 @@
     .actions { display: grid; gap: 7px; }
     .move-next { width: 100%; min-height: 34px; border: 1px solid rgba(49,71,95,.14); border-radius: 13px; color: var(--ink); background: rgba(255,255,255,.48); font-size: 11px; font-weight: 650; letter-spacing: .08em; cursor: pointer; }
     .move-next:active, .next:active { transform: translateY(1px); }
-    .stay-note { margin: 1px 0 0; text-align: center; font-size: 9px; letter-spacing: .06em; color: rgba(49,71,95,.48); }
     .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 8px; }
     .service {
       display: flex; align-items: center; justify-content: center;
@@ -428,7 +430,6 @@
     <div class="actions">
       <button class="next" id="exploreButton">この場所を散策する</button>
       <button class="move-next" id="nextButton">次の景色へ</button>
-      <p class="stay-note">何度でも、この場所に留まれます</p>
     </div>
     <button class="close" id="closeButton">地図へ戻る</button>
   </section>
@@ -613,16 +614,37 @@
     }
     function exploreCurrentPlace(){
       if(!currentPlace || isTransitioning) return;
+      isTransitioning=true;
       const song=nextSongFor(currentPlace);
-      renderSong(song,{animate:true});
-      exploreButton.textContent="もう少し散策する";
       const beacon=getBeacon(currentPlace);
-      if(beacon){
-        const x=parseFloat(beacon.style.left||"50") + (Math.random()*4-2);
-        const y=parseFloat(beacon.style.top||"50") + (Math.random()*3-1.5);
-        mapStage.style.setProperty("--walk-x",`${x}%`);
-        mapStage.style.setProperty("--walk-y",`${y}%`);
-      }
+
+      // いったんカードとぼかしを消し、景色だけを見る時間をつくる
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+      document.body.style.overflow="";
+
+      setTimeout(()=>{
+        // 約0.6秒、景色だけを見せたあと同じ場所の中を少し散策する
+        if(beacon){
+          const baseX=parseFloat(beacon.style.left||"50");
+          const baseY=parseFloat(beacon.style.top||"50");
+          const x=baseX + (Math.random()*5-2.5);
+          const y=baseY + (Math.random()*4-2);
+          mapStage.classList.add("strolling");
+          mapStage.style.setProperty("--walk-x",`${x}%`);
+          mapStage.style.setProperty("--walk-y",`${y}%`);
+        }
+
+        setTimeout(()=>{
+          renderSong(song);
+          exploreButton.textContent="もう少し散策する";
+          document.body.style.overflow="hidden";
+          backdrop.classList.add("open");
+          requestAnimationFrame(()=>requestAnimationFrame(()=>sheet.classList.add("open")));
+          mapStage.classList.remove("strolling");
+          isTransitioning=false;
+        },720);
+      },850);
     }
     function getBeacon(place){
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
