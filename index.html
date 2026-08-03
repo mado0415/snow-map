@@ -724,17 +724,23 @@
     // 場所別Soundscapeミキサー。
     // wind は加工済みの静かなベッド音。主役音より後ろに置く。
     const PLACE_SOUND_MIX = {
-      map: { wind:.08 },
-      "はじまりの広場": { wind:.16, birds:{volume:.12, morning:[14000,26000], day:[26000,44000]} },
-      "歩道橋": { wind:.24 },
-      "木漏れ日の道": { wind:.18, birds:{volume:.15, morning:[9000,19000], day:[22000,38000]} },
-      "カフェ": { wind:.10, birds:{volume:.07, morning:[26000,46000], day:[42000,70000]} },
-      "ブルーハーバー": { wind:.08, waves:{mode:"harbor", volume:.58, first:[700,1400], gap:[3500,7000]}, birds:{volume:.055, morning:[24000,42000], day:[42000,70000], night:[65000,110000]} },
-      "シーサイド": { wind:.12, waves:{mode:"seaside", volume:.48, first:[250,650], gap:[900,2300]}, birds:{volume:.075, morning:[15000,30000], day:[26000,48000]} },
-      "展望台": { wind:.42, birds:{volume:.045, morning:[30000,52000], day:[52000,85000]} },
-      "シティライト": { wind:.06, cars:{volume:.62, morning:[6500,12000], day:[8500,15000], evening:[6000,11000], night:[13000,23000]} },
-      "Snow Dome": { wind:.09 },
-      "シーズンガーデン": { wind:.15, birds:{volume:.10, morning:[12000,24000], day:[28000,48000]} }
+      // 全景：静かだが、無音には感じない程度の島の空気。
+      map: { wind:.18 },
+
+      // 海以外：加工済みの静かな風を少し前へ出し、場所の存在を感じられる音量に。
+      "はじまりの広場": { wind:.28, birds:{volume:.16, morning:[14000,26000], day:[26000,44000]} },
+      "歩道橋": { wind:.38 },
+      "木漏れ日の道": { wind:.32, birds:{volume:.20, morning:[9000,19000], day:[22000,38000]} },
+      "カフェ": { wind:.22, birds:{volume:.10, morning:[26000,46000], day:[42000,70000]} },
+
+      // 海辺：前版では波が突出していたため大幅に抑え、風も後ろへ置く。
+      "ブルーハーバー": { wind:.035, waves:{mode:"harbor", volume:.22, first:[900,1700], gap:[4200,8200]}, birds:{volume:.025, morning:[26000,46000], day:[46000,76000], night:[70000,120000]} },
+      "シーサイド": { wind:.05, waves:{mode:"seaside", volume:.20, first:[450,900], gap:[1500,3400]}, birds:{volume:.035, morning:[18000,34000], day:[30000,52000]} },
+
+      "展望台": { wind:.55, birds:{volume:.07, morning:[30000,52000], day:[52000,85000]} },
+      "シティライト": { wind:.12, cars:{volume:.40, morning:[6500,12000], day:[8500,15000], evening:[6000,11000], night:[13000,23000]} },
+      "Snow Dome": { wind:.20 },
+      "シーズンガーデン": { wind:.27, birds:{volume:.14, morning:[12000,24000], day:[28000,48000]} }
     };
 
     function soundMixFor(place=currentPlace){
