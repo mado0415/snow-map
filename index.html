@@ -681,6 +681,8 @@
 
     let currentPanX=0;
     let freePan={active:false,moved:false,pointerId:null,startX:0,startY:0,startPanX:0,startScrollY:0};
+    let lastMapTap={time:0,x:0,y:0};
+    let roamHintShown=false;
 
     function clamp(value,min,max){ return Math.max(min,Math.min(max,value)); }
 
@@ -728,7 +730,9 @@
       if(sea||place==="展望台") wind+=.012;
       if(sheltered) wind-=.018;
       if(city) wind-=.006;
-      return {wind:Math.max(.018,wind)};
+      // ブルーハーバーは開けた海辺ではなく、静かな港の空気にする。
+      if(place==="ブルーハーバー") wind={morning:.026,day:.023,evening:.028,night:.018}[band];
+      return {wind:Math.max(.012,wind)};
     }
     function clearEvent(name){
       clearTimeout(eventTimers[name]);
@@ -773,7 +777,7 @@
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
           // 港は小さく短く、シーサイドは明確に前へ出す。
-          audio.volume=mode==="harbor" ? .055 : .54;
+          audio.volume=mode==="harbor" ? .036 : .54;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
@@ -815,7 +819,7 @@
           const duration=Number.isFinite(audio.duration)?audio.duration:24;
           audio.currentTime=Math.max(0,Math.random()*Math.max(1,duration-4));
           audio.playbackRate=.94+Math.random()*.09;
-          audio.volume=(place==="シーサイド"?.012:place==="ブルーハーバー"?(band==="night"?.0025:.0045):(band==="morning"?.012:.008))+Math.random()*.0025;
+          audio.volume=(place==="シーサイド"?.0065:place==="ブルーハーバー"?(band==="night"?.0012:.0022):(band==="morning"?.008:.005))+Math.random()*.0012;
           await audio.play();
           eventStopTimers.birds=setTimeout(()=>{
             audio.pause(); audio.volume=0;
@@ -1116,7 +1120,13 @@
         returnToMap();
         return;
       }
-      if(isZoomed) setFreeRoam(true);
+      if(isZoomed){
+        setFreeRoam(true);
+        if(!roamHintShown){
+          roamHintShown=true;
+          showSoundNote("地図をドラッグ／ダブルタップで全景へ");
+        }
+      }
     }
 
     function returnToMap(){
@@ -1186,6 +1196,8 @@
     function finishFreePan(e){
       if(!freePan.active || (e?.pointerId!=null && e.pointerId!==freePan.pointerId)) return;
       const moved=freePan.moved;
+      const tapX=e?.clientX ?? freePan.startX;
+      const tapY=e?.clientY ?? freePan.startY;
       freePan.active=false;
       mapViewport?.classList.remove("dragging");
       mapStage?.classList.remove("free-panning");
@@ -1193,6 +1205,23 @@
       if(moved){
         const suppress=event=>{ event.preventDefault(); event.stopPropagation(); };
         mapViewport?.addEventListener("click",suppress,{capture:true,once:true});
+        lastMapTap.time=0;
+        return;
+      }
+
+      // カードを閉じたズーム状態では、地図のダブルタップで全景へ戻す。
+      if(isZoomed && !sheet.classList.contains("open") && !isTransitioning){
+        const now=performance.now();
+        const near=Math.hypot(tapX-lastMapTap.x,tapY-lastMapTap.y)<32;
+        if(now-lastMapTap.time<360 && near){
+          lastMapTap.time=0;
+          const suppress=event=>{ event.preventDefault(); event.stopPropagation(); };
+          mapViewport?.addEventListener("click",suppress,{capture:true,once:true});
+          returnToMap();
+          showSoundNote("全景へ戻りました");
+        }else{
+          lastMapTap={time:now,x:tapX,y:tapY};
+        }
       }
     }
     mapViewport?.addEventListener("pointerup",finishFreePan);
