@@ -730,9 +730,11 @@
       if(sea||place==="展望台") wind+=.012;
       if(sheltered) wind-=.018;
       if(city) wind-=.006;
-      // ブルーハーバーは開けた海辺ではなく、静かな港の空気にする。
-      if(place==="ブルーハーバー") wind={morning:.026,day:.023,evening:.028,night:.018}[band];
-      return {wind:Math.max(.012,wind)};
+      // 海辺の風音源は音圧が強いため、場所ごとにかなり控えめにする。
+      // ブルーハーバーは水面のチャプチャプを主役に、シーサイドも波を主役にする。
+      if(place==="ブルーハーバー") wind={morning:.009,day:.008,evening:.010,night:.006}[band];
+      if(place==="シーサイド") wind={morning:.018,day:.016,evening:.020,night:.012}[band];
+      return {wind:Math.max(.004,wind)};
     }
     function clearEvent(name){
       clearTimeout(eventTimers[name]);
@@ -776,8 +778,8 @@
           audio.pause();
           audio.currentTime=0;
           audio.playbackRate=mode==="harbor" ? (.90+Math.random()*.05) : (.99+Math.random()*.06);
-          // 港は小さく短く、シーサイドは明確に前へ出す。
-          audio.volume=mode==="harbor" ? .036 : .54;
+          // 港は風を抑え、短いチャプチャプ音を前へ出す。シーサイドは波を主役にする。
+          audio.volume=mode==="harbor" ? .105 : .54;
           await audio.play();
           const fullDuration=(Number.isFinite(audio.duration)?audio.duration:6)*1000;
           const heardDuration=mode==="harbor"
