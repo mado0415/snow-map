@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.7.3.1: 横方向センタリングの参照漏れを修正 -->
+  <!-- SNOW MAP v0.7.5: 24時間グラデーション背景と夜間文字色 -->
   <style>
     :root {
       --ink: #31475f;
@@ -18,8 +18,13 @@
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; }
     body {
-      background: var(--world-bg, var(--paper));
-      transition: background-color .75s ease;
+      --world-top: #f8fbfb;
+      --world-mid: #f8fbfb;
+      --world-bottom: #f8fbfb;
+      --top-ink: #31475f;
+      --top-muted: rgba(49,71,95,.50);
+      background: linear-gradient(180deg, var(--world-top) 0%, var(--world-mid) 48%, var(--world-bottom) 100%);
+      transition: background .9s linear;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
@@ -28,8 +33,7 @@
 
     .app {
       width: min(100%, 560px);
-      background: var(--world-bg, transparent);
-      transition: background-color .75s ease;
+      background: transparent;
       min-height: 100svh;
       margin: 0 auto;
       padding: max(10px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
@@ -43,6 +47,7 @@
     }
     h1 {
       margin: 0;
+      color: var(--top-ink);
       font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(24px, 7.4vw, 36px);
       font-weight: 500;
@@ -50,6 +55,7 @@
     }
     .top-copy {
       margin: 4px 0 0;
+      color: var(--top-ink);
       font-size: 13px;
       line-height: 1.55;
       letter-spacing: .05em;
@@ -57,6 +63,7 @@
     }
     .hint {
       margin: 1px 0 0;
+      color: var(--top-muted);
       font-size: 10px;
       letter-spacing: .07em;
       opacity: .5;
@@ -71,12 +78,6 @@
       isolation: isolate;
       background: transparent;
     }
-
-
-    body.time-morning, .app.time-morning { --world-bg: #eef8fb; }
-    body.time-day, .app.time-day { --world-bg: #f8fbfb; }
-    body.time-evening, .app.time-evening { --world-bg: #f6ece8; }
-    body.time-night, .app.time-night { --world-bg: #26394c; }
 
     .map-stage {
       position: relative;
@@ -559,14 +560,57 @@
       if(h>=16&&h<19) return "evening";
       return "night";
     }
+    const skyStops=[
+      {m:0,    top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"},
+      {m:240,  top:"#263b56", mid:"#365673", bottom:"#71899d", text:"#edf4fa", muted:"#c3d1dd"},
+      {m:300,  top:"#8499aa", mid:"#b7cad7", bottom:"#e2edf2", text:"#415b72", muted:"#71879a"},
+      {m:360,  top:"#e9dfe1", mid:"#e8f2f7", bottom:"#eef8fb", text:"#31475f", muted:"#718293"},
+      {m:480,  top:"#eef7fa", mid:"#f5fafb", bottom:"#f8fbfb", text:"#31475f", muted:"#758696"},
+      {m:660,  top:"#f8fbfb", mid:"#f8fbfb", bottom:"#f5f9fa", text:"#31475f", muted:"#758696"},
+      {m:960,  top:"#f5e8e4", mid:"#f4e5e1", bottom:"#f0dedb", text:"#31475f", muted:"#7f7376"},
+      {m:1080, top:"#d9c5cb", mid:"#c7bdcc", bottom:"#aeb4c5", text:"#425066", muted:"#687389"},
+      {m:1140, top:"#586b84", mid:"#445a73", bottom:"#334a63", text:"#edf4fa", muted:"#bdcbd8"},
+      {m:1260, top:"#314762", mid:"#293e58", bottom:"#22364e", text:"#f3f7fb", muted:"#bac8d5"},
+      {m:1440, top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"}
+    ];
+    function hexToRgb(hex){
+      const n=parseInt(hex.slice(1),16);
+      return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};
+    }
+    function mixHex(a,b,t){
+      const A=hexToRgb(a),B=hexToRgb(b);
+      const c=k=>Math.round(A[k]+(B[k]-A[k])*t).toString(16).padStart(2,"0");
+      return `#${c("r")}${c("g")}${c("b")}`;
+    }
+    function skyAt(minute){
+      let i=0;
+      while(i<skyStops.length-1 && minute>skyStops[i+1].m) i++;
+      const a=skyStops[i], b=skyStops[Math.min(i+1,skyStops.length-1)];
+      const span=Math.max(1,b.m-a.m), t=Math.max(0,Math.min(1,(minute-a.m)/span));
+      return {
+        top:mixHex(a.top,b.top,t), mid:mixHex(a.mid,b.mid,t), bottom:mixHex(a.bottom,b.bottom,t),
+        text:mixHex(a.text,b.text,t), muted:mixHex(a.muted,b.muted,t)
+      };
+    }
+    function setSkyGradient(now=new Date()){
+      const minute=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+      const sky=skyAt(minute);
+      const root=document.body.style;
+      root.setProperty("--world-top",sky.top);
+      root.setProperty("--world-mid",sky.mid);
+      root.setProperty("--world-bottom",sky.bottom);
+      root.setProperty("--top-ink",sky.text);
+      root.setProperty("--top-muted",sky.muted);
+      themeColor?.setAttribute("content",sky.top);
+    }
     function setWorldTime(){
+      const now=new Date();
+      setSkyGradient(now);
       const key=getTimeKey();
       app.classList.remove("time-morning","time-day","time-evening","time-night");
       document.body.classList.remove("time-morning","time-day","time-evening","time-night");
       app.classList.add(`time-${key}`);
       document.body.classList.add(`time-${key}`);
-      const bgColors={morning:"#eef8fb",day:"#f8fbfb",evening:"#f6ece8",night:"#26394c"};
-      themeColor?.setAttribute("content",bgColors[key]);
       if(key===currentTimeKey) return;
       currentTimeKey=key;
       const nextSrc=timeImages[key];
