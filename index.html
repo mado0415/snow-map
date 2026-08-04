@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.17: 朝画像は10時まで維持し、背景色のみ午前へ早く移行 -->
+  <!-- SNOW MAP v0.12.18: 朝画像は10時まで維持。背景色を8〜9時台で午前らしく明るく調整 -->
   <style>
     :root {
       --ink: #31475f;
@@ -1077,20 +1077,15 @@
       {m:240,  top:"#263b56", mid:"#365673", bottom:"#71899d", text:"#edf4fa", muted:"#c3d1dd"},
       {m:300,  top:"#8499aa", mid:"#b7cad7", bottom:"#e2edf2", text:"#415b72", muted:"#71879a"},
       {m:360,  top:"#e7e7ef", mid:"#edf2f6", bottom:"#f4f6f5", text:"#31475f", muted:"#718293"},
-      {m:420,  top:"#eef3f7", mid:"#f5f4f2", bottom:"#faeee8", text:"#31475f", muted:"#758696"},
-      {m:480,  top:"#f0f5f8", mid:"#f8f5f3", bottom:"#fbeee8", text:"#31475f", muted:"#758696"},
-      {m:660,  top:"#eff4f8", mid:"#f7f3f3", bottom:"#faeee9", text:"#31475f", muted:"#758696"},
-
-      /* 夕方：オレンジからピンクへ */
+      {m:420,  top:"#f0f4f7", mid:"#f7f7f5", bottom:"#fbf6f2", text:"#31475f", muted:"#758696"},
+      {m:480,  top:"#f5f7f8", mid:"#fbfaf8", bottom:"#fff8f2", text:"#31475f", muted:"#758696"},
+      {m:540,  top:"#f8f9fb", mid:"#fcfbfa", bottom:"#fffaf5", text:"#31475f", muted:"#758696"},
+      {m:600,  top:"#eff4f8", mid:"#f7f3f3", bottom:"#faeee9", text:"#31475f", muted:"#758696"},
       {m:960,  top:"#e6c7cf", mid:"#efb9b2", bottom:"#f0a078", text:"#31475f", muted:"#7f6f77"},
       {m:1020, top:"#d7a6bb", mid:"#e59aa8", bottom:"#e98572", text:"#3f4d63", muted:"#796d79"},
       {m:1080, top:"#bc88ac", mid:"#d17f9d", bottom:"#d97878", text:"#fff7fb", muted:"#ead7e2"},
-
-      /* 薄暮：ラベンダーから紫へ */
       {m:1110, top:"#9f77a3", mid:"#b47799", bottom:"#bd7487", text:"#fff8fc", muted:"#e5d8e5"},
       {m:1140, top:"#806b96", mid:"#8d6f91", bottom:"#936b83", text:"#f8f7fc", muted:"#ddd8e5"},
-
-      /* 19:15以降は夜 */
       {m:1155, top:"#586783", mid:"#4b5d78", bottom:"#40536e", text:"#f1f5fa", muted:"#c5cfda"},
       {m:1200, top:"#405570", mid:"#354a65", bottom:"#2d425c", text:"#f3f7fb", muted:"#bfccd8"},
       {m:1260, top:"#314762", mid:"#293e58", bottom:"#22364e", text:"#f3f7fb", muted:"#bac8d5"},
