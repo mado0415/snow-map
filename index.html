@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.14.0: 画面内でSafariの白へ連続フェード -->
+  <!-- SNOW MAP v0.14.1: 上端フェード短縮＋下端フェード撤去 -->
   <style>
     :root {
       --ink: #31475f;
@@ -37,13 +37,14 @@
     html {
       margin: 0;
       min-height: 100%;
-      background: #ffffff;
+      background: var(--world-bottom);
+      transition: background-color .9s linear;
     }
     body {
       margin: 0;
       min-height: 100svh;
       position: relative;
-      background: #ffffff !important;
+      background: var(--world-bottom) !important;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
@@ -54,16 +55,14 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background-color: #ffffff;
+      background-color: var(--world-bottom);
       background-image: linear-gradient(
         180deg,
         #ffffff 0%,
-        rgba(255,255,255,.92) 5%,
-        var(--world-top) 15%,
-        var(--world-mid) 48%,
-        var(--world-bottom) 82%,
-        rgba(255,255,255,.92) 94%,
-        #ffffff 100%
+        rgba(255,255,255,.88) 2.5%,
+        var(--world-top) 8%,
+        var(--world-mid) 50%,
+        var(--world-bottom) 100%
       );
       background-repeat: no-repeat;
       background-size: 100% 100%;
