@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.13: 場所ごとの生活音レイヤー追加＋展望台の風を強化 -->
+  <!-- SNOW MAP v0.12.14: 広場・ドーム微音化＋移動中に目的地音が近づく演出 -->
   <style>
     :root {
       --ink: #31475f;
@@ -696,6 +696,7 @@
     const loopTracks=[ambWind,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,plazaAmbience,plazaPlayground,domeAmbience,cafeAmbience];
     const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundKey=null;
+    let travelPreviewToken=0;
     let placeEventTimer=null, eventBusy=false, activeFootstep=null, clockTimer=null;
     const songQueues = {};
     const strollSteps = {};
@@ -768,7 +769,7 @@
 
       /* 人のいる場所は、イベント音ではなく薄い常時音で寂しさを消す。 */
       "はじまりの広場":{
-        loops:{wind:.018,waveRelaxing:.035,plazaAmbience:.055,plazaPlayground:.035},
+        loops:{wind:.018,waveRelaxing:.035,plazaAmbience:.020,plazaPlayground:.012},
         morning:[{audio:birdsMorning,volume:.075,gap:[52000,90000]}]
       },
       "歩道橋":{
@@ -818,7 +819,7 @@
       },
       "Snow Dome":{
         /* 開演前のざわめきを常時ごく薄く。歓声は遠くからゆっくり現れる。 */
-        loops:{wind:.002,waveRelaxing:.006,domeAmbience:.085},
+        loops:{wind:.002,waveRelaxing:.006,domeAmbience:.038},
         events:[
           {audio:crowdClap,volume:.075,gap:[70000,125000],fadeIn:2200},
           {audio:crowdLive,volume:.068,gap:[90000,155000],fadeIn:2400}
@@ -845,12 +846,52 @@
         levels.gardenDay=(loops.gardenDay||0)*(band==="evening"?.72:1);
       }
       if(place==="はじまりの広場" && band==="night"){
-        levels.plazaPlayground*=.45;
-        levels.plazaAmbience*=.68;
+        levels.plazaPlayground=0;
+        levels.plazaAmbience=0;
       }
       if(place==="カフェ" && band==="night") levels.cafeAmbience*=.82;
       if(place==="Snow Dome" && band==="night") levels.domeAmbience*=1.08;
       return levels;
+    }
+
+    function applyLoopLevels(levels,duration=1600){
+      setLoop(ambWind,levels.wind||0,duration);
+      setLoop(forestDay,levels.forestDay||0,duration);
+      setLoop(forestNight,levels.forestNight||0,duration);
+      setLoop(gardenDay,levels.gardenDay||0,duration);
+      setLoop(waveRelaxing,levels.waveRelaxing||0,duration);
+      setLoop(waveOceanAlt,levels.waveOceanAlt||0,duration);
+      setLoop(plazaAmbience,levels.plazaAmbience||0,duration);
+      setLoop(plazaPlayground,levels.plazaPlayground||0,duration);
+      setLoop(domeAmbience,levels.domeAmbience||0,duration);
+      setLoop(cafeAmbience,levels.cafeAmbience||0,duration);
+    }
+
+    function previewLevelsFor(place){
+      const full=loopLevelsFor(place);
+      const factor=
+        place==="展望台" ? .38 :
+        ["ブルーハーバー","シーサイド"].includes(place) ? .30 :
+        ["Snow Dome","はじまりの広場","カフェ"].includes(place) ? .25 : .23;
+      const preview={};
+      Object.keys(full).forEach(key=>preview[key]=(full[key]||0)*factor);
+      return preview;
+    }
+
+    function beginDestinationPreview(place){
+      if(!soundEnabled) return 0;
+      const token=++travelPreviewToken;
+      activeSoundKey=null;
+      clearPlaceEvents();
+      applyLoopLevels(previewLevelsFor(place),3200);
+      return token;
+    }
+
+    function finishDestinationPreview(place,token){
+      if(!soundEnabled || token!==travelPreviewToken) return;
+      activeSoundKey=`${place||"map"}:${timeBand()}`;
+      applyLoopLevels(loopLevelsFor(place),1200);
+      schedulePlaceEvent(place,true);
     }
     function chooseEvent(place){
       const cfg=PLACE_SOUND[place]; if(!cfg) return null;
@@ -907,16 +948,7 @@
       [doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,crowdClap,crowdLive,seagulls,...cityCars,harborHorn].forEach(stopAudio);
       eventBusy=false;
       const l=loopLevelsFor(place);
-      setLoop(ambWind,l.wind,duration);
-      setLoop(forestDay,l.forestDay,duration);
-      setLoop(forestNight,l.forestNight,duration);
-      setLoop(gardenDay,l.gardenDay,duration);
-      setLoop(waveRelaxing,l.waveRelaxing,duration);
-      setLoop(waveOceanAlt,l.waveOceanAlt,duration);
-      setLoop(plazaAmbience,l.plazaAmbience,duration);
-      setLoop(plazaPlayground,l.plazaPlayground,duration);
-      setLoop(domeAmbience,l.domeAmbience,duration);
-      setLoop(cafeAmbience,l.cafeAmbience,duration);
+      applyLoopLevels(l,duration);
       schedulePlaceEvent(place,true);
     }
 
@@ -1208,6 +1240,7 @@
     }
 
     function returnToMap(){
+      travelPreviewToken++;
       isZoomed=false;
       currentPlace=null;
       mapStage?.classList.remove("walking");
@@ -1228,7 +1261,7 @@
       isTransitioning=true;
       setFreeRoam(false);
       currentPlace=place;
-      ambientMix(place,{duration:2400});
+      const previewToken=beginDestinationPreview(place);
       startFootsteps(place);
       closeSheet({keepZoom:true});
       walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
@@ -1242,6 +1275,7 @@
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
         stopFootsteps();
+        finishDestinationPreview(place,previewToken);
         playArrivalSound(place);
         showSong(place);
         isTransitioning=false;
