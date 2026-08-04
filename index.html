@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.16: 朝の街・港到着カモメ・カフェベル短縮・午前色を調整 -->
+  <!-- SNOW MAP v0.12.17: 朝画像は10時まで維持し、背景色のみ午前へ早く移行 -->
   <style>
     :root {
       --ink: #31475f;
@@ -1067,8 +1067,8 @@
 
     function getTimeKey(){
       const h=new Date().getHours();
-      if(h>=5&&h<7) return "morning";
-      if(h>=7&&h<16) return "day";
+      if(h>=5&&h<10) return "morning";
+      if(h>=10&&h<16) return "day";
       if(h>=16&&h<19) return "evening";
       return "night";
     }
