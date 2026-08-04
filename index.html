@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.14.6: 単色時間連動＋上下白露出防止 -->
+  <!-- SNOW MAP v0.12.9: 時間連動の上下グラデーションを追加 -->
   <style>
     :root {
       --ink: #31475f;
@@ -20,15 +20,6 @@
       --world-top: #f8fbfb;
       --world-mid: #f8fbfb;
       --world-bottom: #f8fbfb;
-      --world-glow-x: 22%;
-      --world-glow-y: 18%;
-      --world-glow-color: rgba(198,220,245,.14);
-      --world-glow-size: 72%;
-      --map-air-color: rgba(255,255,255,.02);
-      --map-air-glow: rgba(255,255,255,.03);
-      --map-air-x: 50%;
-      --map-air-y: 20%;
-      --map-air-opacity: .06;
       --top-ink: #31475f;
       --top-muted: rgba(49,71,95,.50);
       --night-light-alpha: .18;
@@ -37,38 +28,32 @@
     html {
       margin: 0;
       min-height: 100%;
-      background: var(--world-mid);
+      background: var(--world-bottom);
       transition: background-color .9s linear;
     }
     body {
       margin: 0;
-      min-height: 100dvh;
+      min-height: 100svh;
       position: relative;
-      background: var(--world-mid) !important;
+      background: transparent;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
     }
-
-    .world-background {
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
-      z-index: 0;
+      z-index: -100;
       pointer-events: none;
-      background: var(--world-mid);
-      transition: background-color .9s linear, background .9s linear;
-    }
-
-    .app {
-      position: relative;
-      z-index: 1;
-      background: transparent !important;
+      background: linear-gradient(180deg, var(--world-top) 0%, var(--world-mid) 52%, var(--world-bottom) 100%);
+      transition: background .9s linear;
     }
     button, a { font: inherit; }
 
     .app {
       width: min(100%, 560px);
-      background: transparent !important;
+      background: transparent;
       min-height: 100svh;
       margin: 0 auto;
       padding: max(10px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
@@ -189,11 +174,7 @@
       inset: 0;
       pointer-events: none;
     }
-    .ambient {
-      z-index: 2;
-      background: transparent;
-      opacity: 1;
-    }
+    .ambient { z-index: 2; transition: background .8s ease; }
     .lights {
       z-index: 4;
       opacity: var(--night-light-alpha);
@@ -285,7 +266,14 @@
       0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(.94); }
       50% { opacity: .82; transform: translate(-50%,-50%) scale(1.05); }
     }
-.sheet-backdrop {
+
+    /* 時間帯は描き分けた4枚の画像で表現します */
+    .time-morning .ambient,
+    .time-day .ambient,
+    .time-evening .ambient,
+    .time-night .ambient { background: transparent; }
+
+    .sheet-backdrop {
       position: fixed;
       inset: 0;
       z-index: 20;
@@ -480,29 +468,9 @@
       *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
       .intro { display: none; }
     }
-  
-    /* 背景は world-background だけで描画する */
-    html,
-    body,
-    .app,
-    .map-viewport,
-    .map-stage,
-    .map-images {
-      background: transparent !important;
-      background-color: transparent !important;
-      background-image: none !important;
-    }
-
-    .ambient {
-      background: transparent !important;
-      opacity: 1 !important;
-      mix-blend-mode: normal !important;
-    }
-
   </style>
 </head>
 <body>
-  <div class="world-background" aria-hidden="true"></div>
   <div class="walk-status" id="walkStatus" aria-live="polite">
     <span id="walkText">次の景色へ</span>
     <span class="walk-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -867,25 +835,17 @@
       return "night";
     }
     const skyStops=[
-      {m:0,    top:"#263a55", mid:"#263a55", bottom:"#263a55", text:"#f3f7fb", muted:"#b8c6d4"},
-      {m:240,  top:"#405a73", mid:"#405a73", bottom:"#405a73", text:"#eef5fa", muted:"#c3d0db"},
-      {m:300,  top:"#9babb8", mid:"#9babb8", bottom:"#9babb8", text:"#40576d", muted:"#718495"},
-      {m:360,  top:"#eadfe5", mid:"#eadfe5", bottom:"#eadfe5", text:"#31475f", muted:"#738293"},
-      {m:480,  top:"#f3f8fa", mid:"#f3f8fa", bottom:"#f3f8fa", text:"#31475f", muted:"#758696"},
-      {m:660,  top:"#f7f7f4", mid:"#f7f7f4", bottom:"#f7f7f4", text:"#31475f", muted:"#758696"},
-
-      /* 夕方：オレンジ → ピンク → ラベンダー */
-      {m:930,  top:"#e8b09a", mid:"#e8b09a", bottom:"#e8b09a", text:"#3f4d63", muted:"#786f78"},
-      {m:990,  top:"#df947f", mid:"#df947f", bottom:"#df947f", text:"#425066", muted:"#766d77"},
-      {m:1050, top:"#ca7f8f", mid:"#ca7f8f", bottom:"#ca7f8f", text:"#fff7fb", muted:"#eedce5"},
-      {m:1095, top:"#aa7398", mid:"#aa7398", bottom:"#aa7398", text:"#fff8fc", muted:"#eadce8"},
-      {m:1125, top:"#88709a", mid:"#88709a", bottom:"#88709a", text:"#f8f7fc", muted:"#ddd8e5"},
-
-      /* 19:15以降は夜 */
-      {m:1155, top:"#465775", mid:"#465775", bottom:"#465775", text:"#f3f7fb", muted:"#c7d0dc"},
-      {m:1215, top:"#344965", mid:"#344965", bottom:"#344965", text:"#f3f7fb", muted:"#becad6"},
-      {m:1290, top:"#2b405b", mid:"#2b405b", bottom:"#2b405b", text:"#f3f7fb", muted:"#bcc9d5"},
-      {m:1440, top:"#263a55", mid:"#263a55", bottom:"#263a55", text:"#f3f7fb", muted:"#b8c6d4"}
+      {m:0,    top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"},
+      {m:240,  top:"#263b56", mid:"#365673", bottom:"#71899d", text:"#edf4fa", muted:"#c3d1dd"},
+      {m:300,  top:"#8499aa", mid:"#b7cad7", bottom:"#e2edf2", text:"#415b72", muted:"#71879a"},
+      {m:360,  top:"#e7e7ef", mid:"#edf2f6", bottom:"#f4f6f5", text:"#31475f", muted:"#718293"},
+      {m:480,  top:"#edf4f8", mid:"#f5f6f6", bottom:"#faf4f0", text:"#31475f", muted:"#758696"},
+      {m:660,  top:"#eff4f8", mid:"#f7f3f3", bottom:"#faeee9", text:"#31475f", muted:"#758696"},
+      {m:960,  top:"#e8e7ef", mid:"#f2e7e8", bottom:"#f1ded7", text:"#31475f", muted:"#7f7376"},
+      {m:1080, top:"#d4cad7", mid:"#c8bdcb", bottom:"#b9aeb7", text:"#425066", muted:"#687389"},
+      {m:1140, top:"#586b84", mid:"#445a73", bottom:"#334a63", text:"#edf4fa", muted:"#bdcbd8"},
+      {m:1260, top:"#314762", mid:"#293e58", bottom:"#22364e", text:"#f3f7fb", muted:"#bac8d5"},
+      {m:1440, top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"}
     ];
     function hexToRgb(hex){
       const n=parseInt(hex.slice(1),16);
@@ -906,39 +866,6 @@
         text:mixHex(a.text,b.text,t), muted:mixHex(a.muted,b.muted,t)
       };
     }
-    function glowForMinute(minute){
-      if(minute>=300 && minute<660){
-        return {
-          x:"18%",y:"10%",color:"rgba(205,221,246,.20)",size:"72%",
-          mapX:"20%",mapY:"12%",mapGlow:"rgba(222,233,250,.28)",
-          mapColor:"rgba(205,220,246,.13)",mapOpacity:".14"
-        };
-      }
-      if(minute>=660 && minute<960){
-        return {
-          x:"50%",y:"12%",color:"rgba(255,255,255,.14)",size:"80%",
-          mapX:"50%",mapY:"10%",mapGlow:"rgba(255,255,255,.24)",
-          mapColor:"rgba(255,247,232,.07)",mapOpacity:".10"
-        };
-      }
-      if(minute>=960 && minute<1215){
-        const t=Math.max(0,Math.min(1,(minute-960)/(1215-960)));
-        return {
-          x:`${72+8*t}%`,y:`${58+22*t}%`,
-          color:`rgba(255,174,122,${(0.20+0.06*t).toFixed(3)})`,size:"78%",
-          mapX:`${68+10*t}%`,mapY:`${52+20*t}%`,
-          mapGlow:`rgba(255,190,145,${(0.28+0.08*t).toFixed(3)})`,
-          mapColor:`rgba(255,168,132,${(0.14+0.05*t).toFixed(3)})`,
-          mapOpacity:(0.16+0.05*t).toFixed(3)
-        };
-      }
-      return {
-        x:"50%",y:"8%",color:"rgba(115,136,188,.17)",size:"78%",
-        mapX:"50%",mapY:"8%",mapGlow:"rgba(145,165,213,.20)",
-        mapColor:"rgba(72,94,145,.14)",mapOpacity:".14"
-      };
-    }
-
     function setSkyGradient(now=new Date()){
       const minute=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
       const sky=skyAt(minute);
@@ -946,26 +873,16 @@
       root.setProperty("--world-top",sky.top);
       root.setProperty("--world-mid",sky.mid);
       root.setProperty("--world-bottom",sky.bottom);
-      const glow=glowForMinute(minute);
-      root.setProperty("--world-glow-x",glow.x);
-      root.setProperty("--world-glow-y",glow.y);
-      root.setProperty("--world-glow-color",glow.color);
-      root.setProperty("--world-glow-size",glow.size);
-      root.setProperty("--map-air-x",glow.mapX);
-      root.setProperty("--map-air-y",glow.mapY);
-      root.setProperty("--map-air-glow",glow.mapGlow);
-      root.setProperty("--map-air-color",glow.mapColor);
-      root.setProperty("--map-air-opacity",glow.mapOpacity);
       root.setProperty("--top-ink",sky.text);
       root.setProperty("--top-muted",sky.muted);
-      document.documentElement.style.backgroundColor=sky.mid;
-      document.body.style.backgroundColor=sky.mid;
       const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
       const lightAlpha = 0.10 + Math.max(0,nightFactor)*0.34;
       const lightSpread = 0.75 + Math.max(0,nightFactor)*0.55;
       root.setProperty("--night-light-alpha", lightAlpha.toFixed(3));
       root.setProperty("--night-light-spread", lightSpread.toFixed(3));
-themeColor?.setAttribute("content",sky.mid);
+      document.documentElement.style.backgroundColor=sky.bottom;
+      document.body.style.backgroundColor=sky.bottom;
+      themeColor?.setAttribute("content",sky.bottom);
     }
     function setWorldTime(){
       const now=new Date();
