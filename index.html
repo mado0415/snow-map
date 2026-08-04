@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.3: 夕焼け時間延長＋構文エラー修復 -->
+  <!-- SNOW MAP v0.13.4: 夕焼けから夜へ、オレンジ→ピンク→紫→ネイビーで連続変化 -->
   <style>
     :root {
       --ink: #31475f;
@@ -44,40 +44,29 @@
       margin: 0;
       min-height: 100svh;
       position: relative;
-      background: transparent;
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -100;
-      pointer-events: none;
-      background: linear-gradient(
-        180deg,
-        var(--world-top) 0%,
-        var(--world-mid) 48%,
-        var(--world-mid) 58%,
-        var(--world-bottom) 100%
-      );
-      transition: background .9s linear;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -99;
-      pointer-events: none;
-      background:
+      background-color: var(--world-bottom);
+      background-image:
         radial-gradient(
           circle at var(--world-glow-x) var(--world-glow-y),
           var(--world-glow-color) 0%,
           transparent var(--world-glow-size)
+        ),
+        linear-gradient(
+          180deg,
+          var(--world-top) 0%,
+          var(--world-mid) 46%,
+          var(--world-mid) 58%,
+          var(--world-bottom) 100%
         );
-      transition: background .9s linear;
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      overflow-x: hidden;
+      transition: background-color .9s linear, background-image .9s linear;
+    }
+    body::before,
+    body::after {
+      content: none;
     }
     button, a { font: inherit; }
 
@@ -874,20 +863,22 @@
       return "night";
     }
     const skyStops=[
-      {m:0,    top:"#18283c", mid:"#223650", bottom:"#2d4662", text:"#f3f7fb", muted:"#afc0d0"},
-      {m:240,  top:"#273d58", mid:"#3b5a76", bottom:"#8294a6", text:"#eef5fa", muted:"#c4d1dc"},
-      {m:300,  top:"#8ea2b3", mid:"#c3d2dc", bottom:"#e9eff2", text:"#415b72", muted:"#74899a"},
-      {m:360,  top:"#e8e0e7", mid:"#edf3f6", bottom:"#f6f7f4", text:"#31475f", muted:"#718293"},
-      {m:480,  top:"#eef7fa", mid:"#f7fbfc", bottom:"#fbfaf7", text:"#31475f", muted:"#758696"},
-      {m:660,  top:"#f5f9fa", mid:"#fbfaf7", bottom:"#faf7f1", text:"#31475f", muted:"#758696"},
-      {m:960,  top:"#d9d1df", mid:"#efd9d5", bottom:"#f6cdb6", text:"#3f4d63", muted:"#796f7a"},
-      {m:1020, top:"#b8b4cc", mid:"#e5c2c1", bottom:"#f2b58f", text:"#465269", muted:"#746e7b"},
-      {m:1080, top:"#8f96b3", mid:"#d8aeb5", bottom:"#ef9d73", text:"#edf2f7", muted:"#c8c4cf"},
-      {m:1140, top:"#687892", mid:"#b18fa2", bottom:"#df865f", text:"#f1f5f8", muted:"#cbc3cf"},
-      {m:1185, top:"#4f607b", mid:"#806f8c", bottom:"#b96f62", text:"#f3f6fa", muted:"#c7c6d2"},
-      {m:1215, top:"#384d69", mid:"#445a73", bottom:"#4b5f78", text:"#f2f6fa", muted:"#c0ccd8"},
-      {m:1290, top:"#2c405b", mid:"#334a64", bottom:"#344b64", text:"#f3f7fb", muted:"#bcc9d5"},
-      {m:1440, top:"#18283c", mid:"#223650", bottom:"#2d4662", text:"#f3f7fb", muted:"#afc0d0"}
+      {m:0,    top:"#17263a", mid:"#21344d", bottom:"#2b435f", text:"#f3f7fb", muted:"#afc0d0"},
+      {m:240,  top:"#293d57", mid:"#49647d", bottom:"#8799aa", text:"#eef5fa", muted:"#c4d1dc"},
+      {m:300,  top:"#91a4b4", mid:"#c7d5de", bottom:"#edf2f4", text:"#415b72", muted:"#74899a"},
+      {m:360,  top:"#e9e2e9", mid:"#eef4f7", bottom:"#faf8f4", text:"#31475f", muted:"#718293"},
+      {m:480,  top:"#eef7fa", mid:"#f8fbfc", bottom:"#fbfaf7", text:"#31475f", muted:"#758696"},
+      {m:660,  top:"#f4f9fa", mid:"#fbfaf7", bottom:"#faf7f1", text:"#31475f", muted:"#758696"},
+
+      {m:930,  top:"#e6d8df", mid:"#f2d8ce", bottom:"#f7ceb2", text:"#3e4c62", muted:"#7b7078"},
+      {m:990,  top:"#d6b5c5", mid:"#f0b4aa", bottom:"#f39a69", text:"#465269", muted:"#7a6c78"},
+      {m:1050, top:"#b790b0", mid:"#e28c9d", bottom:"#ee7e55", text:"#f8f2f6", muted:"#e0cbd7"},
+      {m:1110, top:"#8c6f9f", mid:"#c96f8d", bottom:"#de6c58", text:"#fbf5fa", muted:"#decbd9"},
+      {m:1155, top:"#695b89", mid:"#9e5f82", bottom:"#b85f68", text:"#f7f5fb", muted:"#d3cada"},
+      {m:1190, top:"#4c4e78", mid:"#71567c", bottom:"#81586f", text:"#f5f6fb", muted:"#c8c9d8"},
+      {m:1215, top:"#354766", mid:"#465172", bottom:"#4e526e", text:"#f3f7fb", muted:"#c0cad7"},
+      {m:1290, top:"#293d59", mid:"#314862", bottom:"#334a64", text:"#f3f7fb", muted:"#bcc9d5"},
+      {m:1440, top:"#17263a", mid:"#21344d", bottom:"#2b435f", text:"#f3f7fb", muted:"#afc0d0"}
     ];
     function hexToRgb(hex){
       const n=parseInt(hex.slice(1),16);
