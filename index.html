@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.7: 背景描画を固定レイヤー1枚に完全統一 -->
+  <!-- SNOW MAP v0.13.8: iPhone上下の安全領域まで背景を延長 -->
   <style>
     :root {
       --ink: #31475f;
@@ -37,13 +37,14 @@
     html {
       margin: 0;
       min-height: 100%;
-      background: transparent;
+      background: var(--world-bottom);
+      transition: background-color .9s linear;
     }
     body {
       margin: 0;
       min-height: 100svh;
       position: relative;
-      background: transparent !important;
+      background: var(--world-bottom) !important;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
@@ -51,7 +52,10 @@
 
     .world-background {
       position: fixed;
-      inset: 0;
+      top: -20vh;
+      right: 0;
+      bottom: -20vh;
+      left: 0;
       z-index: 0;
       pointer-events: none;
       background-color: transparent;
@@ -63,6 +67,7 @@
       );
       background-repeat: no-repeat;
       background-size: 100% 100%;
+      background-position: center;
       transition: background-image .9s linear;
     }
 
@@ -962,12 +967,13 @@
       root.setProperty("--map-air-opacity",glow.mapOpacity);
       root.setProperty("--top-ink",sky.text);
       root.setProperty("--top-muted",sky.muted);
+      document.documentElement.style.backgroundColor=sky.bottom;
       const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
       const lightAlpha = 0.10 + Math.max(0,nightFactor)*0.34;
       const lightSpread = 0.75 + Math.max(0,nightFactor)*0.55;
       root.setProperty("--night-light-alpha", lightAlpha.toFixed(3));
       root.setProperty("--night-light-spread", lightSpread.toFixed(3));
-themeColor?.setAttribute("content",sky.bottom);
+themeColor?.setAttribute("content",sky.top);
     }
     function setWorldTime(){
       const now=new Date();
