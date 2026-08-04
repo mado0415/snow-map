@@ -1,10 +1,11 @@
-SNOW MAP 採用音源 一括追加用
+SNOW MAP v0.12.13 追加音源
 
-このフォルダ内は階層なしです。
-Working Copyの sounds フォルダで「Import files」を開き、
-このフォルダ内を「すべて選択」して読み込んでください。
+この4ファイルをGitHubの sounds フォルダへ追加してください。
 
-既存のGitHub直下のMP3は、まだ削除しないでください。
-現在のindex.htmlが参照している音源が残っているためです。
+- plaza-playground.mp3
+- cafe-cup-spoon.mp3
+- dome-pre-show-ambience.mp3
+- cafe-ambience.mp3
 
-公開前に、各ダウンロード元の利用条件とクレジット要否を確認してください。
+追加後、index.htmlをv0.12.13へ丸ごと差し替えてください。
+既存音源は削除しないでください。
