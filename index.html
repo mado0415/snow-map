@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.9: Safari上下の白へ自然につながる背景フェード -->
+  <!-- SNOW MAP v0.14.0: 画面内でSafariの白へ連続フェード -->
   <style>
     :root {
       --ink: #31475f;
@@ -51,21 +51,18 @@
 
     .world-background {
       position: fixed;
-      top: -20vh;
-      right: 0;
-      bottom: -20vh;
-      left: 0;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
       background-color: #ffffff;
       background-image: linear-gradient(
         180deg,
         #ffffff 0%,
-        rgba(255,255,255,.96) 7%,
-        var(--world-top) 17%,
-        var(--world-mid) 50%,
+        rgba(255,255,255,.92) 5%,
+        var(--world-top) 15%,
+        var(--world-mid) 48%,
         var(--world-bottom) 82%,
-        rgba(255,255,255,.96) 93%,
+        rgba(255,255,255,.92) 94%,
         #ffffff 100%
       );
       background-repeat: no-repeat;
