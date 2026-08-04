@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.4: 夕焼けから夜へ、オレンジ→ピンク→紫→ネイビーで連続変化 -->
+  <!-- SNOW MAP v0.13.6: 背景を単一固定グラデーションへ整理 -->
   <style>
     :root {
       --ink: #31475f;
@@ -44,29 +44,30 @@
       margin: 0;
       min-height: 100svh;
       position: relative;
-      background-color: var(--world-bottom);
-      background-image:
-        radial-gradient(
-          circle at var(--world-glow-x) var(--world-glow-y),
-          var(--world-glow-color) 0%,
-          transparent var(--world-glow-size)
-        ),
-        linear-gradient(
-          180deg,
-          var(--world-top) 0%,
-          var(--world-mid) 46%,
-          var(--world-mid) 58%,
-          var(--world-bottom) 100%
-        );
-      background-attachment: fixed;
+      background: transparent;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
-      transition: background-color .9s linear, background-image .9s linear;
     }
-    body::before,
-    body::after {
-      content: none;
+
+    .world-background {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          180deg,
+          var(--world-top) 0%,
+          var(--world-mid) 48%,
+          var(--world-bottom) 100%
+        );
+      transition: background .9s linear;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
     }
     button, a { font: inherit; }
 
@@ -195,20 +196,8 @@
     }
     .ambient {
       z-index: 2;
-      transition: background .8s ease, opacity .8s ease;
-      background:
-        radial-gradient(
-          circle at var(--map-air-x) var(--map-air-y),
-          var(--map-air-glow) 0%,
-          transparent 72%
-        ),
-        linear-gradient(
-          180deg,
-          transparent 0%,
-          var(--map-air-color) 100%
-        );
-      opacity: var(--map-air-opacity);
-      mix-blend-mode: soft-light;
+      background: transparent;
+      opacity: 1;
     }
     .lights {
       z-index: 4;
@@ -499,6 +488,7 @@
   </style>
 </head>
 <body>
+  <div class="world-background" aria-hidden="true"></div>
   <div class="walk-status" id="walkStatus" aria-live="polite">
     <span id="walkText">次の景色へ</span>
     <span class="walk-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -957,7 +947,6 @@
       root.setProperty("--night-light-alpha", lightAlpha.toFixed(3));
       root.setProperty("--night-light-spread", lightSpread.toFixed(3));
       document.documentElement.style.backgroundColor=sky.bottom;
-      document.body.style.backgroundColor=sky.bottom;
       themeColor?.setAttribute("content",sky.bottom);
     }
     function setWorldTime(){
