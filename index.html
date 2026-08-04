@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.0: 時間連動の縦グラデーション＋薄い光のレイヤー -->
+  <!-- SNOW MAP v0.13.1: 背景と島を同じ時間帯の空気で包むレイヤー -->
   <style>
     :root {
       --ink: #31475f;
@@ -24,6 +24,11 @@
       --world-glow-y: 18%;
       --world-glow-color: rgba(198,220,245,.14);
       --world-glow-size: 72%;
+      --map-air-color: rgba(255,255,255,.02);
+      --map-air-glow: rgba(255,255,255,.03);
+      --map-air-x: 50%;
+      --map-air-y: 20%;
+      --map-air-opacity: .06;
       --top-ink: #31475f;
       --top-muted: rgba(49,71,95,.50);
       --night-light-alpha: .18;
@@ -199,7 +204,23 @@
       inset: 0;
       pointer-events: none;
     }
-    .ambient { z-index: 2; transition: background .8s ease; }
+    .ambient {
+      z-index: 2;
+      transition: background .8s ease, opacity .8s ease;
+      background:
+        radial-gradient(
+          circle at var(--map-air-x) var(--map-air-y),
+          var(--map-air-glow) 0%,
+          transparent 72%
+        ),
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          var(--map-air-color) 100%
+        );
+      opacity: var(--map-air-opacity);
+      mix-blend-mode: soft-light;
+    }
     .lights {
       z-index: 4;
       opacity: var(--night-light-alpha);
@@ -291,14 +312,7 @@
       0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(.94); }
       50% { opacity: .82; transform: translate(-50%,-50%) scale(1.05); }
     }
-
-    /* 時間帯は描き分けた4枚の画像で表現します */
-    .time-morning .ambient,
-    .time-day .ambient,
-    .time-evening .ambient,
-    .time-night .ambient { background: transparent; }
-
-    .sheet-backdrop {
+.sheet-backdrop {
       position: fixed;
       inset: 0;
       z-index: 20;
@@ -893,15 +907,31 @@
     }
     function glowForMinute(minute){
       if(minute>=300 && minute<660){
-        return {x:"18%",y:"12%",color:"rgba(190,211,240,.13)",size:"70%"};
+        return {
+          x:"18%",y:"12%",color:"rgba(190,211,240,.16)",size:"70%",
+          mapX:"22%",mapY:"14%",mapGlow:"rgba(214,229,250,.22)",
+          mapColor:"rgba(205,220,246,.10)",mapOpacity:".10"
+        };
       }
       if(minute>=660 && minute<960){
-        return {x:"50%",y:"18%",color:"rgba(255,255,255,.09)",size:"76%"};
+        return {
+          x:"50%",y:"16%",color:"rgba(255,255,255,.11)",size:"78%",
+          mapX:"50%",mapY:"12%",mapGlow:"rgba(255,255,255,.18)",
+          mapColor:"rgba(255,247,232,.05)",mapOpacity:".07"
+        };
       }
       if(minute>=960 && minute<1140){
-        return {x:"78%",y:"78%",color:"rgba(255,191,151,.13)",size:"72%"};
+        return {
+          x:"80%",y:"82%",color:"rgba(255,184,139,.17)",size:"74%",
+          mapX:"78%",mapY:"66%",mapGlow:"rgba(255,198,156,.24)",
+          mapColor:"rgba(255,180,145,.10)",mapOpacity:".12"
+        };
       }
-      return {x:"50%",y:"10%",color:"rgba(132,151,197,.10)",size:"74%"};
+      return {
+        x:"50%",y:"8%",color:"rgba(118,139,190,.13)",size:"76%",
+        mapX:"50%",mapY:"10%",mapGlow:"rgba(145,165,213,.16)",
+        mapColor:"rgba(78,100,151,.11)",mapOpacity:".10"
+      };
     }
 
     function setSkyGradient(now=new Date()){
@@ -916,6 +946,11 @@
       root.setProperty("--world-glow-y",glow.y);
       root.setProperty("--world-glow-color",glow.color);
       root.setProperty("--world-glow-size",glow.size);
+      root.setProperty("--map-air-x",glow.mapX);
+      root.setProperty("--map-air-y",glow.mapY);
+      root.setProperty("--map-air-glow",glow.mapGlow);
+      root.setProperty("--map-air-color",glow.mapColor);
+      root.setProperty("--map-air-opacity",glow.mapOpacity);
       root.setProperty("--top-ink",sky.text);
       root.setProperty("--top-muted",sky.muted);
       const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
