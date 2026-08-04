@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.14.4: 上端theme-color連動＋下端のみ白フェード -->
+  <!-- SNOW MAP v0.14.5: 上部Safariを時間帯上端色へ連動 -->
   <style>
     :root {
       --ink: #31475f;
@@ -37,13 +37,14 @@
     html {
       margin: 0;
       min-height: 100%;
-      background: #ffffff;
+      background: var(--world-top);
+      transition: background-color .9s linear;
     }
     body {
       margin: 0;
       min-height: 100svh;
       position: relative;
-      background: #ffffff !important;
+      background: var(--world-top) !important;
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
       overflow-x: hidden;
@@ -965,12 +966,14 @@
       root.setProperty("--map-air-opacity",glow.mapOpacity);
       root.setProperty("--top-ink",sky.text);
       root.setProperty("--top-muted",sky.muted);
-const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
+      document.documentElement.style.backgroundColor=sky.top;
+      document.body.style.backgroundColor=sky.top;
+      const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
       const lightAlpha = 0.10 + Math.max(0,nightFactor)*0.34;
       const lightSpread = 0.75 + Math.max(0,nightFactor)*0.55;
       root.setProperty("--night-light-alpha", lightAlpha.toFixed(3));
       root.setProperty("--night-light-spread", lightSpread.toFixed(3));
-themeColor?.setAttribute("content",sky.top);
+      themeColor?.setAttribute("content",sky.top);
     }
     function setWorldTime(){
       const now=new Date();
