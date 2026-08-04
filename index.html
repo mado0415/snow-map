@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.12: 採用音源をsoundsフォルダから読み込み、場所・時間・足音・17時の鐘を実装 -->
+  <!-- SNOW MAP v0.12.13: 場所ごとの生活音レイヤー追加＋展望台の風を強化 -->
   <style>
     :root {
       --ink: #31475f;
@@ -483,7 +483,10 @@
   <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3" loop preload="auto"></audio>
   <audio id="forestNight" src="sounds/forest-night.mp3" loop preload="auto"></audio>
   <audio id="gardenDay" src="sounds/garden-sunny-day.mp3" loop preload="auto"></audio>
-  <audio id="domeAmbience" src="sounds/crowd-ambience.mp3" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/crowd-ambience.mp3" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground.mp3" loop preload="auto"></audio>
+  <audio id="domeAmbience" src="sounds/dome-pre-show-ambience.mp3" loop preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/cafe-ambience.mp3" loop preload="auto"></audio>
 
   <audio id="birdsMorning" src="sounds/birds-morning.mp3" preload="auto"></audio>
   <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3" loop preload="auto"></audio>
@@ -498,6 +501,7 @@
   <audio id="mugTable" src="sounds/mug-on-table.mp3" preload="auto"></audio>
   <audio id="settingTable" src="sounds/setting-table.mp3" preload="auto"></audio>
   <audio id="plateCutlery" src="sounds/plate-cutlery.mp3" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3" preload="auto"></audio>
 
   <audio id="crowdClap" src="sounds/crowd-clap-cheer.mp3" preload="auto"></audio>
   <audio id="crowdLive" src="sounds/crowd-live-cheer.mp3" preload="auto"></audio>
@@ -673,7 +677,9 @@
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const ambWind=document.getElementById("ambWind");
     const forestDay=document.getElementById("forestDay"), forestNight=document.getElementById("forestNight");
-    const gardenDay=document.getElementById("gardenDay"), domeAmbience=document.getElementById("domeAmbience");
+    const gardenDay=document.getElementById("gardenDay");
+    const plazaAmbience=document.getElementById("plazaAmbience"), plazaPlayground=document.getElementById("plazaPlayground");
+    const domeAmbience=document.getElementById("domeAmbience"), cafeAmbience=document.getElementById("cafeAmbience");
     const birdsMorning=document.getElementById("birdsMorning");
     const waveClips=[document.getElementById("waveRelaxing"),document.getElementById("waveOceanAlt")];
     const seagulls=document.getElementById("seagulls");
@@ -681,13 +687,14 @@
     const harborHorn=document.getElementById("harborHorn");
     const doorChime=document.getElementById("doorChime"), drinkPour=document.getElementById("drinkPour");
     const mugTable=document.getElementById("mugTable"), settingTable=document.getElementById("settingTable"), plateCutlery=document.getElementById("plateCutlery");
+    const cafeCupSpoon=document.getElementById("cafeCupSpoon");
     const crowdClap=document.getElementById("crowdClap"), crowdLive=document.getElementById("crowdLive");
     const clockFive=document.getElementById("clockFive");
     const stepsLeaves=document.getElementById("stepsLeaves"), stepsConcrete=document.getElementById("stepsConcrete"), stepsHard=document.getElementById("stepsHard");
 
     // Soundscape v4：静かな時間を残し、イベント音は同時に重ねない。
-    const loopTracks=[ambWind,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt];
-    const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
+    const loopTracks=[ambWind,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,plazaAmbience,plazaPlayground,domeAmbience,cafeAmbience];
+    const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundKey=null;
     let placeEventTimer=null, eventBusy=false, activeFootstep=null, clockTimer=null;
     const songQueues = {};
@@ -756,54 +763,65 @@
     function clearPlaceEvents(){ clearTimeout(placeEventTimer); placeEventTimer=null; }
 
     const PLACE_SOUND = {
-      /* 全景は海に囲まれた島として、波を主役にする。風はごく薄く残す。 */
-      map:{loops:{wind:.025,waveRelaxing:.22}},
-      "はじまりの広場":{loops:{wind:.045,waveRelaxing:.055}},
-      "歩道橋":{loops:{wind:.075,waveRelaxing:.035}},
-      "展望台":{loops:{wind:.11,waveRelaxing:.025}},
+      /* 全景：海が主役。風は輪郭が分かる程度だけ残す。 */
+      map:{loops:{wind:.018,waveRelaxing:.245}},
+
+      /* 人のいる場所は、イベント音ではなく薄い常時音で寂しさを消す。 */
+      "はじまりの広場":{
+        loops:{wind:.018,waveRelaxing:.035,plazaAmbience:.055,plazaPlayground:.035},
+        morning:[{audio:birdsMorning,volume:.075,gap:[52000,90000]}]
+      },
+      "歩道橋":{
+        loops:{wind:.065,waveRelaxing:.025},
+        events:[{pool:cityCars,volume:.12,gap:[30000,60000],fadeIn:900}]
+      },
+      "展望台":{
+        loops:{wind:.245,waveRelaxing:.018}
+      },
       "木漏れ日の道":{
-        loops:{wind:.012,forestDay:.25,forestNight:.23},
-        morning:[{audio:birdsMorning,volume:.13,gap:[42000,76000]}]
+        loops:{wind:.006,forestDay:.265,forestNight:.245},
+        morning:[{audio:birdsMorning,volume:.11,gap:[48000,82000]}]
       },
       "シーズンガーデン":{
-        loops:{wind:.010,gardenDay:.22},
-        morning:[{audio:birdsMorning,volume:.09,gap:[52000,90000]}]
+        loops:{wind:.005,gardenDay:.235},
+        morning:[{audio:birdsMorning,volume:.075,gap:[58000,98000]}]
       },
       "シティライト":{
-        loops:{wind:.015},
+        loops:{wind:.008},
         events:[
-          {pool:cityCars,volume:.23,gap:[14000,30000]},
-          {pool:cityCars,volume:.20,gap:[22000,42000]}
+          {pool:cityCars,volume:.23,gap:[14000,30000],fadeIn:650},
+          {pool:cityCars,volume:.19,gap:[24000,44000],fadeIn:650}
         ]
       },
       "ブルーハーバー":{
-        loops:{wind:.006,waveOceanAlt:.31},
+        loops:{wind:.003,waveOceanAlt:.345},
         events:[
-          {audio:seagulls,volume:.105,gap:[42000,85000]},
-          {audio:harborHorn,volume:.055,gap:[90000,165000]}
+          {audio:seagulls,volume:.09,gap:[44000,90000],fadeIn:900},
+          {audio:harborHorn,volume:.05,gap:[95000,170000],fadeIn:1500}
         ]
       },
       "シーサイド":{
-        loops:{wind:.008,waveRelaxing:.35},
+        loops:{wind:.004,waveRelaxing:.385},
         events:[
-          {audio:seagulls,volume:.13,gap:[34000,72000]}
+          {audio:seagulls,volume:.115,gap:[36000,76000],fadeIn:850}
         ]
       },
       "カフェ":{
-        loops:{wind:.018,waveRelaxing:.025},
+        loops:{wind:.005,waveRelaxing:.012,cafeAmbience:.105},
         events:[
-          {audio:drinkPour,volume:.14,gap:[38000,76000]},
-          {audio:mugTable,volume:.13,gap:[46000,90000]},
-          {audio:settingTable,volume:.075,gap:[85000,150000]},
-          {audio:plateCutlery,volume:.06,gap:[80000,145000]}
+          {audio:cafeCupSpoon,volume:.075,gap:[26000,52000],fadeIn:500},
+          {audio:drinkPour,volume:.105,gap:[42000,82000],fadeIn:700},
+          {audio:mugTable,volume:.09,gap:[50000,96000],fadeIn:450},
+          {audio:settingTable,volume:.052,gap:[90000,160000],fadeIn:600},
+          {audio:plateCutlery,volume:.04,gap:[95000,165000],fadeIn:500}
         ]
       },
       "Snow Dome":{
-        /* 広場向けだった crowd-ambience は使わず、歓声だけを遠くから時々鳴らす。 */
-        loops:{wind:.012},
+        /* 開演前のざわめきを常時ごく薄く。歓声は遠くからゆっくり現れる。 */
+        loops:{wind:.002,waveRelaxing:.006,domeAmbience:.085},
         events:[
-          {audio:crowdClap,volume:.085,gap:[70000,125000],fadeIn:1800},
-          {audio:crowdLive,volume:.075,gap:[90000,155000],fadeIn:1800}
+          {audio:crowdClap,volume:.075,gap:[70000,125000],fadeIn:2200},
+          {audio:crowdLive,volume:.068,gap:[90000,155000],fadeIn:2400}
         ]
       }
     };
@@ -811,12 +829,27 @@
     function loopLevelsFor(place){
       const cfg=PLACE_SOUND[place||"map"]||PLACE_SOUND.map;
       const band=timeBand();
-      const levels={wind:cfg.loops?.wind||0,forestDay:0,forestNight:0,gardenDay:0,waveRelaxing:cfg.loops?.waveRelaxing||0,waveOceanAlt:cfg.loops?.waveOceanAlt||0};
+      const loops=cfg.loops||{};
+      const levels={
+        wind:loops.wind||0,
+        forestDay:0,forestNight:0,gardenDay:0,
+        waveRelaxing:loops.waveRelaxing||0,waveOceanAlt:loops.waveOceanAlt||0,
+        plazaAmbience:loops.plazaAmbience||0,plazaPlayground:loops.plazaPlayground||0,
+        domeAmbience:loops.domeAmbience||0,cafeAmbience:loops.cafeAmbience||0
+      };
       if(place==="木漏れ日の道"){
-        if(band==="night") levels.forestNight=cfg.loops.forestNight;
-        else levels.forestDay=cfg.loops.forestDay*(band==="evening"?.72:1);
+        if(band==="night") levels.forestNight=loops.forestNight||0;
+        else levels.forestDay=(loops.forestDay||0)*(band==="evening"?.74:1);
       }
-      if(place==="シーズンガーデン" && band!=="night") levels.gardenDay=cfg.loops.gardenDay*(band==="evening"?.68:1);
+      if(place==="シーズンガーデン" && band!=="night"){
+        levels.gardenDay=(loops.gardenDay||0)*(band==="evening"?.72:1);
+      }
+      if(place==="はじまりの広場" && band==="night"){
+        levels.plazaPlayground*=.45;
+        levels.plazaAmbience*=.68;
+      }
+      if(place==="カフェ" && band==="night") levels.cafeAmbience*=.82;
+      if(place==="Snow Dome" && band==="night") levels.domeAmbience*=1.08;
       return levels;
     }
     function chooseEvent(place){
@@ -871,7 +904,7 @@
       activeSoundKey=key;
       clearPlaceEvents();
       /* 前の場所の長いベル・歓声などを次の場所まで持ち越さない。 */
-      [doorChime,drinkPour,mugTable,settingTable,plateCutlery,crowdClap,crowdLive,seagulls,...cityCars,harborHorn].forEach(stopAudio);
+      [doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,crowdClap,crowdLive,seagulls,...cityCars,harborHorn].forEach(stopAudio);
       eventBusy=false;
       const l=loopLevelsFor(place);
       setLoop(ambWind,l.wind,duration);
@@ -880,7 +913,10 @@
       setLoop(gardenDay,l.gardenDay,duration);
       setLoop(waveRelaxing,l.waveRelaxing,duration);
       setLoop(waveOceanAlt,l.waveOceanAlt,duration);
-      setLoop(domeAmbience,0,duration);
+      setLoop(plazaAmbience,l.plazaAmbience,duration);
+      setLoop(plazaPlayground,l.plazaPlayground,duration);
+      setLoop(domeAmbience,l.domeAmbience,duration);
+      setLoop(cafeAmbience,l.cafeAmbience,duration);
       schedulePlaceEvent(place,true);
     }
 
@@ -901,7 +937,7 @@
     function stopFootsteps(){ if(activeFootstep){ stopAudio(activeFootstep); activeFootstep=null; } }
     async function playArrivalSound(place){
       if(place!=="カフェ" || currentPlace!=="カフェ" || !soundEnabled || eventBusy) return;
-      await playOneShot({audio:doorChime,volume:.14});
+      await playOneShot({audio:doorChime,volume:.095,fadeIn:500});
     }
 
     function checkFiveOClock(){
