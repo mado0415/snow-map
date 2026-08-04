@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.2: 夕焼け時間延長＋背景と島の時間帯演出を強化 -->
+  <!-- SNOW MAP v0.13.3: 夕焼け時間延長＋構文エラー修復 -->
   <style>
     :root {
       --ink: #31475f;
@@ -58,7 +58,7 @@
       background: linear-gradient(
         180deg,
         var(--world-top) 0%,
-        var(--world-mid) 42%,
+        var(--world-mid) 48%,
         var(--world-mid) 58%,
         var(--world-bottom) 100%
       );
@@ -910,36 +910,34 @@
     }
     function glowForMinute(minute){
       if(minute>=300 && minute<660){
-        return {x:"18%",y:"10%",color:"rgba(205,221,246,.20)",size:"72%",mapX:"20%",mapY:"12%",mapGlow:"rgba(222,233,250,.28)",mapColor:"rgba(205,220,246,.13)",mapOpacity:".14"};
+        return {
+          x:"18%",y:"10%",color:"rgba(205,221,246,.20)",size:"72%",
+          mapX:"20%",mapY:"12%",mapGlow:"rgba(222,233,250,.28)",
+          mapColor:"rgba(205,220,246,.13)",mapOpacity:".14"
+        };
       }
       if(minute>=660 && minute<960){
-        return {x:"50%",y:"12%",color:"rgba(255,255,255,.14)",size:"80%",mapX:"50%",mapY:"10%",mapGlow:"rgba(255,255,255,.24)",mapColor:"rgba(255,247,232,.07)",mapOpacity:".10"};
+        return {
+          x:"50%",y:"12%",color:"rgba(255,255,255,.14)",size:"80%",
+          mapX:"50%",mapY:"10%",mapGlow:"rgba(255,255,255,.24)",
+          mapColor:"rgba(255,247,232,.07)",mapOpacity:".10"
+        };
       }
       if(minute>=960 && minute<1215){
         const t=Math.max(0,Math.min(1,(minute-960)/(1215-960)));
-        return {x:`${72+8*t}%`,y:`${58+22*t}%`,color:`rgba(255,174,122,${(0.20+0.06*t).toFixed(3)})`,size:"78%",mapX:`${68+10*t}%`,mapY:`${52+20*t}%`,mapGlow:`rgba(255,190,145,${(0.28+0.08*t).toFixed(3)})`,mapColor:`rgba(255,168,132,${(0.14+0.05*t).toFixed(3)})`,mapOpacity:(0.16+0.05*t).toFixed(3)};
-      }
-      return {x:"50%",y:"8%",color:"rgba(115,136,188,.17)",size:"78%",mapX:"50%",mapY:"8%",mapGlow:"rgba(145,165,213,.20)",mapColor:"rgba(72,94,145,.14)",mapOpacity:".14"};
-    };
-      }
-      if(minute>=660 && minute<960){
         return {
-          x:"50%",y:"16%",color:"rgba(255,255,255,.11)",size:"78%",
-          mapX:"50%",mapY:"12%",mapGlow:"rgba(255,255,255,.18)",
-          mapColor:"rgba(255,247,232,.05)",mapOpacity:".07"
-        };
-      }
-      if(minute>=960 && minute<1140){
-        return {
-          x:"80%",y:"82%",color:"rgba(255,184,139,.17)",size:"74%",
-          mapX:"78%",mapY:"66%",mapGlow:"rgba(255,198,156,.24)",
-          mapColor:"rgba(255,180,145,.10)",mapOpacity:".12"
+          x:`${72+8*t}%`,y:`${58+22*t}%`,
+          color:`rgba(255,174,122,${(0.20+0.06*t).toFixed(3)})`,size:"78%",
+          mapX:`${68+10*t}%`,mapY:`${52+20*t}%`,
+          mapGlow:`rgba(255,190,145,${(0.28+0.08*t).toFixed(3)})`,
+          mapColor:`rgba(255,168,132,${(0.14+0.05*t).toFixed(3)})`,
+          mapOpacity:(0.16+0.05*t).toFixed(3)
         };
       }
       return {
-        x:"50%",y:"8%",color:"rgba(118,139,190,.13)",size:"76%",
-        mapX:"50%",mapY:"10%",mapGlow:"rgba(145,165,213,.16)",
-        mapColor:"rgba(78,100,151,.11)",mapOpacity:".10"
+        x:"50%",y:"8%",color:"rgba(115,136,188,.17)",size:"78%",
+        mapX:"50%",mapY:"8%",mapGlow:"rgba(145,165,213,.20)",
+        mapColor:"rgba(72,94,145,.14)",mapOpacity:".14"
       };
     }
 
