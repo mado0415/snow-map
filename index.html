@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.15: ドアベル持越し修正＋朝の広場・静かなカフェ・海辺と歩道橋を調整 -->
+  <!-- SNOW MAP v0.12.16: 朝の街・港到着カモメ・カフェベル短縮・午前色を調整 -->
   <style>
     :root {
       --ink: #31475f;
@@ -480,6 +480,7 @@
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
   <audio id="ambWind" src="sounds/wind-open.mp3" loop preload="auto"></audio>
+  <audio id="cityAmbience" src="ambient-city-soft-v012.mp3" loop preload="auto"></audio>
   <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3" loop preload="auto"></audio>
   <audio id="forestNight" src="sounds/forest-night.mp3" loop preload="auto"></audio>
   <audio id="gardenDay" src="sounds/garden-sunny-day.mp3" loop preload="auto"></audio>
@@ -693,10 +694,11 @@
     const stepsLeaves=document.getElementById("stepsLeaves"), stepsConcrete=document.getElementById("stepsConcrete"), stepsHard=document.getElementById("stepsHard");
 
     // Soundscape v4：静かな時間を残し、イベント音は同時に重ねない。
-    const loopTracks=[ambWind,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,plazaAmbience,plazaPlayground,domeAmbience,cafeAmbience];
+    const loopTracks=[ambWind,cityAmbience,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,plazaAmbience,plazaPlayground,domeAmbience,cafeAmbience];
     const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundKey=null;
     let travelPreviewToken=0;
+    let lastCafeChimeAt=0;
     let placeEventTimer=null, eventBusy=false, activeFootstep=null, clockTimer=null;
     const songQueues = {};
     const strollSteps = {};
@@ -791,10 +793,14 @@
         morning:[{audio:birdsMorning,volume:.075,gap:[58000,98000]}]
       },
       "シティライト":{
-        loops:{wind:.008},
+        loops:{wind:.006,cityAmbience:.070},
         events:[
-          {pool:cityCars,volume:.23,gap:[14000,30000],fadeIn:650},
-          {pool:cityCars,volume:.19,gap:[24000,44000],fadeIn:650}
+          {pool:cityCars,volume:.24,gap:[11000,23000],fadeIn:550},
+          {pool:cityCars,volume:.20,gap:[19000,35000],fadeIn:650}
+        ],
+        morning:[
+          {pool:cityCars,volume:.25,gap:[7000,15000],fadeIn:450},
+          {pool:cityCars,volume:.21,gap:[12000,24000],fadeIn:550}
         ]
       },
       "ブルーハーバー":{
@@ -811,7 +817,7 @@
         ]
       },
       "カフェ":{
-        loops:{wind:.004,waveRelaxing:.008,cafeAmbience:.036},
+        loops:{wind:.003,waveRelaxing:.006,cafeAmbience:.024},
         events:[
           {audio:cafeCupSpoon,volume:.035,gap:[48000,90000],fadeIn:650},
           {audio:drinkPour,volume:.052,gap:[70000,125000],fadeIn:850},
@@ -835,7 +841,7 @@
       const band=timeBand();
       const loops=cfg.loops||{};
       const levels={
-        wind:loops.wind||0,
+        wind:loops.wind||0,cityAmbience:loops.cityAmbience||0,
         forestDay:0,forestNight:0,gardenDay:0,
         waveRelaxing:loops.waveRelaxing||0,waveOceanAlt:loops.waveOceanAlt||0,
         plazaAmbience:loops.plazaAmbience||0,plazaPlayground:loops.plazaPlayground||0,
@@ -855,6 +861,8 @@
           levels.plazaAmbience=0;
         }
       }
+      if(place==="シティライト" && band==="morning") levels.cityAmbience*=1.35;
+      if(place==="カフェ" && band==="morning") levels.cafeAmbience*=.72;
       if(place==="カフェ" && band==="night") levels.cafeAmbience*=.82;
       if(place==="Snow Dome" && band==="night") levels.domeAmbience*=1.08;
       return levels;
@@ -862,6 +870,7 @@
 
     function applyLoopLevels(levels,duration=1600){
       setLoop(ambWind,levels.wind||0,duration);
+      setLoop(cityAmbience,levels.cityAmbience||0,duration);
       setLoop(forestDay,levels.forestDay||0,duration);
       setLoop(forestNight,levels.forestNight||0,duration);
       setLoop(gardenDay,levels.gardenDay||0,duration);
@@ -928,7 +937,9 @@
           audio.removeEventListener("ended",finish);
         };
         audio.addEventListener("ended",finish,{once:true});
-        setTimeout(finish,Math.min(30000,((Number.isFinite(audio.duration)?audio.duration:8)*1000)+500));
+        const naturalMs=((Number.isFinite(audio.duration)?audio.duration:8)*1000)+500;
+        const maxMs=Number.isFinite(config.maxDuration)?config.maxDuration:naturalMs;
+        setTimeout(finish,Math.min(30000,Math.min(naturalMs,maxMs)));
         return true;
       }catch(_){ eventBusy=false; return false; }
     }
@@ -979,8 +990,30 @@
     }
     function stopFootsteps(){ if(activeFootstep){ stopAudio(activeFootstep); activeFootstep=null; } }
     async function playArrivalSound(place){
-      if(place!=="カフェ" || currentPlace!=="カフェ" || !soundEnabled || eventBusy) return;
-      await playOneShot({audio:doorChime,volume:.070,fadeIn:420});
+      if(!soundEnabled || eventBusy) return;
+
+      if(place==="カフェ" && currentPlace==="カフェ"){
+        const now=Date.now();
+        if(now-lastCafeChimeAt<90000) return;
+        lastCafeChimeAt=now;
+        await playOneShot({
+          audio:doorChime,
+          volume:.050,
+          fadeIn:280,
+          maxDuration:1800
+        });
+        return;
+      }
+
+      /* 朝〜日中のブルーハーバーは、到着時に一度カモメが迎える。 */
+      if(place==="ブルーハーバー" && ["morning","day"].includes(timeBand())){
+        await playOneShot({
+          audio:seagulls,
+          volume:.105,
+          fadeIn:450,
+          maxDuration:6500
+        });
+      }
     }
 
     function checkFiveOClock(){
@@ -1034,8 +1067,8 @@
 
     function getTimeKey(){
       const h=new Date().getHours();
-      if(h>=5&&h<11) return "morning";
-      if(h>=11&&h<16) return "day";
+      if(h>=5&&h<7) return "morning";
+      if(h>=7&&h<16) return "day";
       if(h>=16&&h<19) return "evening";
       return "night";
     }
@@ -1044,7 +1077,8 @@
       {m:240,  top:"#263b56", mid:"#365673", bottom:"#71899d", text:"#edf4fa", muted:"#c3d1dd"},
       {m:300,  top:"#8499aa", mid:"#b7cad7", bottom:"#e2edf2", text:"#415b72", muted:"#71879a"},
       {m:360,  top:"#e7e7ef", mid:"#edf2f6", bottom:"#f4f6f5", text:"#31475f", muted:"#718293"},
-      {m:480,  top:"#edf4f8", mid:"#f5f6f6", bottom:"#faf4f0", text:"#31475f", muted:"#758696"},
+      {m:420,  top:"#eef3f7", mid:"#f5f4f2", bottom:"#faeee8", text:"#31475f", muted:"#758696"},
+      {m:480,  top:"#f0f5f8", mid:"#f8f5f3", bottom:"#fbeee8", text:"#31475f", muted:"#758696"},
       {m:660,  top:"#eff4f8", mid:"#f7f3f3", bottom:"#faeee9", text:"#31475f", muted:"#758696"},
 
       /* 夕方：オレンジからピンクへ */
