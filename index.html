@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.18: 朝画像は10時まで維持。背景色を8〜9時台で午前らしく明るく調整 -->
+  <!-- SNOW MAP v0.12.20: 昼の青空を15時半まで維持し、16時以降に夕方色へ移行 -->
   <style>
     :root {
       --ink: #31475f;
@@ -1081,13 +1081,26 @@
       {m:480,  top:"#b9daf7", mid:"#e4f3ff", bottom:"#f5fbff", text:"#31475f", muted:"#6e8396"},
       {m:540,  top:"#aed5f4", mid:"#ddf0ff", bottom:"#f4fbff", text:"#31475f", muted:"#6d8295"},
       {m:600,  top:"#a9d3f3", mid:"#dbf0ff", bottom:"#f3fbff", text:"#31475f", muted:"#6d8295"},
-      {m:660,  top:"#a6d2f3", mid:"#daf0ff", bottom:"#f3fbff", text:"#31475f", muted:"#758696"},
-      {m:960,  top:"#e6c7cf", mid:"#efb9b2", bottom:"#f0a078", text:"#31475f", muted:"#7f6f77"},
-      {m:1020, top:"#d7a6bb", mid:"#e59aa8", bottom:"#e98572", text:"#3f4d63", muted:"#796d79"},
-      {m:1080, top:"#bc88ac", mid:"#d17f9d", bottom:"#d97878", text:"#fff7fb", muted:"#ead7e2"},
-      {m:1110, top:"#9f77a3", mid:"#b47799", bottom:"#bd7487", text:"#fff8fc", muted:"#e5d8e5"},
+
+      /* 10:00〜15:30：昼の青空を維持 */
+      {m:720,  top:"#a5d1f2", mid:"#d8efff", bottom:"#f3fbff", text:"#31475f", muted:"#6d8295"},
+      {m:840,  top:"#a7d2f2", mid:"#dcf0ff", bottom:"#f5fbff", text:"#31475f", muted:"#708598"},
+      {m:930,  top:"#b0d6f1", mid:"#e1f1fb", bottom:"#f7faf8", text:"#31475f", muted:"#748696"},
+
+      /* 16:00〜17:00：ごく薄く暖色が混ざり始める */
+      {m:960,  top:"#bfd9ec", mid:"#e7eff2", bottom:"#f7eee8", text:"#31475f", muted:"#78828f"},
+      {m:1020, top:"#d7c9db", mid:"#ead5d2", bottom:"#efc2aa", text:"#3f4d63", muted:"#796f7b"},
+
+      /* 17:00〜18:15：夕焼け */
+      {m:1080, top:"#c394b5", mid:"#dc8fa5", bottom:"#df8679", text:"#fff7fb", muted:"#ead7e2"},
+      {m:1095, top:"#b485ad", mid:"#cf849f", bottom:"#d27d83", text:"#fff8fc", muted:"#e7d9e6"},
+
+      /* 18:15〜19:15：薄暮のピンク〜ラベンダー */
+      {m:1125, top:"#9276a3", mid:"#a8799b", bottom:"#ad768d", text:"#fff8fc", muted:"#e2d9e6"},
       {m:1140, top:"#806b96", mid:"#8d6f91", bottom:"#936b83", text:"#f8f7fc", muted:"#ddd8e5"},
       {m:1155, top:"#586783", mid:"#4b5d78", bottom:"#40536e", text:"#f1f5fa", muted:"#c5cfda"},
+
+      /* 19:15以降：夜 */
       {m:1200, top:"#405570", mid:"#354a65", bottom:"#2d425c", text:"#f3f7fb", muted:"#bfccd8"},
       {m:1260, top:"#314762", mid:"#293e58", bottom:"#22364e", text:"#f3f7fb", muted:"#bac8d5"},
       {m:1440, top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"}
