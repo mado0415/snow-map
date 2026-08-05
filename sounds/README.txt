@@ -1,14 +1,14 @@
-SNOW MAP v0.13.21 追加音源
+SNOW MAP v0.13.22 追加音源
 
-以下2ファイルをGitHubの sounds フォルダへ追加してください。
+以下3ファイルをGitHubの sounds フォルダへ追加してください。
 
-- city-people-day-v2.mp3
-- dome-pre-show-fade-v4.mp3
+- dome-pre-show-fade-v5.mp3
+- crowd-clap-cheer-fade-v2.mp3
+- crowd-live-cheer-fade-v2.mp3
 
 変更内容:
-- シティライトの人声をドームより少し大きく
-- ドームの人声を少し小さく
-- 両方とも元音源の別の位置から開始し、
-  鳴り始めで「いらっしゃいませ」と聞こえる部分を避ける
+- ドームの常時人声を少し大きく
+- 手拍子は約2.5秒でフェードイン、約3秒でフェードアウト
+- 歓声は約2.6秒でフェードイン、約3秒でフェードアウト
 
-追加後、index.htmlをv0.13.21へ丸ごと差し替えてください。
+追加後、index.htmlをv0.13.22へ丸ごと差し替えてください。
