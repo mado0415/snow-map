@@ -1,18 +1,16 @@
-SNOW MAP v0.13.30 追加音源
+SNOW MAP v0.13.31 追加音源
 
 以下3ファイルをGitHubの sounds フォルダへ追加してください。
 
-- dome-show-ambience-v1.mp3
-- dome-events-normal-v3.mp3
-- dome-events-peak-v3.mp3
+- crowd-live-cheer-fade-v4.mp3
+- dome-events-normal-v4.mp3
+- dome-events-peak-v4.mp3
 
-ドームの常時ざわめき:
-- 〜15:59 dome-pre-show-fade-v5.mp3
-- 16:00〜16:59 city-people-day-v2.mp3
-- 17:00以降 dome-show-ambience-v1.mp3
+変更内容:
+- ユーザー指定の crowd-live-cheer.mp3 を正式な歓声として使用
+- ドーム到着約2秒後に最初の歓声
+- 歓声音量のみ前版比約1.25倍
+- 手拍子・常時ざわめきの音量は変更なし
+- 18〜20時の高頻度設定を維持
 
-歓声:
-- ユーザー指定の crowd-live-cheer.mp3 を使用
-- 最初のイベントは到着5秒後に必ずこの歓声
-
-追加後、index.htmlをv0.13.30へ丸ごと差し替えてください。
+音源追加後、index.htmlをv0.13.31完成版へ丸ごと差し替えてください。
