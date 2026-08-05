@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.12.20: 昼の青空を15時半まで維持し、16時以降に夕方色へ移行 -->
+  <!-- SNOW MAP v0.12.21: 人声の長いフェード＋静かなカフェ＋シティライト音源切り分け -->
   <style>
     :root {
       --ink: #31475f;
@@ -793,7 +793,8 @@
         morning:[{audio:birdsMorning,volume:.075,gap:[58000,98000]}]
       },
       "シティライト":{
-        loops:{wind:.006,cityAmbience:.070},
+        /* cityAmbience は違和感音源の切り分けのため一時停止 */
+        loops:{wind:.006,cityAmbience:0},
         events:[
           {pool:cityCars,volume:.24,gap:[11000,23000],fadeIn:550},
           {pool:cityCars,volume:.20,gap:[19000,35000],fadeIn:650}
@@ -817,7 +818,7 @@
         ]
       },
       "カフェ":{
-        loops:{wind:.003,waveRelaxing:.006,cafeAmbience:.024},
+        loops:{wind:.003,waveRelaxing:.006,cafeAmbience:.014},
         events:[
           {audio:cafeCupSpoon,volume:.035,gap:[48000,90000],fadeIn:650},
           {audio:drinkPour,volume:.052,gap:[70000,125000],fadeIn:850},
@@ -862,7 +863,7 @@
         }
       }
       if(place==="シティライト" && band==="morning") levels.cityAmbience*=1.35;
-      if(place==="カフェ" && band==="morning") levels.cafeAmbience*=.72;
+      if(place==="カフェ" && band==="morning") levels.cafeAmbience*=.58;
       if(place==="カフェ" && band==="night") levels.cafeAmbience*=.82;
       if(place==="Snow Dome" && band==="night") levels.domeAmbience*=1.08;
       return levels;
@@ -906,7 +907,12 @@
     function finishDestinationPreview(place,token){
       if(!soundEnabled || token!==travelPreviewToken) return;
       activeSoundKey=`${place||"map"}:${timeBand()}`;
-      applyLoopLevels(loopLevelsFor(place),1200);
+      const fadeDuration =
+        place==="Snow Dome" ? 6200 :
+        place==="はじまりの広場" ? 5600 :
+        place==="カフェ" ? 4200 :
+        1200;
+      applyLoopLevels(loopLevelsFor(place),fadeDuration);
       schedulePlaceEvent(place,true);
     }
     function chooseEvent(place){
@@ -948,7 +954,11 @@
       if(!soundEnabled||!place) return;
       const event=chooseEvent(place);
       if(!event) return;
-      const wait=initial?randomInRange([12000,24000]):randomInRange(event.gap||[30000,60000]);
+      const initialRange =
+        place==="Snow Dome" ? [26000,42000] :
+        place==="はじまりの広場" ? [24000,40000] :
+        [12000,24000];
+      const wait=initial?randomInRange(initialRange):randomInRange(event.gap||[30000,60000]);
       placeEventTimer=setTimeout(async()=>{
         if(!soundEnabled||currentPlace!==place) return;
         if(eventBusy){ schedulePlaceEvent(place,false); return; }
