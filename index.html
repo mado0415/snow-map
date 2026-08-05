@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.29: ドーム専用トラックを実音開始に変更しSafari再生を維持 -->
+  <!-- SNOW MAP v0.13.30: ドームのざわめきを時間帯別に切替え、指定歓声へ統一 -->
   <style>
     :root {
       --ink: #31475f;
@@ -485,46 +485,47 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
-  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="cityNight" src="sounds/night-city.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="forestNight" src="sounds/forest-night.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="domeAmbience" src="sounds/dome-pre-show-fade-v5.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01329" preload="auto"></audio>
-  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v2.mp3?v=01329" preload="auto"></audio>
-  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v2.mp3?v=01329" preload="auto"></audio>
-  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01329" loop preload="auto"></audio>
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01330" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v3.mp3?v=01330" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v3.mp3?v=01330" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01330" loop preload="auto"></audio>
 
-  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01329" preload="auto"></audio>
-  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01329" loop preload="auto"></audio>
-  <audio id="seagulls" src="sounds/seagulls.mp3?v=01329" preload="auto"></audio>
-  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01329" preload="auto"></audio>
-  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01329" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01329" preload="auto"></audio>
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01330" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01330" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01330" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01330" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01330" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01330" preload="auto"></audio>
 
-  <audio id="doorChime" src="sounds/door-chime.mp3?v=01329" preload="auto"></audio>
-  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01329" preload="auto"></audio>
-  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01329" preload="auto"></audio>
-  <audio id="settingTable" src="sounds/setting-table.mp3?v=01329" preload="auto"></audio>
-  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01329" preload="auto"></audio>
-  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01329" preload="auto"></audio>
-  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01329" preload="auto"></audio>
-  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01329" preload="auto"></audio>
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01330" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01330" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01330" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01330" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01330" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01330" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01330" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01330" preload="auto"></audio>
 
-  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01329" preload="auto"></audio>
-  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v2.mp3?v=01329" preload="auto"></audio>
-  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01329" preload="auto"></audio>
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01330" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v2.mp3?v=01330" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01330" preload="auto"></audio>
 
-  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01329" preload="auto"></audio>
-  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01329" preload="auto"></audio>
-  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01329" preload="auto"></audio>
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01330" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01330" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01330" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -548,7 +549,7 @@
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01329" alt="SNOW MAPの地図" />
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01330" alt="SNOW MAPの地図" />
         </div>
         <div class="ambient"></div>
         <div class="lights"></div>
@@ -676,10 +677,10 @@
     const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
-      morning:"snow-map-morning.png?v=01329",
-      day:"snow-map-day.png?v=01329",
-      evening:"snow-map-evening.png?v=01329",
-      night:"snow-map-night.png?v=01329"
+      morning:"snow-map-morning.png?v=01330",
+      day:"snow-map-day.png?v=01330",
+      evening:"snow-map-evening.png?v=01330",
+      night:"snow-map-night.png?v=01330"
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
@@ -695,7 +696,7 @@
     const forestDay=document.getElementById("forestDay"), forestNight=document.getElementById("forestNight");
     const gardenDay=document.getElementById("gardenDay");
     const plazaAmbience=document.getElementById("plazaAmbience"), plazaPlayground=document.getElementById("plazaPlayground");
-    const domeAmbience=document.getElementById("domeAmbience"), cafeAmbience=document.getElementById("cafeAmbience");
+    const domePreShow=document.getElementById("domePreShow"), domeShowAmbience=document.getElementById("domeShowAmbience"), cafeAmbience=document.getElementById("cafeAmbience");
     const domeWaveBridge=document.getElementById("domeWaveBridge");
     const domeEventsNormal=document.getElementById("domeEventsNormal"), domeEventsPeak=document.getElementById("domeEventsPeak");
     const birdsMorning=document.getElementById("birdsMorning");
@@ -713,7 +714,7 @@
     const stepsLeaves=document.getElementById("stepsLeaves"), stepsConcrete=document.getElementById("stepsConcrete"), stepsHard=document.getElementById("stepsHard");
 
     // Soundscape v4：静かな時間を残し、イベント音は同時に重ねない。
-    const loopTracks=[ambWind,cityNight,cityPeople,cityMorning,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,seaShore,plazaAmbience,plazaPlayground,domeAmbience,cafeAmbience];
+    const loopTracks=[ambWind,cityNight,cityPeople,cityMorning,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,seaShore,plazaAmbience,plazaPlayground,domePreShow,domeShowAmbience,cafeAmbience];
     const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,coffeeMachine,coffeeStir,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
     let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundKey=null;
     let travelPreviewToken=0;
@@ -848,7 +849,7 @@
       },
       "Snow Dome":{
         /* 人声が入る前も、柔らかい空気音を途切れさせない */
-        loops:{wind:.010,domeAmbience:1},
+        loops:{wind:.010,domePreShow:1,domeShowAmbience:1},
         events:[
           {audio:crowdClap,volume:1,gap:[85000,145000],fadeIn:0},
           {audio:crowdLive,volume:1,gap:[110000,180000],fadeIn:0}
@@ -866,7 +867,7 @@
         forestDay:0,forestNight:0,gardenDay:0,
         waveRelaxing:loops.waveRelaxing||0,waveOceanAlt:loops.waveOceanAlt||0,seaShore:loops.seaShore||0,
         plazaAmbience:loops.plazaAmbience||0,plazaPlayground:loops.plazaPlayground||0,
-        domeAmbience:loops.domeAmbience||0,cafeAmbience:loops.cafeAmbience||0
+        domePreShow:loops.domePreShow||0,domeShowAmbience:loops.domeShowAmbience||0,cafeAmbience:loops.cafeAmbience||0
       };
       if(place==="木漏れ日の道"){
         if(band==="night") levels.forestNight=loops.forestNight||0;
@@ -905,7 +906,21 @@
         if(band==="morning") levels.cafeAmbience*=.55;
         if(band==="night") levels.cafeAmbience*=.70;
       }
-      if(place==="Snow Dome" && band==="night") levels.domeAmbience*=1.05;
+      if(place==="Snow Dome"){
+        const hour=new Date().getHours();
+        levels.domePreShow=0;
+        levels.domeShowAmbience=0;
+        /* 〜15:59 開演前 / 16:00〜16:59 街の人声 / 17:00〜 公演中 */
+        if(hour<16){
+          levels.domePreShow=loops.domePreShow||0;
+          levels.cityPeople=0;
+        }else if(hour<17){
+          levels.cityPeople=.18;
+        }else{
+          levels.domeShowAmbience=loops.domeShowAmbience||0;
+          levels.cityPeople=0;
+        }
+      }
       return levels;
     }
 
@@ -922,7 +937,8 @@
       setLoop(seaShore,levels.seaShore||0,duration);
       setLoop(plazaAmbience,levels.plazaAmbience||0,duration);
       setLoop(plazaPlayground,levels.plazaPlayground||0,duration);
-      setLoop(domeAmbience,levels.domeAmbience||0,duration);
+      setLoop(domePreShow,levels.domePreShow||0,duration);
+      setLoop(domeShowAmbience,levels.domeShowAmbience||0,duration);
       setLoop(cafeAmbience,levels.cafeAmbience||0,duration);
     }
 
@@ -934,7 +950,7 @@
       const preview={};
       Object.keys(full).forEach(key=>preview[key]=(full[key]||0)*factor);
       /* 人の声はタップ時・移動中には鳴らさず、到着後にだけ現れる。 */
-      ["cityPeople","plazaAmbience","plazaPlayground","domeAmbience","cafeAmbience"].forEach(key=>preview[key]=0);
+      ["cityPeople","plazaAmbience","plazaPlayground","domePreShow","domeShowAmbience","cafeAmbience"].forEach(key=>preview[key]=0);
       return preview;
     }
 
@@ -952,7 +968,7 @@
     function levelsWithoutHumanVoices(place){
       const full=loopLevelsFor(place);
       const quiet={...full};
-      ["cityPeople","plazaAmbience","plazaPlayground","domeAmbience","cafeAmbience"].forEach(key=>quiet[key]=0);
+      ["cityPeople","plazaAmbience","plazaPlayground","domePreShow","domeShowAmbience","cafeAmbience"].forEach(key=>quiet[key]=0);
       return {full,quiet};
     }
 
@@ -963,7 +979,8 @@
         setLoop(cityPeople,full.cityPeople||0,fade);
         setLoop(plazaAmbience,full.plazaAmbience||0,fade);
         setLoop(plazaPlayground,full.plazaPlayground||0,fade);
-        setLoop(domeAmbience,full.domeAmbience||0,fade);
+        setLoop(domePreShow,full.domePreShow||0,fade);
+        setLoop(domeShowAmbience,full.domeShowAmbience||0,fade);
         setLoop(cafeAmbience,full.cafeAmbience||0,fade);
       },delay);
     }
@@ -1184,7 +1201,7 @@
       stopFootsteps();
       loopTracks.forEach(track=>{
         track.pause();
-        if([plazaAmbience,plazaPlayground,domeAmbience].includes(track)){
+        if([plazaAmbience,plazaPlayground,domePreShow,domeShowAmbience].includes(track)){
           track.currentTime=0;
         }
       });
