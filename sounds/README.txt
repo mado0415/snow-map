@@ -1,15 +1,14 @@
-SNOW MAP v0.13.20 追加音源
+SNOW MAP v0.13.21 追加音源
 
-以下4ファイルをGitHubの sounds フォルダへ追加してください。
+以下2ファイルをGitHubの sounds フォルダへ追加してください。
 
-- dome-pre-show-fade-v3.mp3
-- plaza-ambience-fade-v3.mp3
-- plaza-playground-fade-v3.mp3
-- dome-wave-bridge.mp3
+- city-people-day-v2.mp3
+- dome-pre-show-fade-v4.mp3
 
 変更内容:
-- 広場の人声を少し大きく
-- ドームは広場より少し大きく
-- ドーム到着時の波音を約9秒かけてフェードアウト
+- シティライトの人声をドームより少し大きく
+- ドームの人声を少し小さく
+- 両方とも元音源の別の位置から開始し、
+  鳴り始めで「いらっしゃいませ」と聞こえる部分を避ける
 
-追加後、index.htmlをv0.13.20へ丸ごと差し替えてください。
+追加後、index.htmlをv0.13.21へ丸ごと差し替えてください。
