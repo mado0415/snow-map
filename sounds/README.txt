@@ -1,15 +1,18 @@
-SNOW MAP v0.13.29 追加音源
+SNOW MAP v0.13.30 追加音源
 
-以下2ファイルをGitHubの sounds フォルダへ追加してください。
+以下3ファイルをGitHubの sounds フォルダへ追加してください。
 
-- dome-events-normal-v2.mp3
-- dome-events-peak-v2.mp3
+- dome-show-ambience-v1.mp3
+- dome-events-normal-v3.mp3
+- dome-events-peak-v3.mp3
 
-変更内容:
-- ドームをタップした瞬間から小さな波音を実際に再生
-- 波音は約11秒かけてフェードアウト
-- 到着5秒後に最初の歓声または手拍子
-- 歓声・手拍子の音量は前版から変更なし
-- 完全な無音から始まる長尺トラックを廃止し、Safariで再生を維持
+ドームの常時ざわめき:
+- 〜15:59 dome-pre-show-fade-v5.mp3
+- 16:00〜16:59 city-people-day-v2.mp3
+- 17:00以降 dome-show-ambience-v1.mp3
 
-追加後、index.htmlをv0.13.29へ丸ごと差し替えてください。
+歓声:
+- ユーザー指定の crowd-live-cheer.mp3 を使用
+- 最初のイベントは到着5秒後に必ずこの歓声
+
+追加後、index.htmlをv0.13.30へ丸ごと差し替えてください。
