@@ -1,1 +1,535 @@
-
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-05",
+  "places": [
+    {
+      "name": "展望台",
+      "verb": "見つける",
+      "copy": "高く登れば、まだ知らない景色が見えてくる。",
+      "next": [
+        "歩道橋",
+        "シティライト",
+        "ブルーハーバー"
+      ],
+      "songs": [
+        {
+          "title": "We'll go together",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "EVERYTHING IS EVERYTHING",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "星のうた",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "7%",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "SBY",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "シティライト",
+      "verb": "駆け抜ける",
+      "copy": "光あふれる街は、今日も前へ進み続ける。",
+      "next": [
+        "歩道橋",
+        "Snow Dome",
+        "展望台",
+        "ブルーハーバー"
+      ],
+      "songs": [
+        {
+          "title": "Spark!!",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "BANG‼︎",
+          "links": {
+            "appleMusic": "https://music.apple.com/jp/song/1893004670",
+            "spotify": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "I・だって止まらない",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "SAVE YOUR HEART",
+          "links": {
+            "appleMusic": "https://music.apple.com/jp/song/6768850574",
+            "spotify": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "W",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "Snow Dome",
+      "verb": "熱くなる",
+      "copy": "光も歓声も、この街でいちばん熱い場所。",
+      "next": [
+        "はじまりの広場",
+        "シティライト",
+        "歩道橋"
+      ],
+      "songs": [
+        {
+          "title": "P.M.G.",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Party! Party! Party!",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Crazy F-R-E-S-H Beat",
+          "links": {
+            "appleMusic": "https://music.apple.com/jp/song/1804833299",
+            "spotify": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Make It Hot",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "守りたい、その笑顔",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "木漏れ日の道",
+      "verb": "歩き出す",
+      "copy": "風に背中を押されて、また少し前へ。",
+      "next": [
+        "歩道橋",
+        "はじまりの広場",
+        "ブルーハーバー",
+        "シーズンガーデン"
+      ],
+      "songs": [
+        {
+          "title": "From Today",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "A PIECE OF CAKE",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Brand New Smile",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "TIKI TIKI",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Days",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "歩道橋",
+      "verb": "踏み出す",
+      "copy": "一歩先へ。景色は歩いた人だけに見えてくる。",
+      "next": [
+        "展望台",
+        "シティライト",
+        "Snow Dome",
+        "木漏れ日の道",
+        "はじまりの広場"
+      ],
+      "songs": [
+        {
+          "title": "オトノナルホウヘ",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Don't Hold Back",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "グッタイム",
+          "links": {
+            "appleMusic": "https://music.apple.com/jp/song/6785411720",
+            "spotify": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "iro iro",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "ファンターナモーレ",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "はじまりの広場",
+      "verb": "出会う",
+      "copy": "今日の景色は、ここから動き始める。",
+      "next": [
+        "Snow Dome",
+        "木漏れ日の道",
+        "カフェ",
+        "歩道橋"
+      ],
+      "songs": [
+        {
+          "title": "Snow World",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Happy Birthday",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "NO SURRENDER！",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "ナミダの海を越えて行け",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "ブラザービート",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "カフェ",
+      "verb": "整える",
+      "copy": "少しだけ立ち止まれば、次の景色がもっと楽しみになる。",
+      "next": [
+        "はじまりの広場",
+        "木漏れ日の道",
+        "シーズンガーデン",
+        "シーサイド"
+      ],
+      "songs": [
+        {
+          "title": "ANY & EVERY",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Luv Classic",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Big Bang Sweet",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "What's your color?",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Color me live...",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "ブルーハーバー",
+      "verb": "旅立つ",
+      "copy": "潮風に乗って、新しい景色へ漕ぎ出そう。",
+      "next": [
+        "シーサイド",
+        "木漏れ日の道",
+        "展望台",
+        "シティライト"
+      ],
+      "songs": [
+        {
+          "title": "Lock on!",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Wonderful! × Surprise!",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Ready Go Round",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "ミッドナイト・トレンディ",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "8月の青",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "シーサイド",
+      "verb": "風を受ける",
+      "copy": "波と風が、心まで走らせてくれる。",
+      "next": [
+        "ブルーハーバー",
+        "シーズンガーデン",
+        "カフェ",
+        "シティライト"
+      ],
+      "songs": [
+        {
+          "title": "Stories",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "REFRESH",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "YumYumYum 〜SpicyGirl〜",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "DA BOMB",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "Hip bounce!!",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "シーズンガーデン",
+      "verb": "巡る",
+      "copy": "季節が変わるたび、この街も少しずつ表情を変える。",
+      "next": [
+        "シーサイド",
+        "カフェ",
+        "木漏れ日の道",
+        "はじまりの広場"
+      ],
+      "songs": [
+        {
+          "title": "HELLO HELLO",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "オレンジkiss",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "君は僕のもの",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "いっそ、嫌いになれたら。",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        },
+        {
+          "title": "My Sweet Girl",
+          "links": {
+            "spotify": null,
+            "appleMusic": null,
+            "youtube": null
+          }
+        }
+      ]
+    }
+  ]
+}
