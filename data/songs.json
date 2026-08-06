@@ -1,535 +1,8445 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-08-05",
-  "places": [
-    {
-      "name": "展望台",
-      "verb": "見つける",
-      "copy": "高く登れば、まだ知らない景色が見えてくる。",
-      "next": [
-        "歩道橋",
-        "シティライト",
-        "ブルーハーバー"
+  "schemaVersion": 2,
+  "source": {
+    "file": "SNOW_MAP_曲の住所と場所ネットワーク_v1.1_MASTER(5).xlsm",
+    "sheet": "全曲の住所",
+    "songCount": 147
+  },
+  "settings": {
+    "timeBands": [
+      "朝",
+      "昼",
+      "夕方",
+      "夜"
+    ],
+    "eventDateFormat": "MM-DD",
+    "selection": {
+      "homeWeight": 0.9,
+      "secondaryPlaceWeight": 0.1
+    }
+  },
+  "places": {
+    "Snow Dome": {
+      "homeSongs": [
+        "Acrobatic",
+        "Bass Bon",
+        "Boogie Woogie Baby",
+        "BOOM BOOM LIGHT",
+        "BOOST",
+        "BREAKOUT",
+        "CHARISMAX - English ver.",
+        "Crazy F-R-E-S-H Beat",
+        "Cry out",
+        "D.D.",
+        "DA BOMB",
+        "EMPIRE",
+        "GLITCH",
+        "Grandeur",
+        "Hot Flow",
+        "induction",
+        "infighter",
+        "KANPAI Year!!",
+        "KATANA",
+        "Make It Hot",
+        "Movin' up",
+        "Nine Snow Charge!!",
+        "Nine Snow Flash",
+        "P.M.G.",
+        "Party! Party! Party!",
+        "Snow Man's Life",
+        "Super Deeper",
+        "Tic Tac Toe",
+        "Wha cha cha",
+        "Ⅸ Guys Snow Man",
+        "くちびる",
+        "ばきゅん",
+        "カリスマックス",
+        "ドレス＆タキシード",
+        "地球してるぜ",
+        "嫉妬ガール"
       ],
-      "songs": [
-        {
-          "title": "We'll go together",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "EVERYTHING IS EVERYTHING",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "星のうた",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "7%",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "SBY",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "ART",
+        "BANG‼︎",
+        "EVOLUTION",
+        "Happy Birthday",
+        "Hip bounce!!",
+        "I・だって止まらない",
+        "NEXT",
+        "REFRESH",
+        "SAVE YOUR HEART",
+        "SERIOUS",
+        "Snow World",
+        "Vanishing Over",
+        "W",
+        "YumYumYum 〜SpicyGirl〜",
+        "キッタキッテナイ",
+        "君の彼氏になりたい。",
+        "守りたい、その笑顔"
       ]
     },
-    {
-      "name": "シティライト",
-      "verb": "駆け抜ける",
-      "copy": "光あふれる街は、今日も前へ進み続ける。",
-      "next": [
-        "歩道橋",
-        "Snow Dome",
-        "展望台",
-        "ブルーハーバー"
+    "はじまりの広場": {
+      "homeSongs": [
+        "Happy Birthday",
+        "HELLO HELLO",
+        "Jack In The Box",
+        "NO SURRENDER！",
+        "ROCK 'N' ROLL",
+        "Snow World",
+        "STARS",
+        "TRUE LOVE",
+        "キッタキッテナイ",
+        "ココロヒトツ",
+        "スタートライン",
+        "君へ贈る応援歌",
+        "守りたい、その笑顔"
       ],
-      "songs": [
-        {
-          "title": "Spark!!",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "BANG‼︎",
-          "links": {
-            "appleMusic": "https://music.apple.com/jp/song/1893004670",
-            "spotify": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "I・だって止まらない",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "SAVE YOUR HEART",
-          "links": {
-            "appleMusic": "https://music.apple.com/jp/song/6768850574",
-            "spotify": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "W",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "Acrobatic",
+        "Be Proud！",
+        "Brand New Smile",
+        "Christmas wishes",
+        "Days",
+        "Delicious!!!",
+        "From Today",
+        "GRATITUDE",
+        "Hot Flow",
+        "infighter",
+        "Nine Snow Charge!!",
+        "Ready Go Round",
+        "Snow Man's Life",
+        "Ⅸ Guys Snow Man",
+        "ドレス＆タキシード",
+        "ナミダの海を越えて行け",
+        "ファンターナモーレ",
+        "ブラザービート",
+        "地球してるぜ"
       ]
     },
-    {
-      "name": "Snow Dome",
-      "verb": "熱くなる",
-      "copy": "光も歓声も、この街でいちばん熱い場所。",
-      "next": [
-        "はじまりの広場",
-        "シティライト",
-        "歩道橋"
+    "カフェ": {
+      "homeSongs": [
+        "A PIECE OF CAKE",
+        "Big Bang Sweet",
+        "Color me live...",
+        "Feel the light, Lovely",
+        "HYPNOSIS",
+        "Luv Classic",
+        "One",
+        "This is LOVE",
+        "What's your color?",
+        "ナイトスケープ",
+        "ファインダー",
+        "ボクとキミと"
       ],
-      "songs": [
-        {
-          "title": "P.M.G.",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Party! Party! Party!",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Crazy F-R-E-S-H Beat",
-          "links": {
-            "appleMusic": "https://music.apple.com/jp/song/1804833299",
-            "spotify": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Make It Hot",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "守りたい、その笑顔",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "Secret Touch",
+        "slow…",
+        "TIKI TIKI",
+        "クラクラ",
+        "僕の彼女になってよ。",
+        "朝の時間",
+        "約束は君と"
       ]
     },
-    {
-      "name": "木漏れ日の道",
-      "verb": "歩き出す",
-      "copy": "風に背中を押されて、また少し前へ。",
-      "next": [
-        "歩道橋",
-        "はじまりの広場",
-        "ブルーハーバー",
-        "シーズンガーデン"
+    "シティライト": {
+      "homeSongs": [
+        "7%",
+        "ADDICTED TO LOVE",
+        "ART",
+        "BANG‼︎",
+        "Dangerholic",
+        "Don't Hold Back",
+        "endless night",
+        "EVOLUTION",
+        "Gotcha!",
+        "Hip bounce!!",
+        "I・だって止まらない",
+        "Julietta",
+        "KISSIN' MY LIPS",
+        "LOVE TRIGGER",
+        "Miss Brand-New Friday Night",
+        "NEXT",
+        "REFRESH",
+        "SAVE YOUR HEART",
+        "SERIOUS",
+        "slow…",
+        "Spark!!",
+        "Stories",
+        "Sugar",
+        "Super Sexy",
+        "Toxic Girl",
+        "Vanishing Over",
+        "Vroom Vroom Vroom",
+        "W",
+        "YumYumYum 〜SpicyGirl〜",
+        "クラクラ",
+        "ブラザービート",
+        "ミッドナイト・トレンディ",
+        "悪戯な天使"
       ],
-      "songs": [
-        {
-          "title": "From Today",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "A PIECE OF CAKE",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Brand New Smile",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "TIKI TIKI",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Days",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "Bass Bon",
+        "Boogie Woogie Baby",
+        "BOOM BOOM LIGHT",
+        "BOOST",
+        "BREAKOUT",
+        "CHARISMAX - English ver.",
+        "Crazy F-R-E-S-H Beat",
+        "Cry out",
+        "D.D.",
+        "DA BOMB",
+        "EMPIRE",
+        "GLITCH",
+        "induction",
+        "Jack In The Box",
+        "JUICY",
+        "KANPAI Year!!",
+        "KATANA",
+        "Make It Hot",
+        "Movin' up",
+        "Nine Snow Flash",
+        "P.M.G.",
+        "Party! Party! Party!",
+        "POWEEEEER",
+        "Super Deeper",
+        "Tic Tac Toe",
+        "Wha cha cha",
+        "くちびる",
+        "ばきゅん",
+        "オドロウゼ！",
+        "カリスマックス",
+        "リンディーララ",
+        "嫉妬ガール"
       ]
     },
-    {
-      "name": "歩道橋",
-      "verb": "踏み出す",
-      "copy": "一歩先へ。景色は歩いた人だけに見えてくる。",
-      "next": [
-        "展望台",
-        "シティライト",
-        "Snow Dome",
-        "木漏れ日の道",
-        "はじまりの広場"
+    "シーサイド": {
+      "homeSongs": [
+        "8月の青",
+        "JUICY",
+        "My Sweet Girl",
+        "POWEEEEER",
+        "Wonderful! × Surprise!",
+        "オドロウゼ！",
+        "ガラライキュ！",
+        "グッタイム",
+        "サンシャインドリーマー",
+        "ファンターナモーレ",
+        "君は僕のもの"
       ],
-      "songs": [
-        {
-          "title": "オトノナルホウヘ",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Don't Hold Back",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "グッタイム",
-          "links": {
-            "appleMusic": "https://music.apple.com/jp/song/6785411720",
-            "spotify": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "iro iro",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "ファンターナモーレ",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "Dangerholic",
+        "Gotcha!",
+        "Grandeur",
+        "HELLO HELLO - Movie Ver.",
+        "Julietta",
+        "Lock on!",
+        "NO SURRENDER！",
+        "This is LOVE",
+        "TRUE LOVE",
+        "Vroom Vroom Vroom",
+        "タペストリー",
+        "愛のせいで",
+        "縁 -YUÁN-"
       ]
     },
-    {
-      "name": "はじまりの広場",
-      "verb": "出会う",
-      "copy": "今日の景色は、ここから動き始める。",
-      "next": [
-        "Snow Dome",
-        "木漏れ日の道",
-        "カフェ",
-        "歩道橋"
+    "シーズンガーデン": {
+      "homeSongs": [
+        "ANY & EVERY",
+        "Brand New Smile",
+        "Delicious!!!",
+        "あいことば",
+        "オレンジkiss"
       ],
-      "songs": [
-        {
-          "title": "Snow World",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Happy Birthday",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "NO SURRENDER！",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "ナミダの海を越えて行け",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "ブラザービート",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "8月の青",
+        "Dear,",
+        "HELLO HELLO",
+        "STARS",
+        "We'll go together",
+        "いっそ、嫌いになれたら。",
+        "イチバンボシ",
+        "ガラライキュ！",
+        "ココロヒトツ",
+        "スタートライン",
+        "僕に大切にされてね。",
+        "君は僕のもの",
+        "君へ贈る応援歌"
       ]
     },
-    {
-      "name": "カフェ",
-      "verb": "整える",
-      "copy": "少しだけ立ち止まれば、次の景色がもっと楽しみになる。",
-      "next": [
-        "はじまりの広場",
-        "木漏れ日の道",
-        "シーズンガーデン",
-        "シーサイド"
+    "ブルーハーバー": {
+      "homeSongs": [
+        "Lock on!",
+        "Ready Go Round",
+        "ナミダの海を越えて行け"
       ],
-      "songs": [
-        {
-          "title": "ANY & EVERY",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Luv Classic",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Big Bang Sweet",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "What's your color?",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Color me live...",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "Don't Hold Back",
+        "One",
+        "Stories",
+        "Sugar",
+        "What's your color?",
+        "Wonderful! × Surprise!",
+        "これが愛じゃないのなら",
+        "サンシャインドリーマー",
+        "夏色花火"
       ]
     },
-    {
-      "name": "ブルーハーバー",
-      "verb": "旅立つ",
-      "copy": "潮風に乗って、新しい景色へ漕ぎ出そう。",
-      "next": [
-        "シーサイド",
-        "木漏れ日の道",
-        "展望台",
-        "シティライト"
+    "展望台": {
+      "homeSongs": [
+        "Christmas wishes",
+        "EVERYTHING IS EVERYTHING",
+        "GRATITUDE",
+        "SBY",
+        "Symmetry",
+        "We'll go together",
+        "これが愛じゃないのなら",
+        "イチバンボシ",
+        "タペストリー",
+        "ベストフレンド",
+        "リンディーララ",
+        "僕という名のドラマ",
+        "僕に大切にされてね。",
+        "僕の彼女になってよ。",
+        "夏色花火",
+        "愛のせいで",
+        "星のうた",
+        "約束は君と",
+        "終わらないMemories",
+        "縁 -YUÁN-"
       ],
-      "songs": [
-        {
-          "title": "Lock on!",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Wonderful! × Surprise!",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Ready Go Round",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "ミッドナイト・トレンディ",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "8月の青",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "360m",
+        "7%",
+        "Feel the light, Lovely",
+        "KISSIN' MY LIPS",
+        "LOVE TRIGGER",
+        "Two",
+        "あいことば",
+        "ナイトスケープ",
+        "ファインダー",
+        "ボクとキミと",
+        "ミッドナイト・トレンディ"
       ]
     },
-    {
-      "name": "シーサイド",
-      "verb": "風を受ける",
-      "copy": "波と風が、心まで走らせてくれる。",
-      "next": [
-        "ブルーハーバー",
-        "シーズンガーデン",
-        "カフェ",
-        "シティライト"
+    "木漏れ日の道": {
+      "homeSongs": [
+        "Days",
+        "From Today",
+        "iro iro",
+        "TIKI TIKI",
+        "いっそ、嫌いになれたら。"
       ],
-      "songs": [
-        {
-          "title": "Stories",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "REFRESH",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "YumYumYum 〜SpicyGirl〜",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "DA BOMB",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "Hip bounce!!",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "A PIECE OF CAKE",
+        "ANY & EVERY",
+        "Big Bang Sweet",
+        "Color me live...",
+        "Luv Classic",
+        "My Sweet Girl",
+        "オトノナルホウヘ",
+        "僕という名のドラマ"
       ]
     },
-    {
-      "name": "シーズンガーデン",
-      "verb": "巡る",
-      "copy": "季節が変わるたび、この街も少しずつ表情を変える。",
-      "next": [
-        "シーサイド",
-        "カフェ",
-        "木漏れ日の道",
-        "はじまりの広場"
+    "歩道橋": {
+      "homeSongs": [
+        "360m",
+        "Be Proud！",
+        "Dear,",
+        "HELLO HELLO - Movie Ver.",
+        "Secret Touch",
+        "Two",
+        "オトノナルホウヘ",
+        "君の彼氏になりたい。",
+        "朝の時間"
       ],
-      "songs": [
-        {
-          "title": "HELLO HELLO",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "オレンジkiss",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "君は僕のもの",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "いっそ、嫌いになれたら。",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        },
-        {
-          "title": "My Sweet Girl",
-          "links": {
-            "spotify": null,
-            "appleMusic": null,
-            "youtube": null
-          }
-        }
+      "secondarySongs": [
+        "ADDICTED TO LOVE",
+        "endless night",
+        "EVERYTHING IS EVERYTHING",
+        "HYPNOSIS",
+        "iro iro",
+        "Miss Brand-New Friday Night",
+        "ROCK 'N' ROLL",
+        "SBY",
+        "Spark!!",
+        "Super Sexy",
+        "Symmetry",
+        "Toxic Girl",
+        "オレンジkiss",
+        "グッタイム",
+        "ベストフレンド",
+        "悪戯な天使",
+        "星のうた",
+        "終わらないMemories"
       ]
+    }
+  },
+  "songs": [
+    {
+      "title": "360m",
+      "home": "歩道橋",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "02-16",
+        "11-05",
+        "11-27"
+      ],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 11
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 7
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 6
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6621,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.6192,
+        "scoreDifference": 0.0429,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "7%",
+      "home": "シティライト",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夜",
+        "sub": "夜"
+      },
+      "events": [
+        "05-17"
+      ],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 17
+          },
+          {
+            "name": "チル",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.7024,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5659,
+        "scoreDifference": 0.1365,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ")"
+    },
+    {
+      "title": "8月の青",
+      "home": "シーサイド",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "夏ソング",
+            "votes": 12
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 1
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.7333,
+        "secondaryPlace": "ブルーハーバー",
+        "secondaryScore": 0.6917,
+        "scoreDifference": 0.0416,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "A PIECE OF CAKE",
+      "home": "カフェ",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "カフェBGM",
+            "votes": 8
+          },
+          {
+            "name": "気分転換",
+            "votes": 6
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 4
+          },
+          {
+            "name": "散歩",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.6962,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.4741,
+        "scoreDifference": 0.2221,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Acrobatic",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "勉強・作業用",
+            "votes": 5
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "散歩",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.5882,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5404,
+        "scoreDifference": 0.0478,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ADDICTED TO LOVE",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "05-17",
+        "06-27",
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "夜景",
+            "votes": 7
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6823,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5571,
+        "scoreDifference": 0.1252,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ANY & EVERY",
+      "home": "シーズンガーデン",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 54,
+        "topItems": [
+          {
+            "name": "カフェBGM",
+            "votes": 15
+          },
+          {
+            "name": "チル",
+            "votes": 8
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 5
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.8123,
+        "secondaryPlace": "木漏れ日の道",
+        "secondaryScore": 0.6218,
+        "scoreDifference": 0.1905,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ART",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [
+        "02-16",
+        "11-27"
+      ],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 7
+          },
+          {
+            "name": "夜景",
+            "votes": 6
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6634,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.4555,
+        "scoreDifference": 0.2079,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "BANG‼︎",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": "夜"
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 70,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 31
+          },
+          {
+            "name": "ドライブ",
+            "votes": 13
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 10
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 7
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7905,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.6157,
+        "scoreDifference": 0.1748,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Bass Bon",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "夜",
+        "sub": "昼"
+      },
+      "events": [
+        "06-27",
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 21,
+        "topItems": [
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 4
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.4799,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.371,
+        "scoreDifference": 0.1089,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Be Proud！",
+      "home": "歩道橋",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "朝",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 13
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 5
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 4
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.494,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.3895,
+        "scoreDifference": 0.1046,
+        "mainTime": "朝",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Big Bang Sweet",
+      "home": "カフェ",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 89,
+        "topItems": [
+          {
+            "name": "カフェBGM",
+            "votes": 17
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 16
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 14
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 9
+          },
+          {
+            "name": "チル",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.7714,
+        "secondaryPlace": "木漏れ日の道",
+        "secondaryScore": 0.5737,
+        "scoreDifference": 0.1976,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Boogie Woogie Baby",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 12
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7103,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6329,
+        "scoreDifference": 0.0775,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "BOOM BOOM LIGHT",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 10
+          },
+          {
+            "name": "気分転換",
+            "votes": 5
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "夏ソング",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7385,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6014,
+        "scoreDifference": 0.1371,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "BOOST",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 34,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 18
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7757,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.617,
+        "scoreDifference": 0.1587,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Brand New Smile",
+      "home": "シーズンガーデン",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "散歩",
+            "votes": 6
+          },
+          {
+            "name": "朝の支度",
+            "votes": 6
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.7037,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.5203,
+        "scoreDifference": 0.1833,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "BREAKOUT",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 61,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 31
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 9
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7725,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6877,
+        "scoreDifference": 0.0848,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "CHARISMAX - English ver.",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 16,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "気分転換",
+            "votes": 2
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7379,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5768,
+        "scoreDifference": 0.1611,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Christmas wishes",
+      "home": "展望台",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "12-24",
+        "12-25"
+      ],
+      "survey": {
+        "totalVotes": 60,
+        "topItems": [
+          {
+            "name": "冬ソング",
+            "votes": 29
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 7
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 4
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 3
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.4305,
+        "secondaryPlace": "木漏れ日の道",
+        "secondaryScore": 0.2151,
+        "scoreDifference": 0.2153,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Color me live...",
+      "home": "カフェ",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [
+        "03-25",
+        "11-27",
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "夜景",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.6799,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.4353,
+        "scoreDifference": 0.2446,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Crazy F-R-E-S-H Beat",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 141,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 42
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 28
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 17
+          },
+          {
+            "name": "ドライブ",
+            "votes": 13
+          },
+          {
+            "name": "気分転換",
+            "votes": 10
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8331,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6522,
+        "scoreDifference": 0.1809,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Cry out",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 12
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 2
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 2
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7098,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6615,
+        "scoreDifference": 0.0483,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "D.D.",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "夜"
+      },
+      "events": [
+        "01-22"
+      ],
+      "survey": {
+        "totalVotes": 152,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 63
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 38
+          },
+          {
+            "name": "ドライブ",
+            "votes": 12
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 7
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 7
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7411,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6705,
+        "scoreDifference": 0.0706,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "DA BOMB",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 52,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 16
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 5
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8374,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6432,
+        "scoreDifference": 0.1943,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Dangerholic",
+      "home": "シティライト",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "朝",
+        "sub": "夜"
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 62,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 30
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 10
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 6
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7392,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.7078,
+        "scoreDifference": 0.0314,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Days",
+      "home": "木漏れ日の道",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 34,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.6155,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.5017,
+        "scoreDifference": 0.1138,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Dear,",
+      "home": "歩道橋",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 10
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 6
+          },
+          {
+            "name": "応援ソング",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6147,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5242,
+        "scoreDifference": 0.0905,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Delicious!!!",
+      "home": "シーズンガーデン",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 33,
+        "topItems": [
+          {
+            "name": "散歩",
+            "votes": 6
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "朝の支度",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.5947,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.4993,
+        "scoreDifference": 0.0954,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Don't Hold Back",
+      "home": "シティライト",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "夜景",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 3
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.642,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.6254,
+        "scoreDifference": 0.0166,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "EMPIRE",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 11
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 1
+          },
+          {
+            "name": "旅行",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7864,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.536,
+        "scoreDifference": 0.2505,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "endless night",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 11
+          },
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.689,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5526,
+        "scoreDifference": 0.1364,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "EVERYTHING IS EVERYTHING",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 91,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 28
+          },
+          {
+            "name": "チル",
+            "votes": 17
+          },
+          {
+            "name": "夜景",
+            "votes": 10
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 10
+          },
+          {
+            "name": "冬ソング",
+            "votes": 7
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.7358,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.4581,
+        "scoreDifference": 0.2777,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "EVOLUTION",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 34,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 14
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7006,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.6789,
+        "scoreDifference": 0.0217,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Feel the light, Lovely",
+      "home": "カフェ",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 60,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 13
+          },
+          {
+            "name": "夜景",
+            "votes": 10
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 7
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.6257,
+        "secondaryPlace": "展望台",
+        "secondaryScore": 0.4727,
+        "scoreDifference": 0.153,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "From Today",
+      "home": "木漏れ日の道",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 63,
+        "topItems": [
+          {
+            "name": "散歩",
+            "votes": 13
+          },
+          {
+            "name": "朝の支度",
+            "votes": 11
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 6
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 6
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.7662,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.5408,
+        "scoreDifference": 0.2254,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "GLITCH",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "05-17",
+        "06-27"
+      ],
+      "survey": {
+        "totalVotes": 20,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.4807,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.4612,
+        "scoreDifference": 0.0196,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Gotcha!",
+      "home": "シティライト",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "06-21",
+        "11-27"
+      ],
+      "survey": {
+        "totalVotes": 19,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 8
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 2
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6974,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5721,
+        "scoreDifference": 0.1253,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Grandeur",
+      "home": "Snow Dome",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 91,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 41
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 13
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 10
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 7
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7937,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.694,
+        "scoreDifference": 0.0997,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "GRATITUDE",
+      "home": "展望台",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 14
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 5
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 2
+          },
+          {
+            "name": "チル",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5988,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.4806,
+        "scoreDifference": 0.1182,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Happy Birthday",
+      "home": "はじまりの広場",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "05-17",
+        "05-05",
+        "06-27",
+        "11-05",
+        "06-21",
+        "11-27",
+        "02-16",
+        "03-25",
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 22,
+        "topItems": [
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "応援ソング",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.6455,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5509,
+        "scoreDifference": 0.0946,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "HELLO HELLO",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 92,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 29
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 9
+          },
+          {
+            "name": "夏ソング",
+            "votes": 9
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 9
+          },
+          {
+            "name": "朝の支度",
+            "votes": 7
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.5136,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.507,
+        "scoreDifference": 0.0067,
+        "mainTime": "夕方",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "HELLO HELLO - Movie Ver.",
+      "home": "歩道橋",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": "朝"
+      },
+      "events": [
+        "06-27"
+      ],
+      "survey": {
+        "totalVotes": 20,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "朝の支度",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "春ソング",
+            "votes": 2
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーズンガーデン",
+        "homeScore": 0.6381,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5243,
+        "scoreDifference": 0.1138,
+        "mainTime": "夕方",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Hip bounce!!",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 89,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 28
+          },
+          {
+            "name": "ドライブ",
+            "votes": 16
+          },
+          {
+            "name": "夏ソング",
+            "votes": 9
+          },
+          {
+            "name": "気分転換",
+            "votes": 8
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7117,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5928,
+        "scoreDifference": 0.119,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Hot Flow",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "02-16",
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "気分転換",
+            "votes": 8
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 7
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 5
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.5841,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.4612,
+        "scoreDifference": 0.1229,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "HYPNOSIS",
+      "home": "カフェ",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [
+        "02-16",
+        "06-21",
+        "05-17"
+      ],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 7
+          },
+          {
+            "name": "チル",
+            "votes": 5
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "雨の日に聴きたい曲",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6521,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5191,
+        "scoreDifference": 0.133,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "induction",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [
+        "06-27"
+      ],
+      "survey": {
+        "totalVotes": 21,
+        "topItems": [
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 5
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 5
+          },
+          {
+            "name": "夜景",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "歩道橋",
+        "homeScore": 0.3257,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.3231,
+        "scoreDifference": 0.0026,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "infighter",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "気分転換",
+            "votes": 6
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.5774,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.4766,
+        "scoreDifference": 0.1007,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "iro iro",
+      "home": "木漏れ日の道",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [
+        "05-05"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "通勤・通学",
+            "votes": 6
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 5
+          },
+          {
+            "name": "朝の支度",
+            "votes": 4
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.627,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.587,
+        "scoreDifference": 0.04,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "I・だって止まらない",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "03-25"
+      ],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 10
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 3
+          },
+          {
+            "name": "夜景",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7339,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.7294,
+        "scoreDifference": 0.0045,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Jack In The Box",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 56,
+        "topItems": [
+          {
+            "name": "勉強・作業用",
+            "votes": 13
+          },
+          {
+            "name": "気分転換",
+            "votes": 11
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 9
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.517,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.4176,
+        "scoreDifference": 0.0994,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "JUICY",
+      "home": "シーサイド",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 8
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 4
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          },
+          {
+            "name": "夜景",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.6059,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5331,
+        "scoreDifference": 0.0728,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Julietta",
+      "home": "シティライト",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 7
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 2
+          },
+          {
+            "name": "夜景",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.5548,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.449,
+        "scoreDifference": 0.1058,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "KANPAI Year!!",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 25,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "応援ソング",
+            "votes": 6
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6799,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.4906,
+        "scoreDifference": 0.1893,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "KATANA",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 25,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 10
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 2
+          },
+          {
+            "name": "気分転換",
+            "votes": 2
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6737,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6447,
+        "scoreDifference": 0.029,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "KISSIN' MY LIPS",
+      "home": "シティライト",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 140,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 30
+          },
+          {
+            "name": "ドライブ",
+            "votes": 20
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 17
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 14
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 12
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6144,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5655,
+        "scoreDifference": 0.0489,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Lock on!",
+      "home": "ブルーハーバー",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "06-09"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "夏ソング",
+            "votes": 8
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.7045,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.6399,
+        "scoreDifference": 0.0646,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "LOVE TRIGGER",
+      "home": "シティライト",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "05-17"
+      ],
+      "survey": {
+        "totalVotes": 60,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 14
+          },
+          {
+            "name": "夜景",
+            "votes": 13
+          },
+          {
+            "name": "ドライブ",
+            "votes": 8
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5653,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.4636,
+        "scoreDifference": 0.1018,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Luv Classic",
+      "home": "カフェ",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 60,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 13
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 11
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 9
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.785,
+        "secondaryPlace": "木漏れ日の道",
+        "secondaryScore": 0.4224,
+        "scoreDifference": 0.3626,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Make It Hot",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 33,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 15
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8345,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6005,
+        "scoreDifference": 0.2339,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Miss Brand-New Friday Night",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 8
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 5
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6473,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.6158,
+        "scoreDifference": 0.0315,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Movin' up",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 13
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7281,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6907,
+        "scoreDifference": 0.0375,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "My Sweet Girl",
+      "home": "シーサイド",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 61,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 14
+          },
+          {
+            "name": "気分転換",
+            "votes": 8
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 5
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.472,
+        "secondaryPlace": "木漏れ日の道",
+        "secondaryScore": 0.4281,
+        "scoreDifference": 0.0439,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "NEXT",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 51,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 17
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "気分転換",
+            "votes": 7
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7133,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.639,
+        "scoreDifference": 0.0743,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Nine Snow Charge!!",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 13
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 1
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7029,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.4712,
+        "scoreDifference": 0.2317,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Nine Snow Flash",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 23,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 11
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 7
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 2
+          },
+          {
+            "name": "ドライブ",
+            "votes": 1
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6856,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.552,
+        "scoreDifference": 0.1336,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "NO SURRENDER！",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 58,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 19
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 8
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 7
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "気分転換",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.6281,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.3956,
+        "scoreDifference": 0.2326,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "One",
+      "home": "カフェ",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "朝",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 27,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 5
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 5
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 3
+          },
+          {
+            "name": "応援ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.6387,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.424,
+        "scoreDifference": 0.2146,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "P.M.G.",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [
+        "03-25",
+        "05-05",
+        "06-21"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 8
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8106,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6199,
+        "scoreDifference": 0.1907,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Party! Party! Party!",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 38,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 7
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8255,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5959,
+        "scoreDifference": 0.2295,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "POWEEEEER",
+      "home": "シーサイド",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 2
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6807,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6718,
+        "scoreDifference": 0.0089,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Ready Go Round",
+      "home": "ブルーハーバー",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "旅行",
+            "votes": 6
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "散歩",
+            "votes": 3
+          },
+          {
+            "name": "応援ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.6679,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.4905,
+        "scoreDifference": 0.1774,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "REFRESH",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 63,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 18
+          },
+          {
+            "name": "気分転換",
+            "votes": 17
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 9
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.5945,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5658,
+        "scoreDifference": 0.0288,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ROCK 'N' ROLL",
+      "home": "はじまりの広場",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 5
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "応援ソング",
+            "votes": 4
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 4
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6835,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.4589,
+        "scoreDifference": 0.2246,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "SAVE YOUR HEART",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "03-25"
+      ],
+      "survey": {
+        "totalVotes": 63,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 19
+          },
+          {
+            "name": "ドライブ",
+            "votes": 10
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 6
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 6
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 6
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7478,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5417,
+        "scoreDifference": 0.2061,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "SBY",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 34,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 15
+          },
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 5
+          },
+          {
+            "name": "夜景",
+            "votes": 4
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6895,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.505,
+        "scoreDifference": 0.1845,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Secret Touch",
+      "home": "歩道橋",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 69,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 24
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 8
+          },
+          {
+            "name": "チル",
+            "votes": 7
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 6
+          },
+          {
+            "name": "冬ソング",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5872,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.5805,
+        "scoreDifference": 0.0067,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "SERIOUS",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 60,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 9
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6428,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.603,
+        "scoreDifference": 0.0397,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "slow…",
+      "home": "シティライト",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "夜",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 5
+          },
+          {
+            "name": "チル",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.4877,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.4673,
+        "scoreDifference": 0.0204,
+        "mainTime": "夜",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Snow Man's Life",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 9
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 7
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 5
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 4
+          },
+          {
+            "name": "旅行",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8081,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5089,
+        "scoreDifference": 0.2991,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Snow World",
+      "home": "はじまりの広場",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [
+        "08-08"
+      ],
+      "survey": {
+        "totalVotes": 147,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 23
+          },
+          {
+            "name": "ドライブ",
+            "votes": 20
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 12
+          },
+          {
+            "name": "応援ソング",
+            "votes": 12
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 10
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.6808,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5805,
+        "scoreDifference": 0.1003,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Spark!!",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "夜景",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.783,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5489,
+        "scoreDifference": 0.2341,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "STARS",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 65,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 25
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 9
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 8
+          },
+          {
+            "name": "冬ソング",
+            "votes": 6
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.4664,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.2982,
+        "scoreDifference": 0.1682,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Stories",
+      "home": "シティライト",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 132,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 31
+          },
+          {
+            "name": "ドライブ",
+            "votes": 19
+          },
+          {
+            "name": "応援ソング",
+            "votes": 17
+          },
+          {
+            "name": "気分転換",
+            "votes": 12
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 11
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6621,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5197,
+        "scoreDifference": 0.1424,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Sugar",
+      "home": "シティライト",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 8
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6716,
+        "secondaryPlace": "ブルーハーバー",
+        "secondaryScore": 0.5375,
+        "scoreDifference": 0.1342,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Super Deeper",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 22,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7109,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5329,
+        "scoreDifference": 0.178,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Super Sexy",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 33,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 12
+          },
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6969,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.4785,
+        "scoreDifference": 0.2184,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Symmetry",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "05-17",
+        "05-05"
+      ],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 8
+          },
+          {
+            "name": "チル",
+            "votes": 5
+          },
+          {
+            "name": "夜景",
+            "votes": 5
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6857,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5702,
+        "scoreDifference": 0.1155,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "This is LOVE",
+      "home": "カフェ",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.5737,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5269,
+        "scoreDifference": 0.0468,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Tic Tac Toe",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 6
+          },
+          {
+            "name": "夜景",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7866,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.7046,
+        "scoreDifference": 0.0821,
+        "mainTime": "夕方",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "TIKI TIKI",
+      "home": "木漏れ日の道",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 36,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 7
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "夏ソング",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.6082,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.562,
+        "scoreDifference": 0.0462,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Toxic Girl",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 2
+          },
+          {
+            "name": "チル",
+            "votes": 2
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "歩道橋",
+        "homeScore": 0.4774,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.4594,
+        "scoreDifference": 0.018,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "TRUE LOVE",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 10
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.4663,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.4319,
+        "scoreDifference": 0.0345,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Two",
+      "home": "歩道橋",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "02-16",
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 21,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 7
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 7
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 2
+          },
+          {
+            "name": "チル",
+            "votes": 1
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6996,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5435,
+        "scoreDifference": 0.1561,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Vanishing Over",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 7
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.5861,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.5238,
+        "scoreDifference": 0.0623,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Vroom Vroom Vroom",
+      "home": "シティライト",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "05-17",
+        "05-05",
+        "03-25"
+      ],
+      "survey": {
+        "totalVotes": 17,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 2
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 1
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.66,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5804,
+        "scoreDifference": 0.0796,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "W",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 59,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 27
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 8
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 6
+          },
+          {
+            "name": "応援ソング",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.736,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.7005,
+        "scoreDifference": 0.0354,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "We'll go together",
+      "home": "展望台",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 62,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 13
+          },
+          {
+            "name": "夜景",
+            "votes": 9
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 8
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 8
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.9071,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5654,
+        "scoreDifference": 0.3417,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Wha cha cha",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 2
+          },
+          {
+            "name": "気分転換",
+            "votes": 2
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7849,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.634,
+        "scoreDifference": 0.1509,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "What's your color?",
+      "home": "カフェ",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "夜",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 55,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 14
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 5
+          },
+          {
+            "name": "夜景",
+            "votes": 5
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.7357,
+        "secondaryPlace": "展望台",
+        "secondaryScore": 0.3893,
+        "scoreDifference": 0.3464,
+        "mainTime": "夜",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Wonderful! × Surprise!",
+      "home": "シーサイド",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 56,
+        "topItems": [
+          {
+            "name": "夏ソング",
+            "votes": 16
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 11
+          },
+          {
+            "name": "ドライブ",
+            "votes": 7
+          },
+          {
+            "name": "気分転換",
+            "votes": 6
+          },
+          {
+            "name": "旅行",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.6958,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.6073,
+        "scoreDifference": 0.0885,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "YumYumYum 〜SpicyGirl〜",
+      "home": "シティライト",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 83,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 24
+          },
+          {
+            "name": "ドライブ",
+            "votes": 11
+          },
+          {
+            "name": "気分転換",
+            "votes": 9
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 7
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 7
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.7203,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.6527,
+        "scoreDifference": 0.0675,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "Ⅸ Guys Snow Man",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 8
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 8
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 4
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7453,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6316,
+        "scoreDifference": 0.1137,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "あいことば",
+      "home": "シーズンガーデン",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 24,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 9
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 6
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 2
+          },
+          {
+            "name": "応援ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5982,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5351,
+        "scoreDifference": 0.0631,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "いっそ、嫌いになれたら。",
+      "home": "木漏れ日の道",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 10
+          },
+          {
+            "name": "散歩",
+            "votes": 8
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          },
+          {
+            "name": "チル",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "木漏れ日の道",
+        "homeScore": 0.5901,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.5829,
+        "scoreDifference": 0.0072,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "くちびる",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "家事のおとも",
+            "votes": 7
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 4
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 2
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.5386,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.3534,
+        "scoreDifference": 0.1852,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "これが愛じゃないのなら",
+      "home": "展望台",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 25,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 11
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 7
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 1
+          },
+          {
+            "name": "ドライブ",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6073,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5663,
+        "scoreDifference": 0.041,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ばきゅん",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 65,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 13
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 6
+          },
+          {
+            "name": "気分転換",
+            "votes": 6
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8131,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6163,
+        "scoreDifference": 0.1968,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "イチバンボシ",
+      "home": "展望台",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 64,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 28
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 14
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.4788,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.3159,
+        "scoreDifference": 0.1629,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "オトノナルホウヘ",
+      "home": "歩道橋",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "通勤・通学",
+            "votes": 12
+          },
+          {
+            "name": "朝の支度",
+            "votes": 8
+          },
+          {
+            "name": "ドライブ",
+            "votes": 6
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 3
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "歩道橋",
+        "homeScore": 0.6704,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5959,
+        "scoreDifference": 0.0744,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "オドロウゼ！",
+      "home": "シーサイド",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 69,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 22
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 8
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 8
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 5
+          },
+          {
+            "name": "応援ソング",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7176,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6644,
+        "scoreDifference": 0.0533,
+        "mainTime": "朝",
+        "subTime": "昼"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "オレンジkiss",
+      "home": "シーズンガーデン",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "05-17"
+      ],
+      "survey": {
+        "totalVotes": 61,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 26
+          },
+          {
+            "name": "夏ソング",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "散歩",
+            "votes": 4
+          },
+          {
+            "name": "旅行",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーズンガーデン",
+        "homeScore": 0.5509,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.5355,
+        "scoreDifference": 0.0154,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "カリスマックス",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 38,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 15
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 9
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.771,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.7079,
+        "scoreDifference": 0.0631,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ガラライキュ！",
+      "home": "シーサイド",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [
+        "05-05",
+        "06-27",
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 30,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 5
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 3
+          },
+          {
+            "name": "朝の支度",
+            "votes": 3
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.5736,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.4426,
+        "scoreDifference": 0.131,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "キッタキッテナイ",
+      "home": "はじまりの広場",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "家事のおとも",
+            "votes": 8
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 2
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.4396,
+        "secondaryPlace": "Snow Dome",
+        "secondaryScore": 0.4061,
+        "scoreDifference": 0.0336,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "クラクラ",
+      "home": "シティライト",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 21,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 6
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 5
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 2
+          },
+          {
+            "name": "雨の日に聴きたい曲",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6158,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.4949,
+        "scoreDifference": 0.1208,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "グッタイム",
+      "home": "シーサイド",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 263,
+        "topItems": [
+          {
+            "name": "通勤・通学",
+            "votes": 54
+          },
+          {
+            "name": "朝の支度",
+            "votes": 51
+          },
+          {
+            "name": "ドライブ",
+            "votes": 32
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 30
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 22
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6471,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.6076,
+        "scoreDifference": 0.0395,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ココロヒトツ",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 53,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 24
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 5
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.5441,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.3074,
+        "scoreDifference": 0.2367,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "サンシャインドリーマー",
+      "home": "シーサイド",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "昼",
+        "sub": "朝"
+      },
+      "events": [
+        "06-21",
+        "06-27",
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 36,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 7
+          },
+          {
+            "name": "応援ソング",
+            "votes": 6
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 4
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.6923,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.5379,
+        "scoreDifference": 0.1544,
+        "mainTime": "昼",
+        "subTime": "朝"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "スタートライン",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 8
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 2
+          },
+          {
+            "name": "旅行",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.5398,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.4467,
+        "scoreDifference": 0.0932,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "タペストリー",
+      "home": "展望台",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 64,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 18
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 13
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 11
+          },
+          {
+            "name": "チル",
+            "votes": 4
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5872,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.4698,
+        "scoreDifference": 0.1174,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ドレス＆タキシード",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 56,
+        "topItems": [
+          {
+            "name": "家事のおとも",
+            "votes": 10
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 9
+          },
+          {
+            "name": "気分転換",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 4
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.4723,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.3783,
+        "scoreDifference": 0.094,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ナイトスケープ",
+      "home": "カフェ",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [
+        "11-27",
+        "03-25",
+        "05-05"
+      ],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 11
+          },
+          {
+            "name": "夜景",
+            "votes": 8
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.5506,
+        "secondaryPlace": "展望台",
+        "secondaryScore": 0.4939,
+        "scoreDifference": 0.0567,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ナミダの海を越えて行け",
+      "home": "ブルーハーバー",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "夕方",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 95,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 39
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 20
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 15
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 4
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.6205,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.2774,
+        "scoreDifference": 0.3431,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ファインダー",
+      "home": "カフェ",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "06-21"
+      ],
+      "survey": {
+        "totalVotes": 34,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 6
+          },
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 5
+          },
+          {
+            "name": "散歩",
+            "votes": 4
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.6372,
+        "secondaryPlace": "展望台",
+        "secondaryScore": 0.5417,
+        "scoreDifference": 0.0955,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ファンターナモーレ",
+      "home": "シーサイド",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 149,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 32
+          },
+          {
+            "name": "散歩",
+            "votes": 16
+          },
+          {
+            "name": "気分転換",
+            "votes": 16
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 13
+          },
+          {
+            "name": "朝の支度",
+            "votes": 10
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.6109,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5822,
+        "scoreDifference": 0.0287,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ブラザービート",
+      "home": "シティライト",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "朝",
+        "sub": "昼"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 70,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 22
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 10
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 9
+          },
+          {
+            "name": "朝の支度",
+            "votes": 7
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シティライト",
+        "homeScore": 0.6112,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.5923,
+        "scoreDifference": 0.0189,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ベストフレンド",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 56,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 20
+          },
+          {
+            "name": "応援ソング",
+            "votes": 8
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "散歩",
+            "votes": 5
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.4913,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.3919,
+        "scoreDifference": 0.0994,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ボクとキミと",
+      "home": "カフェ",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 28,
+        "topItems": [
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 5
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 3
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "カフェ",
+        "homeScore": 0.6214,
+        "secondaryPlace": "展望台",
+        "secondaryScore": 0.5434,
+        "scoreDifference": 0.078,
+        "mainTime": "夜",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "ミッドナイト・トレンディ",
+      "home": "シティライト",
+      "secondaryPlace": "展望台",
+      "time": {
+        "main": "夜",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "ドライブ",
+            "votes": 11
+          },
+          {
+            "name": "夜景",
+            "votes": 9
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 2
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 2
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "ブルーハーバー",
+        "homeScore": 0.6875,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5771,
+        "scoreDifference": 0.1104,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "リンディーララ",
+      "home": "展望台",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 31,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 7
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 5
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6488,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.4856,
+        "scoreDifference": 0.1632,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "僕という名のドラマ",
+      "home": "展望台",
+      "secondaryPlace": "木漏れ日の道",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 22,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 10
+          },
+          {
+            "name": "応援ソング",
+            "votes": 5
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 2
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.5235,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.4125,
+        "scoreDifference": 0.111,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "僕に大切にされてね。",
+      "home": "展望台",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 46,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 19
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          },
+          {
+            "name": "どれにも当てはまらない",
+            "votes": 4
+          },
+          {
+            "name": "夜景",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.4177,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.3895,
+        "scoreDifference": 0.0283,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "僕の彼女になってよ。",
+      "home": "展望台",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 56,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 17
+          },
+          {
+            "name": "夜景",
+            "votes": 8
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 6
+          },
+          {
+            "name": "ドライブ",
+            "votes": 4
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.4983,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.3905,
+        "scoreDifference": 0.1078,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "君の彼氏になりたい。",
+      "home": "歩道橋",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "昼",
+        "sub": "夕方"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 135,
+        "topItems": [
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 36
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 23
+          },
+          {
+            "name": "家事のおとも",
+            "votes": 16
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 10
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 9
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.5398,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.501,
+        "scoreDifference": 0.0388,
+        "mainTime": "昼",
+        "subTime": "夕方"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "君は僕のもの",
+      "home": "シーサイド",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 65,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 20
+          },
+          {
+            "name": "夏ソング",
+            "votes": 14
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          },
+          {
+            "name": "ドライブ",
+            "votes": 5
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.7566,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.5633,
+        "scoreDifference": 0.1933,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "君へ贈る応援歌",
+      "home": "はじまりの広場",
+      "secondaryPlace": "シーズンガーデン",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "応援ソング",
+            "votes": 16
+          },
+          {
+            "name": "元気を出したい時",
+            "votes": 4
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 2
+          },
+          {
+            "name": "気分転換",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "はじまりの広場",
+        "homeScore": 0.5092,
+        "secondaryPlace": "シーズンガーデン",
+        "secondaryScore": 0.3057,
+        "scoreDifference": 0.2035,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "地球してるぜ",
+      "home": "Snow Dome",
+      "secondaryPlace": "はじまりの広場",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [
+        "07-05",
+        "03-25"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 10
+          },
+          {
+            "name": "応援ソング",
+            "votes": 5
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 4
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 3
+          },
+          {
+            "name": "ドライブ",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.7252,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.6982,
+        "scoreDifference": 0.027,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "夏色花火",
+      "home": "展望台",
+      "secondaryPlace": "ブルーハーバー",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 66,
+        "topItems": [
+          {
+            "name": "夏ソング",
+            "votes": 26
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 20
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "夜景",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "シーサイド",
+        "homeScore": 0.7763,
+        "secondaryPlace": "ブルーハーバー",
+        "secondaryScore": 0.5722,
+        "scoreDifference": 0.2041,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "嫉妬ガール",
+      "home": "Snow Dome",
+      "secondaryPlace": "シティライト",
+      "time": {
+        "main": "昼",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 36,
+        "topItems": [
+          {
+            "name": "恋愛ソング",
+            "votes": 8
+          },
+          {
+            "name": "勉強・作業用",
+            "votes": 6
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          },
+          {
+            "name": "テンションを上げたい時",
+            "votes": 5
+          },
+          {
+            "name": "気分転換",
+            "votes": 5
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.4381,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.3742,
+        "scoreDifference": 0.0639,
+        "mainTime": "昼",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "守りたい、その笑顔",
+      "home": "はじまりの広場",
+      "secondaryPlace": "Snow Dome",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 36,
+        "topItems": [
+          {
+            "name": "テンションを上げたい時",
+            "votes": 12
+          },
+          {
+            "name": "ライブで盛り上がる曲",
+            "votes": 6
+          },
+          {
+            "name": "応援ソング",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "Snow Dome",
+        "homeScore": 0.8209,
+        "secondaryPlace": "シティライト",
+        "secondaryScore": 0.5588,
+        "scoreDifference": 0.2621,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "悪戯な天使",
+      "home": "シティライト",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "05-17"
+      ],
+      "survey": {
+        "totalVotes": 36,
+        "topItems": [
+          {
+            "name": "夜景",
+            "votes": 9
+          },
+          {
+            "name": "チル",
+            "votes": 5
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.712,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5588,
+        "scoreDifference": 0.1532,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "愛のせいで",
+      "home": "展望台",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 37,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 15
+          },
+          {
+            "name": "Snow Man初心者に勧めたい曲",
+            "votes": 5
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 4
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6389,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.4914,
+        "scoreDifference": 0.1474,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "星のうた",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [
+        "06-21",
+        "11-05"
+      ],
+      "survey": {
+        "totalVotes": 26,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 6
+          },
+          {
+            "name": "夜景",
+            "votes": 4
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          },
+          {
+            "name": "応援ソング",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.7663,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5752,
+        "scoreDifference": 0.1911,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "朝の時間",
+      "home": "歩道橋",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "朝",
+        "sub": null
+      },
+      "events": [
+        "02-16"
+      ],
+      "survey": {
+        "totalVotes": 35,
+        "topItems": [
+          {
+            "name": "朝の支度",
+            "votes": 18
+          },
+          {
+            "name": "通勤・通学",
+            "votes": 7
+          },
+          {
+            "name": "応援ソング",
+            "votes": 4
+          },
+          {
+            "name": "エモい曲集",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 1
+          }
+        ]
+      },
+      "analysis": {
+        "home": "歩道橋",
+        "homeScore": 0.472,
+        "secondaryPlace": "はじまりの広場",
+        "secondaryScore": 0.3318,
+        "scoreDifference": 0.1401,
+        "mainTime": "朝",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "約束は君と",
+      "home": "展望台",
+      "secondaryPlace": "カフェ",
+      "time": {
+        "main": "夕方",
+        "sub": "夜"
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 32,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 7
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 6
+          },
+          {
+            "name": "カフェBGM",
+            "votes": 3
+          },
+          {
+            "name": "チル",
+            "votes": 3
+          },
+          {
+            "name": "気分転換",
+            "votes": 3
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6347,
+        "secondaryPlace": "カフェ",
+        "secondaryScore": 0.603,
+        "scoreDifference": 0.0317,
+        "mainTime": "夕方",
+        "subTime": "夜"
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "終わらないMemories",
+      "home": "展望台",
+      "secondaryPlace": "歩道橋",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [],
+      "survey": {
+        "totalVotes": 29,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 13
+          },
+          {
+            "name": "チル",
+            "votes": 2
+          },
+          {
+            "name": "ドライブ",
+            "votes": 2
+          },
+          {
+            "name": "夜景",
+            "votes": 2
+          },
+          {
+            "name": "寝る前に聴きたい曲",
+            "votes": 2
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.642,
+        "secondaryPlace": "歩道橋",
+        "secondaryScore": 0.5466,
+        "scoreDifference": 0.0954,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
+    },
+    {
+      "title": "縁 -YUÁN-",
+      "home": "展望台",
+      "secondaryPlace": "シーサイド",
+      "time": {
+        "main": "夕方",
+        "sub": null
+      },
+      "events": [
+        "07-05"
+      ],
+      "survey": {
+        "totalVotes": 81,
+        "topItems": [
+          {
+            "name": "エモい曲集",
+            "votes": 28
+          },
+          {
+            "name": "恋愛ソング",
+            "votes": 21
+          },
+          {
+            "name": "チル",
+            "votes": 6
+          },
+          {
+            "name": "雨の日に聴きたい曲",
+            "votes": 5
+          },
+          {
+            "name": "癒やされたい時",
+            "votes": 4
+          }
+        ]
+      },
+      "analysis": {
+        "home": "展望台",
+        "homeScore": 0.6816,
+        "secondaryPlace": "シーサイド",
+        "secondaryScore": 0.536,
+        "scoreDifference": 0.1456,
+        "mainTime": "夕方",
+        "subTime": null
+      },
+      "links": {
+        "spotify": null,
+        "appleMusic": null,
+        "youtube": null
+      },
+      "future": {
+        "weather": {},
+        "season": {}
+      },
+      "note": ""
     }
   ]
 }
