@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="theme-color" id="themeColor" content="#f8fbfb" />
+  <title>SNOW MAP</title>
+  <!-- SNOW MAP v0.13.56: イベント光を大粒CSS演出へ変更 -->
+  <style>
+    :root {
+      --ink: #31475f;
+      --paper: #ffffff;
+      --panel: rgba(255,255,255,.88);
+      --line: rgba(49,71,95,.14);
+      --shadow: 0 18px 48px rgba(47,70,88,.16);
+    }
+
+    * { box-sizing: border-box; }
+    :root {
+      --world-top: #f8fbfb;
+      --world-mid: #f8fbfb;
+      --world-bottom: #f8fbfb;
+      --top-ink: #31475f;
+      --top-muted: rgba(49,71,95,.50);
+      --night-light-alpha: .18;
+      --night-light-spread: 1;
+      --sound-bg: rgba(255,255,255,.34);
+      --sound-border: rgba(255,255,255,.48);
+      --sound-shadow: 0 6px 20px rgba(25,44,62,.10);
+    }
+    html {
+      margin: 0;
+      min-height: 100%;
+      background: var(--world-bottom);
+      transition: background-color .9s linear;
+    }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      min-height: 100dvh;
+      position: relative;
+      background: transparent;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -100;
+      pointer-events: none;
+      background: linear-gradient(180deg, var(--world-top) 0%, var(--world-mid) 52%, var(--world-bottom) 100%);
+      transition: background .9s linear;
+    }
+    button, a { font: inherit; }
+
+    .app {
+      width: min(100%, 560px);
+      background: transparent;
+      margin: 0 auto;
+      padding: max(10px, env(safe-area-inset-top)) 0 0;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 10;
+      padding: 3px 22px 4px;
+      pointer-events: none;
+    }
+    .sound-toggle {
+      position: absolute;
+      right: 18px;
+      top: 5px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--sound-border);
+      border-radius: 50%;
+      background: var(--sound-bg);
+      color: var(--top-ink);
+      display: grid;
+      place-items: center;
+      padding: 0;
+      opacity: .82;
+      backdrop-filter: blur(8px);
+      box-shadow: var(--sound-shadow);
+      pointer-events: auto;
+      cursor: pointer;
+      transition: color .4s ease, background .4s ease, border-color .4s ease, box-shadow .4s ease, opacity .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sound-toggle:active { transform: scale(.96); }
+    .sound-toggle svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .sound-toggle .sound-off-line { opacity: 1; transition: opacity .2s ease; }
+    .sound-toggle.on .sound-off-line { opacity: 0; }
+    h1 {
+      margin: 0;
+      color: var(--top-ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 7.4vw, 36px);
+      font-weight: 500;
+      letter-spacing: .13em;
+    }
+    .top-copy {
+      margin: 4px 0 0;
+      color: var(--top-ink);
+      font-size: 13px;
+      line-height: 1.55;
+      letter-spacing: .05em;
+      font-weight: 520;
+    }
+    .hint {
+      margin: 1px 0 0;
+      color: var(--top-muted);
+      font-size: 10px;
+      letter-spacing: .07em;
+      opacity: .5;
+      transition: opacity .35s ease;
+    }
+
+    .map-viewport {
+      position: relative;
+      width: 100%;
+      margin-top: -2px;
+      overflow-x: hidden;
+      overflow-y: visible;
+      isolation: isolate;
+      background: transparent;
+    }
+
+    .map-stage {
+      position: relative;
+      width: 100%;
+      margin-left: 0;
+      transform: translate3d(var(--pan-x, 0px), 0, 0) scale(1);
+      transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
+      transition:
+        transform 2.55s cubic-bezier(.16,.72,.14,1),
+        transform-origin 2.55s cubic-bezier(.16,.72,.14,1);
+      will-change: transform;
+    }
+    .map-stage.walking {
+      transform: translate3d(var(--pan-x, 0px), 0, 0) scale(1.38);
+    }
+    .map-stage.strolling {
+      transition-duration: 2.45s;
+      transition-timing-function: cubic-bezier(.16,.72,.14,1);
+      transform: translate3d(var(--pan-x, 0px), 0, 0) scale(var(--stroll-scale, 1.46));
+    }
+
+    .map-viewport.free-roam {
+      touch-action: none;
+      cursor: grab;
+    }
+    .map-viewport.free-roam.dragging { cursor: grabbing; }
+    .map-stage.free-panning {
+      transition: none !important;
+    }
+
+    .map-images {
+      position: relative;
+      width: 100%;
+      line-height: 0;
+    }
+    .map-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+      opacity: 1;
+      transition: opacity .65s ease;
+    }
+    .map-image.switching { opacity: 0; }
+
+    .ambient,
+    .lights {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .ambient { z-index: 2; transition: background .8s ease; }
+    .lights {
+      z-index: 4;
+      opacity: var(--night-light-alpha);
+      transition: opacity 1.2s linear, filter 1.2s linear;
+      filter: blur(calc(2px * var(--night-light-spread)));
+      background:
+        radial-gradient(circle at 39% 19%, rgba(255,226,126,.82) 0 1.1%, transparent 4.8%),
+        radial-gradient(circle at 68% 29%, rgba(255,239,166,.86) 0 1.4%, transparent 5.5%),
+        radial-gradient(circle at 67% 49%, rgba(255,215,110,.74) 0 .9%, transparent 4.2%),
+        radial-gradient(circle at 72% 59%, rgba(255,210,105,.72) 0 .8%, transparent 3.8%),
+        radial-gradient(circle at 26% 66%, rgba(255,224,140,.68) 0 .8%, transparent 3.8%),
+        radial-gradient(circle at 45% 5%, rgba(255,234,156,.72) 0 .7%, transparent 3.4%);
+      mix-blend-mode: screen;
+    }
+
+    /* 地図上のタップ誘導：景色を邪魔しない、小さな暖色の光 */
+    .beacon {
+      position: absolute;
+      z-index: 5;
+      width: 15%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border: 0;
+      padding: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .beacon::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 9px;
+      height: 9px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(255,255,244,.98);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.62),
+        0 0 7px 3px rgba(255,224,112,.78),
+        0 0 16px 7px rgba(255,205,76,.34);
+      animation: beaconGlow 3.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .beacon:nth-of-type(3n)::before { animation-delay: -.8s; }
+    .beacon:nth-of-type(3n+1)::before { animation-delay: -1.55s; }
+    .beacon:focus-visible { outline: 2px dashed rgba(55,118,134,.72); outline-offset: -22px; }
+    .beacon:active::before { transform: translate(-50%,-50%) scale(1.22); }
+
+    .time-evening .beacon::before,
+    .time-night .beacon::before {
+      background: rgba(255,252,224,1);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.72),
+        0 0 8px 4px rgba(255,221,102,.9),
+        0 0 18px 8px rgba(255,187,62,.42);
+    }
+
+    @keyframes beaconGlow {
+      0%,100% {
+        opacity: .42;
+        transform: translate(-50%,-50%) scale(.72);
+        filter: blur(.15px);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1.22);
+        filter: blur(0);
+      }
+    }
+
+    .dome-aura {
+      position: absolute;
+      z-index: 3;
+      left: 67.5%;
+      top: 29.2%;
+      width: 27%;
+      aspect-ratio: 1;
+      transform: translate(-50%,-50%);
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(255,250,205,.42), rgba(158,223,244,.14) 47%, transparent 72%);
+      filter: blur(6px);
+      animation: domeBreath 4.2s ease-in-out infinite;
+    }
+    @keyframes domeBreath {
+      0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(.94); }
+      50% { opacity: .82; transform: translate(-50%,-50%) scale(1.05); }
+    }
+
+    /* 時間帯は描き分けた4枚の画像で表現します */
+    .time-morning .ambient,
+    .time-day .ambient,
+    .time-evening .ambient,
+    .time-night .ambient { background: transparent; }
+
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(28,40,51,.09);
+      backdrop-filter: blur(2.5px) saturate(.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s ease;
+    }
+    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .sheet {
+      position: fixed;
+      z-index: 21;
+      left: 50%;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      width: min(calc(100% - 42px), 430px);
+      max-height: calc(100svh - 92px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transform: translate(-50%, calc(100% + 28px));
+      border-radius: 22px;
+      background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(245,251,253,.78));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: 0 -18px 60px rgba(36,55,70,.20), inset 0 1px 0 rgba(255,255,255,.72);
+      padding: 9px 15px 12px;
+      opacity: 0;
+      transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
+    }
+    .sheet.open { transform: translate(-50%,0); opacity: 1; }
+    .handle { width: 30px; height: 4px; margin: 0 auto 8px; border-radius: 99px; background: rgba(49,71,95,.17); }
+    .place-label { margin: 0; font-size: 9px; letter-spacing: .16em; opacity: .46; }
+    .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(20px,5.4vw,25px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
+    .experience { margin: 5px 0 0; font-size: 10px; letter-spacing: .18em; color: #668092; font-weight: 700; }
+    .place-copy { margin: 8px 0 0; max-width: 31em; font-size: 12px; line-height: 1.6; letter-spacing: .045em; color: rgba(49,71,95,.78); }
+    .divider { height: 1px; margin: 10px 0 9px; background: linear-gradient(90deg,var(--line),transparent); }
+    .song-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .16em; opacity: .44; }
+    .song-name { margin: 2px 0 9px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; transition: opacity .18s ease, transform .22s ease; }
+    .song-name.changing { opacity: 0; transform: translateY(4px); }
+    .actions { display: grid; gap: 7px; }
+    .move-next { width: 100%; min-height: 34px; border: 1px solid rgba(49,71,95,.14); border-radius: 13px; color: var(--ink); background: rgba(255,255,255,.48); font-size: 11px; font-weight: 650; letter-spacing: .08em; cursor: pointer; }
+    .move-next:active, .next:active { transform: translateY(1px); }
+    .services { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-bottom: 8px; }
+    .service {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 34px; padding: 5px 3px;
+      border: 1px solid rgba(49,71,95,.12); border-radius: 15px;
+      color: var(--ink); text-decoration: none;
+      background: rgba(255,255,255,.58);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+      font-size: 10px; font-weight: 650;
+    }
+    .next { width: 100%; min-height: 42px; border: 0; border-radius: 15px; color: white; background: var(--ink); font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+    .close { display: block; margin: 4px auto 0; border: 0; background: transparent; color: var(--ink); opacity: .57; padding: 7px 14px; font-size: 12px; cursor: pointer; }
+
+    .walk-status {
+      position: fixed;
+      z-index: 30;
+      left: 50%;
+      bottom: max(18px, calc(env(safe-area-inset-bottom) + 10px));
+      transform: translate(-50%, 16px);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      max-width: calc(100% - 44px);
+      padding: 9px 15px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 10px 30px rgba(39,61,78,.14);
+      backdrop-filter: blur(10px);
+      color: rgba(49,71,95,.78);
+      font-size: 11px;
+      letter-spacing: .06em;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s ease, transform .34s cubic-bezier(.18,.82,.24,1);
+    }
+    .walk-status.show { opacity: 1; transform: translate(-50%,0); }
+    .walk-dots { display: inline-flex; gap: 3px; align-items: center; }
+    .walk-dots i {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: #7fa2b5; opacity: .35;
+      animation: walkDot 1.05s ease-in-out infinite;
+    }
+    .walk-dots i:nth-child(2){ animation-delay:.16s; }
+    .walk-dots i:nth-child(3){ animation-delay:.32s; }
+    @keyframes walkDot { 0%,100%{transform:translateY(1px);opacity:.3} 50%{transform:translateY(-2px);opacity:1} }
+
+    .beacon.arriving::before {
+      animation: arrivalGlow 2.05s ease-in-out both;
+    }
+    .beacon.arriving::after {
+      content:"";
+      position:absolute; left:50%; top:50%;
+      width:18px; height:18px; border-radius:50%;
+      border:1px solid rgba(255,223,110,.82);
+      transform:translate(-50%,-50%) scale(.4);
+      opacity:0;
+      animation: arrivalRing 2.05s ease-in-out both;
+      pointer-events:none;
+    }
+    @keyframes arrivalGlow {
+      0%{opacity:.35;transform:translate(-50%,-50%) scale(.72)}
+      22%{opacity:1;transform:translate(-50%,-50%) scale(1.55)}
+      44%{opacity:.52;transform:translate(-50%,-50%) scale(.88)}
+      68%{opacity:1;transform:translate(-50%,-50%) scale(1.48)}
+      100%{opacity:.72;transform:translate(-50%,-50%) scale(.92)}
+    }
+    @keyframes arrivalRing {
+      0%,42%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
+      12%,56%{opacity:.88}
+      36%,82%{opacity:0;transform:translate(-50%,-50%) scale(2.75)}
+      100%{opacity:0;transform:translate(-50%,-50%) scale(2.75)}
+    }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      background: #ffffff;
+      transition: opacity .55s ease, visibility .55s ease;
+    }
+    .intro.hide { opacity: 0; visibility: hidden; }
+    .intro-mark { text-align: center; }
+    .intro-mark strong { display: block; font-family: Georgia,"Times New Roman",serif; font-size: 30px; font-weight: 500; letter-spacing: .14em; }
+    .intro-snow-glow {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin: 12px auto 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      animation: introFlakeGlow 2.8s ease-in-out infinite;
+    }
+    .intro-snow-glow::before {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(176,229,250,.88) 0%, rgba(201,238,252,.56) 38%, rgba(225,247,255,.24) 60%, transparent 80%);
+      filter: blur(8px);
+    }
+    .intro-snow {
+      position: relative;
+      z-index: 1;
+      width: 31px;
+      height: 31px;
+      color: rgba(249,253,255,.96);
+      filter:
+        drop-shadow(0 0 2px rgba(255,255,255,1))
+        drop-shadow(0 0 7px rgba(139,213,244,.96))
+        drop-shadow(0 0 15px rgba(116,193,229,.72));
+    }
+    .intro-snow line {
+      vector-effect: non-scaling-stroke;
+      stroke: currentColor;
+      stroke-width: .28;
+      stroke-linecap: round;
+    }
+    @keyframes introFlakeGlow {
+      0%,100% { opacity: .72; transform: scale(.985); }
+      50% { opacity: 1; transform: scale(1.025); }
+    }
+
+
+    .sound-note {
+      position: fixed;
+      z-index: 60;
+      left: 50%;
+      top: max(58px, calc(env(safe-area-inset-top) + 38px));
+      transform: translate(-50%,-8px);
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.86);
+      color: #415a70;
+      font-size: 10px;
+      letter-spacing: .06em;
+      box-shadow: 0 8px 24px rgba(29,48,67,.14);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .25s ease;
+    }
+    .sound-note.show { opacity: 1; transform: translate(-50%,0); }
+
+
+
+    /* 特別な日：Snow Domeをはっきり祝祭の中心にする */
+    .special-day-glow {
+      position:absolute;
+      inset:0;
+      z-index:4;
+      pointer-events:none;
+      opacity:0;
+      overflow:hidden;
+      transition:opacity .7s ease;
+      --event-primary:#168BFF;
+      --event-secondary:#D7ECFF;
+      --event-glow:rgba(22,139,255,.88);
+      --event-soft:rgba(22,139,255,.38);
+    }
+    body.event-birthday .special-day-glow,
+    body.event-christmas .special-day-glow,
+    body.event-debut .special-day-glow { opacity:1; }
+
+    .event-dome-burst,
+    .event-dome-core,
+    .event-dome-rim {
+      position:absolute;
+      left:68%;
+      top:29.3%;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+    }
+
+    /* ドームの背後から見える大きな色光。昼でも夜でも色が判別できる強さ */
+    .event-dome-burst {
+      width:31%;
+      aspect-ratio:1;
+      border-radius:50%;
+      background:
+        radial-gradient(circle,
+          rgba(255,255,255,.96) 0 8%,
+          var(--event-secondary) 13%,
+          var(--event-primary) 29%,
+          var(--event-soft) 48%,
+          transparent 70%);
+      filter:blur(7px) saturate(1.45);
+      opacity:.82;
+      animation:eventDomeBreath 2.7s ease-in-out infinite;
+    }
+
+    /* ドーム屋根の上に残る中心光 */
+    .event-dome-core {
+      width:17%;
+      height:9%;
+      border-radius:50%;
+      background:radial-gradient(ellipse,
+        rgba(255,255,255,.98) 0 12%,
+        var(--event-secondary) 28%,
+        var(--event-primary) 55%,
+        transparent 78%);
+      filter:blur(3px) saturate(1.55);
+      opacity:.94;
+      box-shadow:
+        0 0 12px 4px rgba(255,255,255,.70),
+        0 0 27px 10px var(--event-glow);
+      animation:eventCorePulse 1.9s ease-in-out infinite;
+    }
+
+    /* ドーム外周に沿う、常時見えるイルミネーションの輪 */
+    .event-dome-rim {
+      top:30.0%;
+      width:23%;
+      height:8.8%;
+      border-radius:50%;
+      border:2.4px solid var(--event-secondary);
+      box-shadow:
+        0 0 3px 1px rgba(255,255,255,.96),
+        0 0 10px 4px var(--event-glow),
+        0 0 22px 8px var(--event-soft),
+        inset 0 0 11px 3px var(--event-soft);
+      opacity:.96;
+      animation:eventRimPulse 2.3s ease-in-out infinite;
+    }
+
+    /* ドーム外周に並ぶ電飾。点滅しても完全には消えない */
+    .event-dome-lamp {
+      position:absolute;
+      left:var(--x);
+      top:var(--y);
+      width:var(--size);
+      height:var(--size);
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:var(--lamp-core);
+      box-shadow:
+        0 0 2px 1px rgba(255,255,255,1),
+        0 0 7px 3px var(--lamp-glow),
+        0 0 15px 6px var(--lamp-soft);
+      opacity:.95;
+      animation:eventLampBlink var(--life) ease-in-out var(--delay) infinite;
+    }
+
+    /* ドーム上空の大きめの祝祭粒 */
+    .special-day-glow i {
+      position:absolute;
+      left:var(--x);
+      top:var(--y);
+      width:var(--size);
+      height:var(--size);
+      border-radius:50%;
+      background:radial-gradient(circle,
+        #fff 0 18%,
+        var(--particle-core) 25% 46%,
+        var(--particle-color) 62%,
+        transparent 100%);
+      box-shadow:
+        0 0 3px 2px rgba(255,255,255,.96),
+        0 0 10px 4px var(--particle-glow),
+        0 0 20px 8px var(--particle-soft);
+      opacity:.72;
+      transform:translate3d(0,0,0) scale(.82);
+      animation:
+        eventSparkleStrong var(--life) ease-in-out var(--delay) infinite,
+        eventDriftStrong var(--drift-time) ease-in-out var(--delay) infinite alternate;
+      will-change:transform,opacity;
+    }
+
+    body.event-debut .event-dome-burst {
+      background:
+        radial-gradient(circle,rgba(255,255,255,.98) 0 8%,transparent 20%),
+        conic-gradient(from 0deg,
+          #F2D24B,#7B4BB7,#EAF7FF,#F08AB5,#4FA66A,
+          #D9363E,#168BFF,#F28C38,#F5F7FF,#F2D24B);
+      opacity:.72;
+      filter:blur(10px) saturate(1.4);
+    }
+    body.event-debut .event-dome-core {
+      background:radial-gradient(ellipse,#fff 0 14%,#D9F2FF 30%,#FFD88D 55%,transparent 80%);
+    }
+    body.event-debut .event-dome-rim {
+      border-color:#fff;
+      box-shadow:
+        0 0 3px 1px #fff,
+        0 0 12px 4px rgba(81,181,255,.90),
+        0 0 24px 9px rgba(255,183,101,.42),
+        inset 0 0 12px 4px rgba(255,255,255,.44);
+    }
+
+    body.event-christmas .special-day-glow {
+      --event-primary:#F6B73C;
+      --event-secondary:#FFF2B5;
+      --event-glow:rgba(255,191,61,.90);
+      --event-soft:rgba(255,167,48,.40);
+    }
+
+    @keyframes eventDomeBreath {
+      0%,100%{opacity:.68;transform:translate(-50%,-50%) scale(.94)}
+      50%{opacity:.94;transform:translate(-50%,-50%) scale(1.06)}
+    }
+    @keyframes eventCorePulse {
+      0%,100%{opacity:.76;transform:translate(-50%,-50%) scale(.92)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.10)}
+    }
+    @keyframes eventRimPulse {
+      0%,100%{opacity:.76;transform:translate(-50%,-50%) scale(.98)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.035)}
+    }
+    @keyframes eventLampBlink {
+      0%,100%{opacity:.62;transform:translate(-50%,-50%) scale(.82)}
+      45%{opacity:1;transform:translate(-50%,-50%) scale(1.28)}
+      70%{opacity:.86;transform:translate(-50%,-50%) scale(1)}
+    }
+    @keyframes eventSparkleStrong {
+      0%,100%{opacity:.36;filter:blur(.25px)}
+      30%{opacity:.82}
+      52%{opacity:1;filter:blur(0)}
+      78%{opacity:.58}
+    }
+    @keyframes eventDriftStrong {
+      0%{transform:translate3d(0,3px,0) scale(.78)}
+      50%{transform:translate3d(var(--dx),-2px,0) scale(1.18)}
+      100%{transform:translate3d(var(--dx2),var(--dy),0) scale(.90)}
+    }
+
+    body.event-birthday{--night-light-alpha:.34}
+    body.event-birthday .dome-aura{opacity:.90;animation-duration:2.8s}
+    body.event-christmas{--night-light-alpha:.36}
+    body.event-debut{--night-light-alpha:.40}
+
+
+    /* v0.13.54：小さな粒ではなく、ドーム全体を面と輪で祝う */
+    .special-day-glow{
+      z-index:6;
+      mix-blend-mode:normal;
+      overflow:visible;
+    }
+
+    .event-dome-spotlight,
+    .event-dome-halo,
+    .event-dome-rays{
+      position:absolute;
+      left:68%;
+      top:29.3%;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+    }
+
+    /* ドームの屋根全体に、イベント色をはっきり載せる */
+    .event-dome-spotlight{
+      z-index:1;
+      width:29%;
+      height:15%;
+      border-radius:50%;
+      background:
+        radial-gradient(ellipse,
+          rgba(255,255,255,.78) 0 12%,
+          var(--event-secondary) 25%,
+          var(--event-primary) 57%,
+          transparent 79%);
+      opacity:.82;
+      filter:saturate(1.9);
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,.52),
+        0 0 18px 7px var(--event-glow),
+        0 0 42px 18px var(--event-soft);
+      animation:eventSpotlightPulse 2.4s ease-in-out infinite;
+    }
+
+    /* ドームを囲う二重の祝祭リング */
+    .event-dome-halo{
+      z-index:2;
+      top:29.8%;
+      width:29%;
+      height:12.5%;
+      border-radius:50%;
+      border:4px solid var(--event-primary);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.92),
+        0 0 10px 4px var(--event-glow),
+        0 0 28px 10px var(--event-soft),
+        inset 0 0 16px 5px var(--event-soft);
+      opacity:1;
+      animation:eventHaloPulse 1.75s ease-in-out infinite;
+    }
+    .event-dome-halo::after{
+      content:"";
+      position:absolute;
+      inset:-11px -15px;
+      border-radius:50%;
+      border:2px dashed var(--event-secondary);
+      filter:drop-shadow(0 0 5px var(--event-glow));
+      animation:eventHaloSpin 12s linear infinite;
+    }
+
+    /* 上空へ広がるステージ照明。ドームが発光源だと分かる形 */
+    .event-dome-rays{
+      z-index:0;
+      top:23.4%;
+      width:36%;
+      height:25%;
+      opacity:.66;
+      background:
+        conic-gradient(from 210deg at 50% 100%,
+          transparent 0deg 10deg,
+          var(--event-soft) 11deg 18deg,
+          transparent 19deg 31deg,
+          var(--event-soft) 32deg 39deg,
+          transparent 40deg 54deg,
+          var(--event-soft) 55deg 62deg,
+          transparent 63deg 360deg);
+      filter:blur(2px) saturate(1.5);
+      clip-path:polygon(5% 0,95% 0,69% 100%,31% 100%);
+      animation:eventRaysBreath 3.2s ease-in-out infinite;
+    }
+
+    /* 旧レイヤーは補助へ。白飛びを避けながら存在感を残す */
+    .event-dome-burst{
+      z-index:0;
+      width:35%;
+      opacity:.56;
+    }
+    .event-dome-core{
+      z-index:3;
+      width:20%;
+      height:10%;
+      opacity:.78;
+    }
+    .event-dome-rim{
+      z-index:4;
+      width:27%;
+      height:11%;
+      border-width:3px;
+      opacity:1;
+    }
+    .event-dome-lamp{
+      z-index:5;
+      min-width:7px;
+      min-height:7px;
+      opacity:1;
+    }
+    .special-day-glow i{
+      z-index:6;
+      min-width:6px;
+      min-height:6px;
+      opacity:.94;
+    }
+
+    @keyframes eventSpotlightPulse{
+      0%,100%{opacity:.70;transform:translate(-50%,-50%) scale(.96)}
+      50%{opacity:.94;transform:translate(-50%,-50%) scale(1.04)}
+    }
+    @keyframes eventHaloPulse{
+      0%,100%{filter:brightness(1);transform:translate(-50%,-50%) scale(.985)}
+      50%{filter:brightness(1.35);transform:translate(-50%,-50%) scale(1.025)}
+    }
+    @keyframes eventHaloSpin{
+      to{transform:rotate(360deg)}
+    }
+    @keyframes eventRaysBreath{
+      0%,100%{opacity:.42;transform:translate(-50%,-50%) scaleX(.94)}
+      50%{opacity:.78;transform:translate(-50%,-50%) scaleX(1.06)}
+    }
+
+    /* 黒担当日は黒を埋没させず、黒＋銀の祝祭色にする */
+    body.event-birthday[style*="#252A34"] .special-day-glow{
+      --event-primary:#222733;
+      --event-secondary:#FFFFFF;
+      --event-glow:rgba(255,255,255,.98);
+      --event-soft:rgba(116,135,171,.55);
+    }
+
+
+    /* v0.13.55：Safariでも確実に見えるSVG祝祭照明 */
+    .special-day-glow{
+      z-index:8 !important;
+      opacity:0;
+      overflow:visible !important;
+      mix-blend-mode:normal !important;
+    }
+    body.event-birthday .special-day-glow,
+    body.event-christmas .special-day-glow,
+    body.event-debut .special-day-glow{opacity:1 !important;}
+    .event-celebration-svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+      overflow:visible;
+      pointer-events:none;
+    }
+    .event-celebration-svg .event-beam{
+      transform-origin:680px 585px;
+      animation:eventSvgBeam 3.1s ease-in-out infinite;
+    }
+    .event-celebration-svg .event-ring-main{
+      transform-origin:680px 595px;
+      animation:eventSvgRing 1.8s ease-in-out infinite;
+    }
+    .event-celebration-svg .event-ring-outer{
+      transform-origin:680px 595px;
+      animation:eventSvgOuter 3.4s linear infinite;
+      stroke-dasharray:18 12;
+    }
+    .event-celebration-svg .event-roof-glow{
+      animation:eventSvgRoof 2.2s ease-in-out infinite;
+    }
+    .event-celebration-svg .event-star{
+      transform-box:fill-box;
+      transform-origin:center;
+      animation:eventSvgStar var(--twinkle,1.8s) ease-in-out var(--delay,0s) infinite;
+    }
+    @keyframes eventSvgBeam{
+      0%,100%{opacity:.48;transform:scaleX(.94)}
+      50%{opacity:.92;transform:scaleX(1.08)}
+    }
+    @keyframes eventSvgRing{
+      0%,100%{opacity:.82;transform:scale(.98)}
+      50%{opacity:1;transform:scale(1.035)}
+    }
+    @keyframes eventSvgOuter{to{stroke-dashoffset:-120}}
+    @keyframes eventSvgRoof{
+      0%,100%{opacity:.58}
+      50%{opacity:.94}
+    }
+    @keyframes eventSvgStar{
+      0%,100%{opacity:.38;transform:scale(.68)}
+      50%{opacity:1;transform:scale(1.25)}
+    }
+
+
+
+    /* v0.13.56：スマホで確実に見える大粒イベント光 */
+    .event-big-halo{
+      position:absolute;
+      z-index:30;
+      left:68%;
+      top:29.3%;
+      width:34%;
+      height:15%;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      border:7px solid var(--event-primary);
+      background:radial-gradient(ellipse,rgba(255,255,255,.72) 0 18%,var(--event-secondary) 31%,var(--event-primary) 54%,transparent 78%);
+      box-shadow:0 0 0 4px rgba(255,255,255,.95),0 0 28px 12px var(--event-glow),0 0 65px 26px var(--event-soft);
+      opacity:.96;
+      pointer-events:none;
+      animation:eventBigHaloPulse 2.1s ease-in-out infinite;
+    }
+    .event-big-particle{
+      position:absolute;
+      z-index:31;
+      left:var(--x);
+      top:var(--y);
+      width:var(--size);
+      height:var(--size);
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:radial-gradient(circle,#fff 0 18%,var(--event-secondary) 28% 46%,var(--event-primary) 62%,transparent 100%);
+      box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 12px 5px var(--event-glow),0 0 26px 10px var(--event-soft);
+      opacity:.96;
+      pointer-events:none;
+      animation:eventBigParticle var(--life) ease-in-out var(--delay) infinite;
+    }
+    @keyframes eventBigHaloPulse{
+      0%,100%{transform:translate(-50%,-50%) scale(.97);filter:brightness(1)}
+      50%{transform:translate(-50%,-50%) scale(1.045);filter:brightness(1.28)}
+    }
+    @keyframes eventBigParticle{
+      0%,100%{opacity:.68;transform:translate(-50%,-50%) scale(.82)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.22)}
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .intro { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="walk-status" id="walkStatus" aria-live="polite">
+    <span id="walkText">次の景色へ</span>
+    <span class="walk-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
+
+  <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
+
+  <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01356" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01356" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01356" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01356" loop preload="auto"></audio>
+
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01356" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01356" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01356" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01356" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01356" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01356" preload="auto"></audio>
+
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01356" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01356" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01356" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01356" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01356" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01356" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01356" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01356" preload="auto"></audio>
+
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01356" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01356" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01356" preload="auto"></audio>
+
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01356" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01356" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01356" preload="auto"></audio>
+
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
+  </div>
+
+  <main class="app" id="app">
+    <header class="topbar">
+      <h1>SNOW MAP</h1>
+      <p class="top-copy">今日は、どの景色を歩きますか。</p>
+      <p class="hint" id="hint">小さく光る景色に触れてみてください</p>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-label="街の音をオンにする" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 10h3l4-3v10l-4-3H5z"/>
+          <path d="M15 9.5c1.1 1.2 1.1 3.8 0 5"/>
+          <path d="M17.5 7.5c2.2 2.4 2.2 6.6 0 9"/>
+          <path class="sound-off-line" d="M4 4l16 16"/>
+        </svg>
+      </button>
+    </header>
+
+    <section class="map-viewport" aria-label="SNOW MAPの地図">
+      <div class="map-stage">
+        <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01356" alt="SNOW MAPの地図" />
+        </div>
+        <div class="ambient"></div>
+        <div class="lights"></div>
+        <div class="dome-aura" aria-hidden="true"></div>
+        <div class="special-day-glow" id="specialDayGlow" aria-hidden="true"></div>
+
+        <button class="beacon" style="left:45.3%;top:5.2%;" data-place="展望台" aria-label="展望台"></button>
+        <button class="beacon" style="left:39.2%;top:20.3%;" data-place="シティライト" aria-label="シティライト"></button>
+        <button class="beacon" style="left:68.0%;top:29.3%;" data-place="Snow Dome" aria-label="Snow Dome"></button>
+        <button class="beacon" style="left:21.2%;top:40.1%;" data-place="木漏れ日の道" aria-label="木漏れ日の道"></button>
+        <button class="beacon" style="left:50.0%;top:36.9%;" data-place="歩道橋" aria-label="歩道橋"></button>
+        <button class="beacon" style="left:67.3%;top:49.2%;" data-place="はじまりの広場" aria-label="はじまりの広場"></button>
+        <button class="beacon" style="left:72.1%;top:59.2%;" data-place="カフェ" aria-label="カフェ"></button>
+        <button class="beacon" style="left:25.8%;top:65.7%;" data-place="ブルーハーバー" aria-label="ブルーハーバー"></button>
+        <button class="beacon" style="left:70.2%;top:73.2%;" data-place="シーサイド" aria-label="シーサイド"></button>
+        <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
+      </div>
+    </section>
+  </main>
+
+  <div class="sheet-backdrop" id="backdrop"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="songName">
+    <div class="handle"></div>
+    <p class="place-label">PLACE</p>
+    <p class="place-name" id="placeName"></p>
+    <p class="experience" id="experience"></p>
+    <p class="place-copy" id="placeCopy"></p>
+    <div class="divider"></div>
+    <p class="song-label">MUSIC</p>
+    <h2 class="song-name" id="songName"></h2>
+    <div class="services">
+      <a class="service" id="spotifyLink" target="_blank" rel="noopener">Spotify</a>
+      <a class="service" id="appleLink" rel="noopener">Apple Music</a>
+      <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
+    </div>
+    <div class="actions">
+      <button class="next" id="exploreButton">この場所を散策する</button>
+      <button class="move-next" id="nextButton">次の景色へ</button>
+    </div>
+    <button class="close" id="closeButton">地図へ戻る</button>
+  </section>
+
+  <script>
+    "use strict";
+
+    const snowflakeLines = [
+      [12,3,12,21],[4.2,7.5,19.8,16.5],[4.2,16.5,19.8,7.5],
+      [12,3,10.6,5.2],[12,3,13.4,5.2],[12,21,10.6,18.8],[12,21,13.4,18.8],
+      [4.2,7.5,6.9,7.8],[4.2,7.5,5.4,9.8],[19.8,16.5,17.1,16.2],[19.8,16.5,18.6,14.2],
+      [4.2,16.5,6.9,16.2],[4.2,16.5,5.4,14.2],[19.8,7.5,17.1,7.8],[19.8,7.5,18.6,9.8]
+    ];
+    function drawSnowflake(svg){
+      const ns="http://www.w3.org/2000/svg";
+      snowflakeLines.forEach(([x1,y1,x2,y2])=>{
+        const line=document.createElementNS(ns,"line");
+        line.setAttribute("x1",x1); line.setAttribute("y1",y1); line.setAttribute("x2",x2); line.setAttribute("y2",y2);
+        svg.appendChild(line);
+      });
+    }
+    document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
+
+    const version="01356";
+
+    const PLACE_META = {
+      "展望台":{
+        verb:"見渡す",
+        copy:"少し離れて眺めれば、歩いてきた道も、これからの道も見えてくる。",
+        next:["歩道橋","シティライト","ブルーハーバー"]
+      },
+      "シティライト":{
+        verb:"駆け抜ける",
+        copy:"光と速度、少しの孤独。街の中で感情が揺れる。",
+        next:["歩道橋","Snow Dome","展望台","ブルーハーバー"]
+      },
+      "Snow Dome":{
+        verb:"熱くなる",
+        copy:"光も歓声も、この街でいちばん熱い場所。",
+        next:["はじまりの広場","シティライト","歩道橋"]
+      },
+      "木漏れ日の道":{
+        verb:"歩いていく",
+        copy:"生活の続きにある小道。風に背中を押されて、また少し前へ。",
+        next:["歩道橋","はじまりの広場","ブルーハーバー","シーズンガーデン"]
+      },
+      "歩道橋":{
+        verb:"交差する",
+        copy:"出会い、すれ違い、見送り。人と人との距離が変わる場所。",
+        next:["展望台","シティライト","Snow Dome","木漏れ日の道","はじまりの広場"]
+      },
+      "はじまりの広場":{
+        verb:"始まる",
+        copy:"誰かと出会い、同じ方向を向く。今日の景色はここから動き始める。",
+        next:["Snow Dome","木漏れ日の道","カフェ","歩道橋"]
+      },
+      "カフェ":{
+        verb:"整える",
+        copy:"少し立ち止まり、静かな時間の中で気持ちを整える。",
+        next:["はじまりの広場","木漏れ日の道","シーズンガーデン","シーサイド"]
+      },
+      "ブルーハーバー":{
+        verb:"見つめる",
+        copy:"まだ見えない行く先を、希望を持って見つめる港。",
+        next:["シーサイド","木漏れ日の道","展望台","シティライト"]
+      },
+      "シーサイド":{
+        verb:"走る",
+        copy:"風を受けながら、今この瞬間を明るく駆け抜ける。",
+        next:["ブルーハーバー","シーズンガーデン","カフェ","シティライト"]
+      },
+      "シーズンガーデン":{
+        verb:"巡る",
+        copy:"季節が変わるたび、心のほどけ方も少しずつ変わっていく。",
+        next:["シーサイド","カフェ","木漏れ日の道","はじまりの広場"]
+      }
+    };
+
+    let places = {};
+    let songData = null;
+    const songCatalog = new Map();
+    let songDataLoaded = false;
+
+    function currentJapaneseTimeBand(){
+      const key=timeBand();
+      return key==="morning" ? "朝" :
+             key==="day" ? "昼" :
+             key==="evening" ? "夕方" : "夜";
+    }
+
+    function getEventTestMode(){
+      const params=new URLSearchParams(window.location.search);
+      const raw=(params.get("event")||"").trim().toLowerCase();
+
+      if(raw==="debut") return {type:"debut",date:"01-22"};
+      if(raw==="christmas") return {type:"christmas",date:"12-25"};
+      if(raw==="normal") return {type:"normal",date:null};
+
+      const birthdayMatch=raw.match(/^birthday-(\d{2})(\d{2})$/);
+      if(birthdayMatch){
+        return {
+          type:"birthday",
+          date:`${birthdayMatch[1]}-${birthdayMatch[2]}`
+        };
+      }
+
+      return null;
+    }
+
+    function currentEventDate(){
+      const testMode=getEventTestMode();
+      if(testMode?.date) return testMode.date;
+
+      const now=new Date();
+      return `${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+    }
+
+    function isEventTestMode(){
+      return Boolean(getEventTestMode());
+    }
+
+    const BIRTHDAY_COLORS = {
+      "02-16":{color:"#7B4BB7",glow:"rgba(123,75,183,.62)"}, /* 深澤：紫 */
+      "03-25":{color:"#D9363E",glow:"rgba(217,54,62,.60)"},  /* 宮舘：赤 */
+      "05-17":{color:"#F2D24B",glow:"rgba(242,210,75,.64)"},/* 岩本：黄 */
+      "06-21":{color:"#F28C38",glow:"rgba(242,140,56,.62)"}, /* 向井：橙 */
+      "06-27":{color:"#F7FBFF",glow:"rgba(190,226,255,.76)"},/* ラウール：白 */
+      "07-05":{color:"#F08AB5",glow:"rgba(240,138,181,.64)"},/* 佐久間：桃 */
+      "08-08":{color:"#252A34",glow:"rgba(255,255,255,.70)"},/* 目黒：黒 */
+      "11-05":{color:"#3E78C5",glow:"rgba(62,120,197,.64)"}, /* 渡辺：青 */
+      "11-27":{color:"#4FA66A",glow:"rgba(79,166,106,.64)"}  /* 阿部：緑 */
+    };
+
+    const SPECIAL_DATES = {
+      birthday:new Set(Object.keys(BIRTHDAY_COLORS)),
+      christmas:new Set(["12-24","12-25"]),
+      debut:new Set(["01-22"])
+    };
+
+    function applySpecialDayMode(){
+      const testMode=getEventTestMode();
+      const today=currentEventDate();
+      document.body.classList.remove("event-birthday","event-christmas","event-debut");
+      document.body.style.removeProperty("--member-color");
+
+      if(testMode?.type==="normal") return null;
+      if(SPECIAL_DATES.debut.has(today)){
+        document.body.classList.add("event-debut");
+        return "debut";
+      }
+      if(SPECIAL_DATES.christmas.has(today)){
+        document.body.classList.add("event-christmas");
+        return "christmas";
+      }
+      if(SPECIAL_DATES.birthday.has(today)){
+        document.body.classList.add("event-birthday");
+        document.body.style.setProperty("--member-color",BIRTHDAY_COLORS[today].color);
+        return "birthday";
+      }
+      return null;
+    }
+
+    function buildSpecialDayParticles(){
+      const glow=document.getElementById("specialDayGlow");
+      if(!glow) return;
+      glow.textContent="";
+
+      const today=currentEventDate();
+      const mode=
+        document.body.classList.contains("event-debut") ? "debut" :
+        document.body.classList.contains("event-birthday") ? "birthday" :
+        document.body.classList.contains("event-christmas") ? "christmas" : null;
+      if(!mode) return;
+
+      const member=BIRTHDAY_COLORS[today]||BIRTHDAY_COLORS["11-05"];
+      const isBlack=member.color==="#252A34";
+      const primary=mode==="birthday" ? (isBlack ? "#64789E" : member.color) : mode==="christmas" ? "#F4B63E" : "#168BFF";
+      const secondary=mode==="birthday" ? "#FFFFFF" : mode==="christmas" ? "#FFF0B0" : "#FFFFFF";
+      const glowColor=mode==="birthday" ? (isBlack ? "rgba(180,205,255,.95)" : member.glow) : mode==="christmas" ? "rgba(255,191,61,.95)" : "rgba(22,139,255,.95)";
+      const softColor=mode==="birthday" ? (isBlack ? "rgba(100,120,158,.55)" : member.glow.replace(/\.\d+\)$/,'.46)')) : mode==="christmas" ? "rgba(255,167,48,.48)" : "rgba(22,139,255,.48)";
+
+      glow.style.setProperty("--event-primary",primary);
+      glow.style.setProperty("--event-secondary",secondary);
+      glow.style.setProperty("--event-glow",glowColor);
+      glow.style.setProperty("--event-soft",softColor);
+
+      const halo=document.createElement("div");
+      halo.className="event-big-halo";
+      glow.appendChild(halo);
+
+      const colors=mode==="debut"
+        ? ["#F2D24B","#7B4BB7","#FFFFFF","#F08AB5","#4FA66A","#D9363E","#168BFF","#F28C38","#BFC8D8"]
+        : [primary,secondary];
+
+      const points=[
+        [58.5,25.5],[63,23.8],[68,22.8],[73,23.8],[77.5,26],
+        [55.8,29.2],[60.2,30.8],[64.5,32.4],[69,33.2],[73.6,32.3],[78.2,30.5],[81,28.3],
+        [59.2,35.2],[63.5,36.4],[68,37],[72.5,36.2],[76.8,34.8],
+        [62,27.5],[67.8,27.2],[73.4,27.8],[65,30.2],[71,30.3]
+      ];
+
+      points.forEach((pt,i)=>{
+        const p=document.createElement("i");
+        p.className="event-big-particle";
+        const size=12+(i%4)*4;
+        p.style.setProperty("--x",pt[0]+"%");
+        p.style.setProperty("--y",pt[1]+"%");
+        p.style.setProperty("--size",size+"px");
+        p.style.setProperty("--life",(1.8+(i%5)*.22)+"s");
+        p.style.setProperty("--delay",(-i*.11)+"s");
+        if(mode==="debut"){
+          p.style.setProperty("--event-primary",colors[i%colors.length]);
+          p.style.setProperty("--event-secondary","#FFFFFF");
+        }
+        glow.appendChild(p);
+      });
+    }
+
+    function markEventTestMode(){
+      const mode=getEventTestMode();
+      if(!mode){
+        delete document.body.dataset.eventTest;
+        return;
+      }
+      document.body.dataset.eventTest=mode.type;
+    }
+
+    function eventSongsForToday(){
+      const today=currentEventDate();
+      return (songData?.songs||[]).filter(song=>
+        Array.isArray(song.events) && song.events.includes(today)
+      );
+    }
+
+    function firstDomeEventSong(){
+      const today=currentEventDate();
+      const special=applySpecialDayMode();
+      if(!special) return null;
+
+      const storageKey=`snow-map-first-dome-event-${getEventTestMode()?.type||"live"}-${today}`;
+      if(sessionStorage.getItem(storageKey)==="1") return null;
+
+      const candidates=eventSongsForToday();
+      if(!candidates.length) return null;
+
+      sessionStorage.setItem(storageKey,"1");
+      return candidates[Math.floor(Math.random()*candidates.length)].title;
+    }
+
+    function songSelectionWeight(song,place){
+      const isHome=song.home===place;
+      const isSecondary=song.secondaryPlace===place;
+      if(!isHome && !isSecondary) return 0;
+
+      const currentTime=currentJapaneseTimeBand();
+      const currentEvent=currentEventDate();
+
+      let weight=isHome ? 8 : 2;
+
+      if(song.time?.main===currentTime) weight*=3.2;
+      else if(song.time?.sub===currentTime) weight*=1.8;
+      else weight*=.42;
+
+      if(Array.isArray(song.events) && song.events.includes(currentEvent)){
+        weight*=3;
+      }
+
+      return Math.max(.01,weight);
+    }
+
+    function weightedSongOrder(place){
+      const candidates=(songData?.songs||[])
+        .map(song=>({song,weight:songSelectionWeight(song,place)}))
+        .filter(item=>item.weight>0);
+
+      const result=[];
+      const pool=[...candidates];
+
+      while(pool.length){
+        const total=pool.reduce((sum,item)=>sum+item.weight,0);
+        let target=Math.random()*total;
+        let index=0;
+
+        for(;index<pool.length;index++){
+          target-=pool[index].weight;
+          if(target<=0) break;
+        }
+
+        const [chosen]=pool.splice(Math.min(index,pool.length-1),1);
+        result.push(chosen.song.title);
+      }
+
+      return result;
+    }
+
+    async function loadSongData(){
+      const response=await fetch(`data/songs.json?v=${version}`,{cache:"no-store"});
+      if(!response.ok){
+        throw new Error(`songs.json の読み込みに失敗しました (${response.status})`);
+      }
+
+      const data=await response.json();
+      if(data?.schemaVersion!==2 || !Array.isArray(data?.songs) || !data?.places){
+        throw new Error("songs.json の形式が正しくありません");
+      }
+
+      songData=data;
+      songCatalog.clear();
+
+      data.songs.forEach(song=>{
+        if(song?.title) songCatalog.set(song.title,song);
+      });
+
+      const loadedPlaces={};
+      Object.keys(PLACE_META).forEach(place=>{
+        const meta=PLACE_META[place];
+        const placeData=data.places[place]||{};
+        loadedPlaces[place]={
+          ...meta,
+          homeSongs:Array.isArray(placeData.homeSongs)?placeData.homeSongs:[],
+          secondarySongs:Array.isArray(placeData.secondarySongs)?placeData.secondarySongs:[]
+        };
+      });
+
+      places=loadedPlaces;
+      songDataLoaded=true;
+      return data;
+    }
+
+    markEventTestMode();
+    applySpecialDayMode();
+    buildSpecialDayParticles();
+
+    const songDataReady=loadSongData().catch(error=>{
+      console.error(error);
+      showSongDataError(error);
+      throw error;
+    });
+
+    function showSongDataError(error){
+      window.setTimeout(()=>{
+        const note=document.getElementById("soundNote");
+        if(!note) return;
+        note.textContent="曲データを読み込めませんでした";
+        note.classList.add("show");
+      },300);
+    }
+
+    const app=document.getElementById("app"), intro=document.getElementById("intro"), hint=document.getElementById("hint");
+    const themeColor=document.getElementById("themeColor");
+    const mapImage=document.getElementById("mapImage");
+    const timeImages={
+      morning:"snow-map-morning.png?v=01356",
+      day:"snow-map-day.png?v=01356",
+      evening:"snow-map-evening.png?v=01356",
+      night:"snow-map-night.png?v=01356"
+    };
+    let currentTimeKey=null;
+    const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
+    const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
+    const exploreButton=document.getElementById("exploreButton"), nextButton=document.getElementById("nextButton"), closeButton=document.getElementById("closeButton");
+    const walkStatus=document.getElementById("walkStatus"), walkText=document.getElementById("walkText");
+    const mapViewport=document.querySelector(".map-viewport");
+    const mapStage=document.querySelector(".map-stage");
+    const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
+    const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
+    const ambWind=document.getElementById("ambWind");
+    const cityNight=document.getElementById("cityNight"), cityPeople=document.getElementById("cityPeople"), cityMorning=document.getElementById("cityMorning");
+    const cityTrafficDistant=document.getElementById("cityTrafficDistant");
+    const forestDay=document.getElementById("forestDay"), forestNight=document.getElementById("forestNight");
+    const gardenDay=document.getElementById("gardenDay");
+    const plazaAmbience=document.getElementById("plazaAmbience"), plazaPlayground=document.getElementById("plazaPlayground");
+    const plazaNight=document.getElementById("plazaNight");
+    const nightLifeAmbience=document.getElementById("nightLifeAmbience");
+    const domePreShow=document.getElementById("domePreShow"), domeShowAmbience=document.getElementById("domeShowAmbience"), cafeAmbience=document.getElementById("cafeAmbience");
+    const domeWaveBridge=document.getElementById("domeWaveBridge");
+    const domeEventsNormal=document.getElementById("domeEventsNormal"), domeEventsPeak=document.getElementById("domeEventsPeak");
+    const birdsMorning=document.getElementById("birdsMorning");
+    const waveClips=[document.getElementById("waveRelaxing"),document.getElementById("waveOceanAlt")];
+    const seaShore=document.getElementById("seaShore");
+    const seagulls=document.getElementById("seagulls");
+    const cityCars=[document.getElementById("cityCar1"),document.getElementById("cityCar2")];
+    const harborHorn=document.getElementById("harborHorn");
+    const doorChime=document.getElementById("doorChime"), drinkPour=document.getElementById("drinkPour");
+    const mugTable=document.getElementById("mugTable"), settingTable=document.getElementById("settingTable"), plateCutlery=document.getElementById("plateCutlery");
+    const cafeCupSpoon=document.getElementById("cafeCupSpoon");
+    const coffeeMachine=document.getElementById("coffeeMachine"), coffeeStir=document.getElementById("coffeeStir");
+    const crowdClap=document.getElementById("crowdClap"), crowdLive=document.getElementById("crowdLive");
+    const clockFive=document.getElementById("clockFive");
+    const stepsLeaves=document.getElementById("stepsLeaves"), stepsConcrete=document.getElementById("stepsConcrete"), stepsHard=document.getElementById("stepsHard");
+
+    // Soundscape v4：静かな時間を残し、イベント音は同時に重ねない。
+    const loopTracks=[ambWind,cityNight,cityPeople,cityMorning,cityTrafficDistant,forestDay,forestNight,gardenDay,waveRelaxing,waveOceanAlt,seaShore,plazaAmbience,plazaPlayground,plazaNight,nightLifeAmbience,domePreShow,domeShowAmbience,cafeAmbience];
+    const oneShots=[birdsMorning,seagulls,...cityCars,harborHorn,doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,coffeeMachine,coffeeStir,crowdClap,crowdLive,clockFive,stepsLeaves,stepsConcrete,stepsHard];
+    let currentPlace=null, previousSong=null, isTransitioning=false, isZoomed=false, soundEnabled=false, soundNoteTimer=null, activeSoundKey=null;
+    let travelPreviewToken=0;
+    let humanFadeTimer=null;
+    let previousPlaceBeforeTravel=null;
+    let lastCafeChimeAt=0;
+    let placeEventTimer=null, eventBusy=false, activeFootstep=null, clockTimer=null;
+    let activeDomeEventTrack=null;
+    let pausedForInactiveTab=false;
+    const songQueues = {};
+    const strollSteps = {};
+    const strollViews = [
+      {dx:-8.5, dy:-5.5, scale:1.48},
+      {dx: 8.0, dy:-3.0, scale:1.45},
+      {dx: 6.0, dy: 6.0, scale:1.50},
+      {dx:-7.0, dy: 5.0, scale:1.46},
+      {dx: 0.0, dy:-7.0, scale:1.51}
+    ];
+
+    let currentPanX=0;
+    let freePan={active:false,moved:false,pointerId:null,startX:0,startY:0,startPanX:0,startScrollY:0};
+    let lastMapTap={time:0,x:0,y:0};
+    let roamHintShown=false;
+
+    function clamp(value,min,max){ return Math.max(min,Math.min(max,value)); }
+    function setFreeRoam(enabled){ mapViewport?.classList.toggle("free-roam",Boolean(enabled)); }
+    function showSoundNote(message){
+      soundNote.textContent=message;
+      soundNote.classList.add("show");
+      clearTimeout(soundNoteTimer);
+      soundNoteTimer=setTimeout(()=>soundNote.classList.remove("show"),1500);
+    }
+    function timeBand(){
+      const h=new Date().getHours();
+      if(h>=5&&h<11) return "morning";
+      if(h>=11&&h<16) return "day";
+      if(h>=16&&h<19.25) return "evening";
+      return "night";
+    }
+    function randomInRange(range){ return range[0]+Math.random()*(range[1]-range[0]); }
+
+    const volumeFadeTokens=new WeakMap();
+    function setTrackVolume(track,value,duration=1600){
+      if(!track) return;
+      const token=(volumeFadeTokens.get(track)||0)+1;
+      volumeFadeTokens.set(track,token);
+      const start=Number.isFinite(track.volume)?track.volume:0;
+      const target=clamp(value,0,1), t0=performance.now();
+      function step(now){
+        if(volumeFadeTokens.get(track)!==token) return;
+        const t=Math.min(1,(now-t0)/duration);
+        const eased=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+        track.volume=start+(target-start)*eased;
+        if(t<1) requestAnimationFrame(step);
+        else if(target===0){ track.pause(); track.currentTime=0; }
+      }
+      requestAnimationFrame(step);
+    }
+    async function setLoop(track,volume,duration=2200){
+      if(!track||!soundEnabled) return;
+      if(volume<=0){ setTrackVolume(track,0,duration); return; }
+      try{
+        if(track.paused){ track.volume=0; await track.play(); }
+        setTrackVolume(track,volume,duration);
+      }catch(_){ }
+    }
+    function stopAudio(track){
+      if(!track) return;
+      volumeFadeTokens.set(track,(volumeFadeTokens.get(track)||0)+1);
+      track.pause(); track.currentTime=0; track.volume=0;
+    }
+    function stopAllOneShots(){ oneShots.forEach(stopAudio); eventBusy=false; }
+    function clearPlaceEvents(){ clearTimeout(placeEventTimer); placeEventTimer=null; }
+
+    const PLACE_SOUND = {
+      /* 場所ごとに風量を変え、主役音を明確にする。 */
+      map:{loops:{wind:.010,seaShore:.170,waveRelaxing:.080}},
+
+      "はじまりの広場":{
+        loops:{wind:.006,waveRelaxing:.018,plazaAmbience:1,plazaPlayground:1,plazaNight:1,nightLife:.82},
+        morning:[{audio:birdsMorning,volume:.060,gap:[60000,100000]}]
+      },
+      "歩道橋":{
+        loops:{wind:.035,cityNight:.010},
+        events:[
+          {pool:cityCars,volume:.165,gap:[14000,26000],fadeIn:650},
+          {pool:cityCars,volume:.120,gap:[26000,46000],fadeIn:800}
+        ]
+      },
+      "展望台":{
+        loops:{wind:.180,seaShore:.018}
+      },
+      "木漏れ日の道":{
+        loops:{wind:.004,forestDay:.245,forestNight:.230},
+        morning:[{audio:birdsMorning,volume:.095,gap:[52000,90000]}]
+      },
+      "シーズンガーデン":{
+        loops:{wind:.003,gardenDay:.220,waveRelaxing:.010,nightLife:.68},
+        morning:[{audio:birdsMorning,volume:.065,gap:[65000,105000]}]
+      },
+      "シティライト":{
+        loops:{wind:.004,cityNight:.055,cityPeople:1,cityMorning:.045,cityTraffic:1},
+        events:[
+          {pool:cityCars,volume:.225,gap:[11000,23000],fadeIn:550},
+          {pool:cityCars,volume:.185,gap:[20000,36000],fadeIn:650}
+        ],
+        morning:[
+          {pool:cityCars,volume:.235,gap:[7000,15000],fadeIn:450}
+        ]
+      },
+      "ブルーハーバー":{
+        loops:{wind:.012,seaShore:.220,waveOceanAlt:.180},
+        events:[
+          {audio:seagulls,volume:.085,gap:[46000,90000],fadeIn:900},
+          {audio:harborHorn,volume:.048,gap:[100000,180000],fadeIn:1600}
+        ]
+      },
+      "シーサイド":{
+        loops:{wind:.025,seaShore:.300,waveRelaxing:.175,waveOceanAlt:.080},
+        events:[
+          {audio:seagulls,volume:.090,gap:[42000,85000],fadeIn:900}
+        ]
+      },
+      "カフェ":{
+        loops:{wind:.001,cafeAmbience:.008},
+        events:[
+          {audio:coffeeStir,volume:.030,gap:[70000,125000],fadeIn:600},
+          {audio:cafeCupSpoon,volume:.026,gap:[85000,145000],fadeIn:650},
+          {audio:coffeeMachine,volume:.032,gap:[150000,260000],fadeIn:900,maxDuration:8000},
+          {audio:drinkPour,volume:.036,gap:[120000,210000],fadeIn:850},
+          {audio:mugTable,volume:.030,gap:[130000,220000],fadeIn:600}
+        ]
+      },
+      "Snow Dome":{
+        /* 人声が入る前も、柔らかい空気音を途切れさせない */
+        loops:{wind:.010,domePreShow:1,domeShowAmbience:1},
+        events:[
+          {audio:crowdClap,volume:1,gap:[85000,145000],fadeIn:0},
+          {audio:crowdLive,volume:1,gap:[110000,180000],fadeIn:0}
+        ]
+      }
+    };
+
+    function loopLevelsFor(place){
+      const cfg=PLACE_SOUND[place||"map"]||PLACE_SOUND.map;
+      const band=timeBand();
+      const loops=cfg.loops||{};
+      const levels={
+        wind:loops.wind||0,
+        cityNight:loops.cityNight||0,cityPeople:loops.cityPeople||0,cityMorning:loops.cityMorning||0,cityTraffic:0,
+        forestDay:0,forestNight:0,gardenDay:0,
+        waveRelaxing:loops.waveRelaxing||0,waveOceanAlt:loops.waveOceanAlt||0,seaShore:loops.seaShore||0,
+        plazaAmbience:loops.plazaAmbience||0,plazaPlayground:loops.plazaPlayground||0,plazaNight:0,nightLife:0,
+        domePreShow:loops.domePreShow||0,domeShowAmbience:loops.domeShowAmbience||0,cafeAmbience:loops.cafeAmbience||0
+      };
+      if(place==="木漏れ日の道"){
+        if(band==="night") levels.forestNight=loops.forestNight||0;
+        else levels.forestDay=(loops.forestDay||0)*(band==="evening"?.74:1);
+      }
+      if(place==="シーズンガーデン"){
+        if(band==="night"){
+          levels.gardenDay=0;
+          levels.nightLife=loops.nightLife||0;
+          levels.wind=.002;
+          levels.waveRelaxing=.015;
+        }else{
+          levels.nightLife=0;
+          if(band==="morning"){
+            levels.gardenDay=loops.gardenDay||0;
+            levels.waveRelaxing=.008;
+          }else if(band==="day"){
+            levels.gardenDay=loops.gardenDay||0;
+            levels.waveRelaxing=.010;
+          }else{
+            levels.gardenDay=(loops.gardenDay||0)*.72;
+            levels.waveRelaxing=.012;
+          }
+        }
+      }
+      if(place==="はじまりの広場"){
+        const hour=new Date().getHours();
+        levels.plazaNight=0;
+        if(band==="night"){
+          levels.plazaPlayground=0;
+          levels.plazaAmbience=0;
+          levels.waveRelaxing=0;
+          levels.wind=.002;
+          levels.plazaNight=(loops.plazaNight||0)*.42;
+          levels.nightLife=loops.nightLife||0;
+        }else if(hour<10){
+          levels.plazaPlayground=0;
+          levels.plazaAmbience=0;
+        }
+      }
+      if(place==="シティライト"){
+        const hour=new Date().getHours();
+        levels.cityTraffic=(hour>=7 && hour<24) ? (loops.cityTraffic||0) : 0;
+
+        if(band==="morning"){
+          levels.cityNight=.010;
+          levels.cityPeople=0;
+          levels.cityMorning=loops.cityMorning||0;
+          if(hour>=7) levels.cityTraffic*=.78;
+        }else if(band==="day"){
+          levels.cityNight=.018;
+          levels.cityPeople=loops.cityPeople||0;
+          levels.cityMorning=0;
+        }else if(band==="evening"){
+          levels.cityNight=.032;
+          levels.cityPeople=(loops.cityPeople||0)*.55;
+          levels.cityMorning=0;
+        }else{
+          levels.cityNight=loops.cityNight||0;
+          levels.cityPeople=0;
+          levels.cityMorning=0;
+          /* 0〜7時だけ静か。19:15〜23:59は遠い車の気配を残す。 */
+          if(hour<7) levels.cityTraffic=0;
+          else levels.cityTraffic*=.72;
+        }
+      }
+      if(place==="カフェ"){
+        if(band==="morning") levels.cafeAmbience*=.55;
+        if(band==="night") levels.cafeAmbience*=.70;
+      }
+      if(place==="Snow Dome"){
+        const hour=new Date().getHours();
+        levels.domePreShow=0;
+        levels.domeShowAmbience=0;
+        /* 〜15:59 開演前 / 16:00〜16:59 街の人声 / 17:00〜 公演中 */
+        if(hour<16){
+          levels.domePreShow=loops.domePreShow||0;
+          levels.cityPeople=0;
+        }else if(hour<17){
+          levels.cityPeople=.18;
+        }else{
+          levels.domeShowAmbience=loops.domeShowAmbience||0;
+          levels.cityPeople=0;
+        }
+      }
+      return levels;
+    }
+
+    function applyLoopLevels(levels,duration=1600){
+      setLoop(ambWind,levels.wind||0,duration);
+      setLoop(cityNight,levels.cityNight||0,duration);
+      setLoop(cityPeople,levels.cityPeople||0,duration);
+      setLoop(cityMorning,levels.cityMorning||0,duration);
+      setLoop(cityTrafficDistant,levels.cityTraffic||0,duration);
+      setLoop(forestDay,levels.forestDay||0,duration);
+      setLoop(forestNight,levels.forestNight||0,duration);
+      setLoop(gardenDay,levels.gardenDay||0,duration);
+      setLoop(waveRelaxing,levels.waveRelaxing||0,duration);
+      setLoop(waveOceanAlt,levels.waveOceanAlt||0,duration);
+      setLoop(seaShore,levels.seaShore||0,duration);
+      setLoop(plazaAmbience,levels.plazaAmbience||0,duration);
+      setLoop(plazaPlayground,levels.plazaPlayground||0,duration);
+      setLoop(plazaNight,levels.plazaNight||0,duration);
+      setLoop(nightLifeAmbience,levels.nightLife||0,duration);
+      setLoop(domePreShow,levels.domePreShow||0,duration);
+      setLoop(domeShowAmbience,levels.domeShowAmbience||0,duration);
+      setLoop(cafeAmbience,levels.cafeAmbience||0,duration);
+    }
+
+    function previewLevelsFor(place){
+      const full=loopLevelsFor(place);
+      const factor=
+        place==="展望台" ? .38 :
+        ["ブルーハーバー","シーサイド"].includes(place) ? .30 : .23;
+      const preview={};
+      Object.keys(full).forEach(key=>preview[key]=(full[key]||0)*factor);
+      /* 人の声はタップ時・移動中には鳴らさず、到着後にだけ現れる。 */
+      ["cityPeople","plazaAmbience","plazaPlayground","plazaNight","nightLife","domePreShow","domeShowAmbience","cafeAmbience"].forEach(key=>preview[key]=0);
+      return preview;
+    }
+
+    function beginDestinationPreview(place){
+      if(!soundEnabled) return 0;
+      const token=++travelPreviewToken;
+      activeSoundKey=null;
+      clearPlaceEvents();
+      clearTimeout(humanFadeTimer); humanFadeTimer=null;
+      stopAllOneShots();
+      applyLoopLevels(previewLevelsFor(place),3200);
+      return token;
+    }
+
+    function levelsWithoutHumanVoices(place){
+      const full=loopLevelsFor(place);
+      const quiet={...full};
+      ["cityPeople","plazaAmbience","plazaPlayground","plazaNight","nightLife","domePreShow","domeShowAmbience","cafeAmbience"].forEach(key=>quiet[key]=0);
+      return {full,quiet};
+    }
+
+    function fadeHumanVoicesIn(place,full,token,delay,fade){
+      clearTimeout(humanFadeTimer);
+      humanFadeTimer=setTimeout(()=>{
+        if(!soundEnabled || token!==travelPreviewToken || currentPlace!==place || document.hidden) return;
+        setLoop(cityPeople,full.cityPeople||0,fade);
+        setLoop(plazaAmbience,full.plazaAmbience||0,fade);
+        setLoop(plazaPlayground,full.plazaPlayground||0,fade);
+        setLoop(plazaNight,full.plazaNight||0,fade);
+        setLoop(nightLifeAmbience,full.nightLife||0,fade);
+        setLoop(domePreShow,full.domePreShow||0,fade);
+        setLoop(domeShowAmbience,full.domeShowAmbience||0,fade);
+        setLoop(cafeAmbience,full.cafeAmbience||0,fade);
+      },delay);
+    }
+
+    function finishDestinationPreview(place,token){
+      if(!soundEnabled || token!==travelPreviewToken) return;
+      activeSoundKey=`${place||"map"}:${timeBand()}`;
+      const {full,quiet}=levelsWithoutHumanVoices(place);
+      applyLoopLevels(quiet,1400);
+      const delay=["Snow Dome","はじまりの広場"].includes(place)?250:place==="カフェ"?1400:900;
+      const fade=["Snow Dome","はじまりの広場"].includes(place)?700:place==="カフェ"?5200:3800;
+      fadeHumanVoicesIn(place,full,token,delay,fade);
+      if(place!=="Snow Dome") schedulePlaceEvent(place,true);
+    }
+    function chooseEvent(place){
+      const cfg=PLACE_SOUND[place]; if(!cfg) return null;
+      const choices=[...(cfg.events||[])];
+      if(timeBand()==="morning" && cfg.morning) choices.push(...cfg.morning);
+      if(!choices.length) return null;
+      return choices[Math.floor(Math.random()*choices.length)];
+    }
+    async function playBridgeSound(audio,volume=1){
+      if(!soundEnabled||!audio) return false;
+      try{
+        audio.pause();
+        audio.currentTime=0;
+        audio.volume=clamp(volume,0,1);
+        await audio.play();
+        return true;
+      }catch(_){
+        return false;
+      }
+    }
+
+    async function playOneShot(config){
+      if(!soundEnabled||eventBusy||!config) return false;
+      const audio=config.pool?config.pool[Math.floor(Math.random()*config.pool.length)]:config.audio;
+      if(!audio) return false;
+      eventBusy=true;
+      try{
+        audio.currentTime=0;
+        const target=clamp(config.volume||.1,0,1);
+        const fadeIn=Math.max(0,config.fadeIn||0);
+        audio.volume=fadeIn?0:target;
+        await audio.play();
+        if(fadeIn) setTrackVolume(audio,target,fadeIn);
+        let finished=false;
+        const finish=()=>{
+          if(finished) return;
+          finished=true;
+          stopAudio(audio);
+          eventBusy=false;
+          audio.removeEventListener("ended",finish);
+        };
+        audio.addEventListener("ended",finish,{once:true});
+        const naturalMs=((Number.isFinite(audio.duration)?audio.duration:8)*1000)+500;
+        const maxMs=Number.isFinite(config.maxDuration)?config.maxDuration:naturalMs;
+        setTimeout(finish,Math.min(30000,Math.min(naturalMs,maxMs)));
+        return true;
+      }catch(_){ eventBusy=false; return false; }
+    }
+    function stopDomeEventTrack(){
+      [domeEventsNormal,domeEventsPeak].forEach(track=>{
+        if(!track) return;
+        track.pause();
+        track.currentTime=0;
+        track.volume=1;
+      });
+      activeDomeEventTrack=null;
+    }
+
+    function startDomeEventTrack(){
+      stopDomeEventTrack();
+      const track=isDomePeakHours()?domeEventsPeak:domeEventsNormal;
+      activeDomeEventTrack=track;
+      track.currentTime=0;
+      track.volume=1;
+
+      /* 必ずドームを選んだユーザー操作の中で開始する。
+         トラック内に移動時間・波・曲名表示と同時の歓声を含む。 */
+      const promise=track.play();
+      if(promise){
+        promise.catch(()=>{ activeDomeEventTrack=null; });
+      }
+    }
+
+    function isDomePeakHours(){
+      const now=new Date();
+      const minutes=now.getHours()*60+now.getMinutes();
+      return minutes>=18*60 && minutes<20*60;
+    }
+
+    function schedulePlaceEvent(place=currentPlace,initial=false){
+      clearPlaceEvents();
+      if(!soundEnabled||!place||place==="Snow Dome") return;
+      const event=chooseEvent(place);
+      if(!event) return;
+
+      const domePeak=place==="Snow Dome" && isDomePeakHours();
+      const initialRange =
+        place==="Snow Dome" ? [7800,8600] :
+        place==="はじまりの広場" ? [24000,40000] :
+        [12000,24000];
+
+      const regularRange =
+        domePeak ? [24000,45000] :
+        event.gap||[30000,60000];
+
+      const wait=initial?randomInRange(initialRange):randomInRange(regularRange);
+      placeEventTimer=setTimeout(async()=>{
+        if(!soundEnabled||currentPlace!==place) return;
+        if(eventBusy){
+          placeEventTimer=setTimeout(()=>{
+            if(soundEnabled && currentPlace===place) schedulePlaceEvent(place,true);
+          },1200);
+          return;
+        }
+        const played=await playOneShot(event);
+        if(!played && currentPlace===place){
+          placeEventTimer=setTimeout(()=>schedulePlaceEvent(place,true),1200);
+          return;
+        }
+        schedulePlaceEvent(place,false);
+      },wait);
+    }
+    function ambientMix(place=currentPlace,{duration=2400,force=false}={}){
+      if(!soundEnabled) return;
+      const key=`${place||"map"}:${timeBand()}`;
+      if(!force&&activeSoundKey===key) return;
+      activeSoundKey=key;
+      clearPlaceEvents();
+      /* 前の場所の長いベル・歓声などを次の場所まで持ち越さない。 */
+      [doorChime,drinkPour,mugTable,settingTable,plateCutlery,cafeCupSpoon,coffeeMachine,coffeeStir,crowdClap,crowdLive,domeWaveBridge,seagulls,...cityCars,harborHorn].forEach(stopAudio);
+      eventBusy=false;
+      const l=loopLevelsFor(place);
+      applyLoopLevels(l,duration);
+      const eventDelay =
+        place==="Snow Dome" ? Math.max(duration,6500) :
+        place==="はじまりの広場" ? Math.max(duration,6000) :
+        duration;
+      if(eventDelay>duration){
+        clearPlaceEvents();
+        placeEventTimer=setTimeout(()=>{
+          if(soundEnabled && currentPlace===place) schedulePlaceEvent(place,true);
+        },eventDelay);
+      }else{
+        schedulePlaceEvent(place,true);
+      }
+    }
+
+    function footstepFor(place){
+      if(["木漏れ日の道","シーズンガーデン"].includes(place)) return stepsLeaves;
+      if(place==="シティライト") return stepsHard;
+      if(["歩道橋","展望台","はじまりの広場"].includes(place)) return stepsConcrete;
+      if(place==="カフェ") return stepsHard;
+      return null;
+    }
+    async function startFootsteps(place){
+      stopFootsteps();
+      if(!soundEnabled) return;
+      const audio=footstepFor(place); if(!audio) return;
+      activeFootstep=audio;
+      try{
+        audio.currentTime=0;
+        audio.volume=place==="シティライト"?.09:place==="歩道橋"?.08:.065;
+        await audio.play();
+      }catch(_){ activeFootstep=null; }
+    }
+    function stopFootsteps(){ if(activeFootstep){ stopAudio(activeFootstep); activeFootstep=null; } }
+    async function playArrivalSound(place){
+      if(!soundEnabled || eventBusy) return;
+
+      if(place==="Snow Dome"){
+        /* 波音と歓声は専用長尺トラック内で再生する */
+        return;
+      }
+
+      if(place==="カフェ" && currentPlace==="カフェ" && previousPlaceBeforeTravel!=="カフェ"){
+        const now=Date.now();
+        if(now-lastCafeChimeAt<300000) return;
+        lastCafeChimeAt=now;
+        await playOneShot({
+          audio:doorChime,
+          volume:.050,
+          fadeIn:280,
+          maxDuration:1800
+        });
+        return;
+      }
+
+      /* 朝〜日中のブルーハーバーは、到着時に一度カモメが迎える。 */
+      if(place==="ブルーハーバー" && ["morning","day"].includes(timeBand())){
+        await playOneShot({
+          audio:seagulls,
+          volume:.105,
+          fadeIn:450,
+          maxDuration:6500
+        });
+      }
+    }
+
+    function checkFiveOClock(){
+      if(!soundEnabled) return;
+      const now=new Date();
+      if(now.getHours()!==17||now.getMinutes()>1) return;
+      const key=`snow-map-clock-${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+      if(localStorage.getItem(key)) return;
+      localStorage.setItem(key,"1");
+      playOneShot({audio:clockFive,volume:.18});
+    }
+    function startClockWatcher(){ clearInterval(clockTimer); checkFiveOClock(); clockTimer=setInterval(checkFiveOClock,15000); }
+
+    function pauseAllAudioForBackground(){
+      if(!soundEnabled || pausedForInactiveTab) return;
+      pausedForInactiveTab=true;
+
+      clearPlaceEvents();
+      clearTimeout(humanFadeTimer);
+      humanFadeTimer=null;
+      stopFootsteps();
+      clearInterval(clockTimer);
+
+      /* 別タブへ移ったら、SNOW MAP由来の音を確実に止める。
+         再開位置が必要なドームイベントだけは currentTime を保持する。 */
+      loopTracks.forEach(track=>track.pause());
+      oneShots.forEach(track=>{
+        track.pause();
+        track.currentTime=0;
+      });
+      domeWaveBridge.pause();
+      domeWaveBridge.currentTime=0;
+      if(activeDomeEventTrack) activeDomeEventTrack.pause();
+    }
+
+    function backgroundResumeDuration(place){
+      if(place==="Snow Dome") return 6500;
+      if(place==="はじまりの広場") return 6000;
+      if(place==="カフェ") return 4800;
+      if(place==="シティライト") return 3200;
+      return 2200;
+    }
+    function resumeAudioAfterBackground(){
+      if(!soundEnabled || document.hidden) return;
+      if(typeof document.hasFocus==="function" && !document.hasFocus()) return;
+      if(!pausedForInactiveTab) return;
+
+      pausedForInactiveTab=false;
+      activeSoundKey=null;
+      clearPlaceEvents();
+      stopAllOneShots();
+
+      const place=currentPlace;
+      const token=++travelPreviewToken;
+      const duration=backgroundResumeDuration(place);
+      const {full,quiet}=levelsWithoutHumanVoices(place);
+
+      applyLoopLevels(quiet,duration);
+
+      const delay=["Snow Dome","はじまりの広場"].includes(place)?250:place==="カフェ"?1700:1000;
+      const fade=["Snow Dome","はじまりの広場"].includes(place)?700:place==="カフェ"?5500:4200;
+      fadeHumanVoicesIn(place,full,token,delay,fade);
+
+      if(place==="Snow Dome"){
+        if(activeDomeEventTrack){
+          activeDomeEventTrack.play().catch(()=>{});
+        }
+      }else{
+        const eventDelay=place==="はじまりの広場"?10000:6500;
+        placeEventTimer=setTimeout(()=>{
+          if(soundEnabled && !document.hidden && currentPlace===place && token===travelPreviewToken){
+            schedulePlaceEvent(place,true);
+          }
+        },eventDelay);
+      }
+
+      startClockWatcher();
+    }
+    document.addEventListener("visibilitychange",()=>{
+      if(document.hidden) pauseAllAudioForBackground();
+      else setTimeout(resumeAudioAfterBackground,120);
+    });
+
+    /* ブラウザによって visibilitychange が遅れる場合にも対応 */
+    window.addEventListener("blur",pauseAllAudioForBackground);
+    window.addEventListener("focus",()=>setTimeout(resumeAudioAfterBackground,120));
+    window.addEventListener("pagehide",pauseAllAudioForBackground);
+    window.addEventListener("pageshow",()=>setTimeout(resumeAudioAfterBackground,160));
+
+    async function unlockLoopTracks(){
+      /* 音声オン時に許可を取るのは常時環境音だけ。
+         鐘・足音・食器・歓声などの単発音は、条件成立時まで絶対に再生しない。 */
+      stopAllOneShots();
+
+      const results=await Promise.allSettled(loopTracks.map(async track=>{
+        if(!track) return;
+        track.pause();
+        track.currentTime=0;
+        track.volume=0;
+        track.muted=true;
+        await track.play();
+        track.pause();
+        track.currentTime=0;
+        track.volume=0;
+        track.muted=false;
+      }));
+
+      /* Safariで前回の再生状態が残らないよう、単発音をもう一度明示的に初期化 */
+      oneShots.forEach(track=>{
+        if(!track) return;
+        track.pause();
+        track.currentTime=0;
+        track.volume=0;
+        track.muted=false;
+      });
+
+      return results.some(result=>result.status==="fulfilled");
+    }
+
+    async function enableAmbient(){
+      stopAllOneShots();
+      soundEnabled=true;
+      activeSoundKey=null;
+      soundToggle.classList.add("on");
+      soundToggle.setAttribute("aria-pressed","true");
+      soundToggle.setAttribute("aria-label","街の音をオフにする");
+      try{
+        const unlocked=await unlockLoopTracks();
+        if(!unlocked) throw new Error("audio unlock failed");
+        ambientMix(currentPlace,{duration:1200,force:true});
+        startClockWatcher();
+        showSoundNote("街の音をオンにしました");
+      }catch(_){
+        soundEnabled=false;
+        soundToggle.classList.remove("on");
+        soundToggle.setAttribute("aria-pressed","false");
+        showSoundNote("音声を再生できませんでした");
+      }
+    }
+    function disableAmbient({silent=false}={}){
+      stopDomeEventTrack();
+      soundEnabled=false; activeSoundKey=null; pausedForInactiveTab=false; clearPlaceEvents(); clearInterval(clockTimer); stopFootsteps();
+      clearTimeout(humanFadeTimer); humanFadeTimer=null;
+      loopTracks.forEach(stopAudio); oneShots.forEach(stopAudio); stopAudio(domeWaveBridge);
+      soundToggle.classList.remove("on");
+      soundToggle.setAttribute("aria-pressed","false");
+      soundToggle.setAttribute("aria-label","街の音をオンにする");
+      if(!silent) showSoundNote("街の音をオフにしました");
+    }
+    function toggleAmbient(){ soundEnabled?disableAmbient():enableAmbient(); }
+
+    function prepareExternalMusicPlayback(){
+      /* iPhoneではSNOW MAPのHTML音声が再開すると、Apple Music等が停止する。
+         音楽リンクを開く時点で街の音を止め、戻った後も自動再開しない。 */
+      if(soundEnabled){
+        disableAmbient({silent:true});
+        showSoundNote("音楽を優先して街の音をオフにしました");
+      }
+    }
+
+    function getTimeKey(){
+      const h=new Date().getHours();
+      if(h>=5&&h<10) return "morning";
+      if(h>=10&&h<16) return "day";
+      if(h>=16&&h<19) return "evening";
+      return "night";
+    }
+    const skyStops=[
+      {m:0,    top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"},
+      {m:240,  top:"#2a3d57", mid:"#4b6884", bottom:"#8aa0b4", text:"#edf4fa", muted:"#c3d1dd"},
+      {m:300,  top:"#8ea6bb", mid:"#c7d6df", bottom:"#edf2f3", text:"#415b72", muted:"#748798"},
+      {m:360,  top:"#b7cad7", mid:"#e7edf2", bottom:"#f6f5f1", text:"#31475f", muted:"#738596"},
+      {m:420,  top:"#c6dbea", mid:"#eef6fb", bottom:"#f8faf8", text:"#31475f", muted:"#718394"},
+      {m:480,  top:"#b9daf7", mid:"#e4f3ff", bottom:"#f5fbff", text:"#31475f", muted:"#6e8396"},
+      {m:540,  top:"#aed5f4", mid:"#ddf0ff", bottom:"#f4fbff", text:"#31475f", muted:"#6d8295"},
+      {m:600,  top:"#a9d3f3", mid:"#dbf0ff", bottom:"#f3fbff", text:"#31475f", muted:"#6d8295"},
+
+      /* 10:00〜15:30：昼の青空を維持 */
+      {m:720,  top:"#a5d1f2", mid:"#d8efff", bottom:"#f3fbff", text:"#31475f", muted:"#6d8295"},
+      {m:840,  top:"#a7d2f2", mid:"#dcf0ff", bottom:"#f5fbff", text:"#31475f", muted:"#708598"},
+      {m:930,  top:"#b0d6f1", mid:"#e1f1fb", bottom:"#f7faf8", text:"#31475f", muted:"#748696"},
+
+      /* 16:00〜17:00：ごく薄く暖色が混ざり始める */
+      {m:960,  top:"#bfd9ec", mid:"#e7eff2", bottom:"#f7eee8", text:"#31475f", muted:"#78828f"},
+      {m:1020, top:"#d7c9db", mid:"#ead5d2", bottom:"#efc2aa", text:"#2d3b52", muted:"#59677a"},
+
+      /* 17:00〜17:45：夕焼けが濃くなるまでは濃いネイビーを維持 */
+      {m:1065, top:"#caabba", mid:"#e0a4ac", bottom:"#e49a83", text:"#2d3b52", muted:"#59677a"},
+
+      /* 17:45〜18:15：背景が濃くなるにつれて白へ切替 */
+      {m:1075, top:"#c79caf", mid:"#dd98a7", bottom:"#e08e7e", text:"#f7f5fa", muted:"#ddd5df"},
+      {m:1080, top:"#c394b5", mid:"#dc8fa5", bottom:"#df8679", text:"#fff7fb", muted:"#ead7e2"},
+      {m:1095, top:"#b485ad", mid:"#cf849f", bottom:"#d27d83", text:"#fff8fc", muted:"#e7d9e6"},
+
+      /* 18:15〜19:15：薄暮のピンク〜ラベンダー */
+      {m:1125, top:"#9276a3", mid:"#a8799b", bottom:"#ad768d", text:"#fff8fc", muted:"#e2d9e6"},
+      {m:1140, top:"#806b96", mid:"#8d6f91", bottom:"#936b83", text:"#f8f7fc", muted:"#ddd8e5"},
+      {m:1155, top:"#586783", mid:"#4b5d78", bottom:"#40536e", text:"#f1f5fa", muted:"#c5cfda"},
+
+      /* 19:15以降：夜 */
+      {m:1200, top:"#405570", mid:"#354a65", bottom:"#2d425c", text:"#f3f7fb", muted:"#bfccd8"},
+      {m:1260, top:"#314762", mid:"#293e58", bottom:"#22364e", text:"#f3f7fb", muted:"#bac8d5"},
+      {m:1440, top:"#17263a", mid:"#1d3048", bottom:"#243b55", text:"#f3f7fb", muted:"#aebfd0"}
+    ];
+    function hexToRgb(hex){
+      const n=parseInt(hex.slice(1),16);
+      return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};
+    }
+    function mixHex(a,b,t){
+      const A=hexToRgb(a),B=hexToRgb(b);
+      const c=k=>Math.round(A[k]+(B[k]-A[k])*t).toString(16).padStart(2,"0");
+      return `#${c("r")}${c("g")}${c("b")}`;
+    }
+    function skyAt(minute){
+      let i=0;
+      while(i<skyStops.length-1 && minute>skyStops[i+1].m) i++;
+      const a=skyStops[i], b=skyStops[Math.min(i+1,skyStops.length-1)];
+      const span=Math.max(1,b.m-a.m), t=Math.max(0,Math.min(1,(minute-a.m)/span));
+      return {
+        top:mixHex(a.top,b.top,t), mid:mixHex(a.mid,b.mid,t), bottom:mixHex(a.bottom,b.bottom,t),
+        text:mixHex(a.text,b.text,t), muted:mixHex(a.muted,b.muted,t)
+      };
+    }
+    function setSkyGradient(now=new Date()){
+      const minute=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+      const sky=skyAt(minute);
+      const root=document.documentElement.style;
+      root.setProperty("--world-top",sky.top);
+      root.setProperty("--world-mid",sky.mid);
+      root.setProperty("--world-bottom",sky.bottom);
+      root.setProperty("--top-ink",sky.text);
+      root.setProperty("--top-muted",sky.muted);
+      const nightFactor = minute>=1140 ? Math.min(1,(minute-1140)/240) : minute<300 ? 1-(minute/300) : 0;
+      const lightAlpha = 0.10 + Math.max(0,nightFactor)*0.34;
+      const lightSpread = 0.75 + Math.max(0,nightFactor)*0.55;
+      root.setProperty("--night-light-alpha", lightAlpha.toFixed(3));
+      root.setProperty("--night-light-spread", lightSpread.toFixed(3));
+
+      const eveningButton = minute>=990 && minute<1125;
+      root.setProperty("--sound-bg", eveningButton ? "rgba(255,255,255,.58)" : "rgba(255,255,255,.34)");
+      root.setProperty("--sound-border", eveningButton ? "rgba(255,255,255,.82)" : "rgba(255,255,255,.48)");
+      root.setProperty("--sound-shadow", eveningButton
+        ? "0 7px 22px rgba(37,49,67,.19)"
+        : "0 6px 20px rgba(25,44,62,.10)");
+
+      document.documentElement.style.backgroundColor=sky.bottom;
+      document.body.style.backgroundColor=sky.bottom;
+      themeColor?.setAttribute("content",sky.bottom);
+    }
+    function setWorldTime(){
+      const now=new Date();
+      setSkyGradient(now);
+      const key=getTimeKey();
+      app.classList.remove("time-morning","time-day","time-evening","time-night");
+      document.body.classList.remove("time-morning","time-day","time-evening","time-night");
+      app.classList.add(`time-${key}`);
+      document.body.classList.add(`time-${key}`);
+      if(key===currentTimeKey) return;
+      currentTimeKey=key;
+      const nextSrc=timeImages[key];
+      const preload=new Image();
+      preload.onload=()=>{
+        mapImage.classList.add("switching");
+        setTimeout(()=>{
+          mapImage.src=nextSrc;
+          requestAnimationFrame(()=>mapImage.classList.remove("switching"));
+        },260);
+      };
+      preload.src=nextSrc;
+    }
+    function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
+    const APPLE_MUSIC_DIRECT_LINKS = {
+      "グッタイム":"https://music.apple.com/jp/song/6785411720",
+      "Crazy F-R-E-S-H Beat":"https://music.apple.com/jp/song/1804833299",
+      "BANG‼︎":"https://music.apple.com/jp/song/1893004670",
+      "BANG!!":"https://music.apple.com/jp/song/1893004670",
+      "SAVE YOUR HEART":"https://music.apple.com/jp/song/6768850574"
+    };
+
+    function fallbackSpotifyUrl(title){
+      return `https://open.spotify.com/search/${encodeURIComponent(`Snow Man ${title}`)}`;
+    }
+
+    function fallbackAppleMusicUrl(title){
+      return `https://music.apple.com/jp/search?term=${encodeURIComponent(`Snow Man ${title}`)}`;
+    }
+
+    function fallbackYouTubeUrl(title){
+      return `https://www.youtube.com/results?search_query=${encodeURIComponent(`Snow Man ${title}`)}`;
+    }
+
+    function updateLinks(title){
+      const song=songCatalog.get(title);
+      const links=song?.links||{};
+      const appleDirect=links.appleMusic||APPLE_MUSIC_DIRECT_LINKS[title];
+
+      spotifyLink.href=links.spotify||fallbackSpotifyUrl(title);
+      appleLink.href=appleDirect||fallbackAppleMusicUrl(title);
+      youtubeLink.href=links.youtube||fallbackYouTubeUrl(title);
+
+      spotifyLink.dataset.direct=links.spotify?"true":"false";
+      appleLink.dataset.direct=appleDirect?"true":"false";
+      youtubeLink.dataset.direct=links.youtube?"true":"false";
+    }
+
+    function shuffled(list){
+      const copy=[...list];
+      for(let i=copy.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [copy[i],copy[j]]=[copy[j],copy[i]];
+      }
+      return copy;
+    }
+    function nextSongFor(place){
+      if(place==="Snow Dome"){
+        const eventSong=firstDomeEventSong();
+        if(eventSong){
+          previousSong=eventSong;
+          return eventSong;
+        }
+      }
+
+      if(!songQueues[place] || songQueues[place].length===0){
+        songQueues[place]=weightedSongOrder(place);
+        if(songQueues[place][0]===previousSong && songQueues[place].length>1){
+          songQueues[place].push(songQueues[place].shift());
+        }
+      }
+
+      const next=songQueues[place]?.shift();
+      if(next) return next;
+
+      const fallback=places[place]?.homeSongs||[];
+      return fallback.length ? fallback[Math.floor(Math.random()*fallback.length)] : "曲を準備中";
+    }
+    function renderSong(song,{animate=false}={}){
+      const apply=()=>{
+        previousSong=song;
+        songName.textContent=song;
+        updateLinks(song);
+        songName.classList.remove("changing");
+      };
+      if(!animate){ apply(); return; }
+      songName.classList.add("changing");
+      setTimeout(apply,180);
+    }
+    function showSong(place){
+      currentPlace=place;
+      // カード表示ではSoundscapeを再起動しない。場所移動時の音をそのまま継続する。
+      const data=places[place], song=nextSongFor(place);
+      placeName.textContent=place;
+      experience.textContent=data.verb;
+      placeCopy.textContent=data.copy;
+      renderSong(song);
+      exploreButton.textContent="この場所を散策する";
+      setFreeRoam(false);
+      document.body.style.overflow="hidden";
+      hint.style.opacity="0";
+      backdrop.classList.add("open");
+      sheet.classList.remove("open");
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>sheet.classList.add("open"));
+      });
+    }
+    function exploreCurrentPlace(){
+      if(!currentPlace || isTransitioning) return;
+      isTransitioning=true;
+      const song=nextSongFor(currentPlace);
+      const beacon=getBeacon(currentPlace);
+
+      // いったんカードとぼかしを消し、景色だけを見る時間をつくる
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+      document.body.style.overflow="";
+
+      setTimeout(()=>{
+        // 約0.6秒、景色だけを見せたあと、同じ場所の中をゆっくり大きく散策する
+        if(beacon){
+          const baseX=parseFloat(beacon.style.left||"50");
+          const baseY=parseFloat(beacon.style.top||"50");
+          const step=strollSteps[currentPlace]||0;
+          const view=strollViews[step % strollViews.length];
+          strollSteps[currentPlace]=step+1;
+          const x=Math.max(8,Math.min(92,baseX+view.dx));
+          const y=Math.max(8,Math.min(92,baseY+view.dy));
+          mapStage.style.setProperty("--stroll-scale", String(view.scale));
+          mapStage.classList.add("strolling");
+          setMapFocus(x,y);
+        }
+
+        setTimeout(()=>{
+          renderSong(song);
+          exploreButton.textContent="もう少し散策する";
+          document.body.style.overflow="hidden";
+          backdrop.classList.add("open");
+          requestAnimationFrame(()=>requestAnimationFrame(()=>sheet.classList.add("open")));
+          mapStage.classList.remove("strolling");
+          isTransitioning=false;
+        },2550);
+      },900);
+    }
+    function getBeacon(place){
+      return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
+    }
+    function centerBeacon(beacon, behavior="smooth"){
+      if(!beacon) return;
+      const rect=beacon.getBoundingClientRect();
+      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.43;
+      window.scrollTo({top:Math.max(0,targetY),behavior});
+    }
+    function setMapFocus(x,y){
+      if(!mapStage) return;
+      const stageWidth=mapStage.offsetWidth || 1;
+      const viewportWidth=mapViewport?.clientWidth || stageWidth;
+      const targetX=stageWidth*(x/100);
+      const panX=viewportWidth/2-targetX;
+      currentPanX=panX;
+      mapStage.style.setProperty("--walk-x", `${x}%`);
+      mapStage.style.setProperty("--walk-y", `${y}%`);
+      mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
+    }
+    function setWalkFocus(beacon){
+      if(!beacon || !mapStage) return;
+      const x=parseFloat(beacon.style.left || "50");
+      const y=parseFloat(beacon.style.top || "50");
+      setMapFocus(x,y);
+    }
+    function closeSheet({keepZoom=true}={}){
+      sheet.classList.remove("open");
+      backdrop.classList.remove("open");
+      document.body.style.overflow="";
+      if(!keepZoom){
+        setFreeRoam(false);
+        returnToMap();
+        return;
+      }
+      if(isZoomed){
+        setFreeRoam(true);
+        if(!roamHintShown){
+          roamHintShown=true;
+          showSoundNote("地図をドラッグ／ダブルタップで全景へ");
+        }
+      }
+    }
+
+    function returnToMap(){
+      stopDomeEventTrack();
+      travelPreviewToken++;
+      clearTimeout(humanFadeTimer); humanFadeTimer=null;
+      isZoomed=false;
+      currentPlace=null;
+      mapStage?.classList.remove("walking");
+      mapStage?.style.setProperty("--walk-x", "50%");
+      mapStage?.style.setProperty("--walk-y", "50%");
+      currentPanX=0;
+      setFreeRoam(false);
+      mapStage?.style.setProperty("--pan-x", "0px");
+      window.scrollTo({top:0, behavior:"smooth"});
+      hint.style.opacity=".5";
+      if(soundEnabled) ambientMix(null,{duration:1200});
+    }
+
+    function arriveAt(place,{fromMap=false}={}){
+      if(isTransitioning) return;
+
+      if(place==="Snow Dome") startDomeEventTrack();
+      else stopDomeEventTrack();
+      const beacon=getBeacon(place);
+      if(!beacon) return;
+      isTransitioning=true;
+      setFreeRoam(false);
+      previousPlaceBeforeTravel=currentPlace;
+      currentPlace=place;
+      const previewToken=beginDestinationPreview(place);
+      startFootsteps(place);
+      closeSheet({keepZoom:true});
+      walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
+      walkStatus.classList.add("show");
+      setWalkFocus(beacon);
+      isZoomed=true;
+      requestAnimationFrame(()=>mapStage?.classList.add("walking"));
+      setTimeout(()=>centerBeacon(beacon),90);
+      setTimeout(()=>beacon.classList.add("arriving"),2180);
+      setTimeout(()=>{
+        walkStatus.classList.remove("show");
+        beacon.classList.remove("arriving");
+        stopFootsteps();
+        finishDestinationPreview(place,previewToken);
+        playArrivalSound(place);
+        showSong(place);
+        isTransitioning=false;
+      },4850);
+    }
+
+    function continueWalk(){
+      if(!currentPlace || isTransitioning) return;
+      const destination=pick(places[currentPlace].next);
+      arriveAt(destination,{fromMap:false});
+    }
+
+    mapViewport?.addEventListener("pointerdown",e=>{
+      if(!isZoomed || sheet.classList.contains("open") || isTransitioning) return;
+      freePan={active:true,moved:false,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,startPanX:currentPanX,startScrollY:window.scrollY};
+      mapViewport.setPointerCapture?.(e.pointerId);
+      mapViewport.classList.add("dragging");
+      mapStage.classList.add("free-panning");
+    });
+
+    mapViewport?.addEventListener("pointermove",e=>{
+      if(!freePan.active || e.pointerId!==freePan.pointerId) return;
+      const dx=e.clientX-freePan.startX;
+      const dy=e.clientY-freePan.startY;
+      if(Math.hypot(dx,dy)>5) freePan.moved=true;
+      const stageWidth=mapStage.offsetWidth||1;
+      const maxPan=stageWidth*.38;
+      currentPanX=clamp(freePan.startPanX+dx,-maxPan,maxPan);
+      mapStage.style.setProperty("--pan-x",`${currentPanX}px`);
+      const maxScroll=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+      window.scrollTo({top:clamp(freePan.startScrollY-dy,0,maxScroll),behavior:"auto"});
+      if(freePan.moved) e.preventDefault();
+    });
+
+    function finishFreePan(e){
+      if(!freePan.active || (e?.pointerId!=null && e.pointerId!==freePan.pointerId)) return;
+      const moved=freePan.moved;
+      const tapX=e?.clientX ?? freePan.startX;
+      const tapY=e?.clientY ?? freePan.startY;
+      freePan.active=false;
+      mapViewport?.classList.remove("dragging");
+      mapStage?.classList.remove("free-panning");
+      if(e?.pointerId!=null) mapViewport?.releasePointerCapture?.(e.pointerId);
+      if(moved){
+        const suppress=event=>{ event.preventDefault(); event.stopPropagation(); };
+        mapViewport?.addEventListener("click",suppress,{capture:true,once:true});
+        lastMapTap.time=0;
+        return;
+      }
+
+      // カードを閉じたズーム状態では、地図のダブルタップで全景へ戻す。
+      if(isZoomed && !sheet.classList.contains("open") && !isTransitioning){
+        const now=performance.now();
+        const near=Math.hypot(tapX-lastMapTap.x,tapY-lastMapTap.y)<32;
+        if(now-lastMapTap.time<360 && near){
+          lastMapTap.time=0;
+          const suppress=event=>{ event.preventDefault(); event.stopPropagation(); };
+          mapViewport?.addEventListener("click",suppress,{capture:true,once:true});
+          returnToMap();
+          showSoundNote("全景へ戻りました");
+        }else{
+          lastMapTap={time:now,x:tapX,y:tapY};
+        }
+      }
+    }
+    mapViewport?.addEventListener("pointerup",finishFreePan);
+    mapViewport?.addEventListener("pointercancel",finishFreePan);
+
+    document.querySelectorAll(".beacon").forEach(b=>{
+      b.addEventListener("click",async()=>{
+        try{
+          await songDataReady;
+          arriveAt(b.dataset.place,{fromMap:!isZoomed});
+        }catch(_){
+          showSoundNote("曲データを読み込めませんでした");
+        }
+      });
+    });
+    [spotifyLink,appleLink,youtubeLink].forEach(link=>{
+      link.addEventListener("click",prepareExternalMusicPlayback,{capture:true});
+    });
+    soundToggle.addEventListener("click",toggleAmbient);
+    exploreButton.addEventListener("click",exploreCurrentPlace);
+    nextButton.addEventListener("click",continueWalk);
+    closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
+    backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
+    document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
+    setWorldTime(); setInterval(()=>{ setWorldTime(); if(soundEnabled) ambientMix(currentPlace,{duration:60000}); },60000);
+    window.addEventListener("resize",()=>{
+      if(isZoomed && currentPlace && !mapViewport.classList.contains("free-roam")){
+        const beacon=getBeacon(currentPlace);
+        if(beacon) setWalkFocus(beacon);
+      }
+    });
+    window.addEventListener("load",async()=>{
+      try{ await songDataReady; }catch(_){}
+      setTimeout(()=>intro.classList.add("hide"),2000);
+    });
+  </script>
+</body>
+</html>
