@@ -503,11 +503,12 @@
       clip-path:polygon(38% 100%,62% 100%,100% 0,0 0);
       background:linear-gradient(180deg,
         rgba(255,255,255,0) 0%,
-        rgba(255,255,255,.28) 48%,
+        rgba(255,255,255,.10) 34%,
+        rgba(255,255,255,.20) 62%,
         var(--ray-color) 100%);
-      box-shadow:0 0 14px var(--ray-color);
-      opacity:.72;
-      filter:blur(.7px);
+      box-shadow:0 0 10px rgba(255,255,255,.08), 0 0 18px var(--ray-color);
+      opacity:.48;
+      filter:blur(1px);
       animation:eventRayPulse var(--life) ease-in-out var(--delay) infinite;
       will-change:opacity,transform;
     }
@@ -540,54 +541,13 @@
     }
 
     @keyframes eventRayPulse {
-      0%,100% { opacity:.48; transform:translate(-50%,-100%) rotate(var(--rot)) scaleY(.96); }
-      50% { opacity:.88; transform:translate(-50%,-100%) rotate(var(--rot)) scaleY(1.05); }
+      0%,100% { opacity:.24; transform:translate(-50%,-100%) rotate(var(--rot)) scaleY(.96); }
+      50% { opacity:.56; transform:translate(-50%,-100%) rotate(var(--rot)) scaleY(1.06); }
     }
 
     body.event-birthday{--night-light-alpha:.26}
     body.event-christmas{--night-light-alpha:.28}
     body.event-debut{--night-light-alpha:.29}
-
-    /* 一時診断表示：eventテストURLのときだけ表示 */
-    body[data-event-test]::after {
-      content:"DEBUG 0.13.63 / " attr(data-event-test);
-      position:fixed;
-      z-index:9999;
-      left:10px;
-      bottom:84px;
-      padding:6px 9px;
-      border-radius:8px;
-      background:#101827;
-      color:#fff;
-      font:700 11px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;
-      letter-spacing:.04em;
-      box-shadow:0 3px 12px rgba(0,0,0,.35);
-      pointer-events:none;
-    }
-    body[data-event-test] .special-day-glow {
-      outline:2px solid rgba(0,255,255,.85);
-      outline-offset:-2px;
-    }
-    body[data-event-test] .event-ray {
-      background:rgba(0,255,255,.55) !important;
-      box-shadow:0 0 8px 2px rgba(0,255,255,.9) !important;
-      opacity:.9 !important;
-      filter:none !important;
-      animation:none !important;
-    }
-    body[data-event-test] .debug-point {
-      position:absolute;
-      left:var(--x);
-      top:var(--y);
-      width:12px;
-      height:12px;
-      border:2px solid #00ffff;
-      background:#ff00ff;
-      border-radius:2px;
-      transform:translate(-50%,-50%);
-      box-shadow:0 0 0 2px rgba(0,0,0,.7);
-      z-index:20;
-    }
 
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
@@ -604,50 +564,50 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
-  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="cityNight" src="sounds/night-city.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="forestNight" src="sounds/forest-night.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01363" preload="auto"></audio>
-  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01363" preload="auto"></audio>
-  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01363" preload="auto"></audio>
-  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01363" loop preload="auto"></audio>
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01364" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01364" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01364" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01364" loop preload="auto"></audio>
 
-  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01363" preload="auto"></audio>
-  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01363" loop preload="auto"></audio>
-  <audio id="seagulls" src="sounds/seagulls.mp3?v=01363" preload="auto"></audio>
-  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01363" preload="auto"></audio>
-  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01363" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01363" preload="auto"></audio>
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01364" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01364" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01364" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01364" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01364" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01364" preload="auto"></audio>
 
-  <audio id="doorChime" src="sounds/door-chime.mp3?v=01363" preload="auto"></audio>
-  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01363" preload="auto"></audio>
-  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01363" preload="auto"></audio>
-  <audio id="settingTable" src="sounds/setting-table.mp3?v=01363" preload="auto"></audio>
-  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01363" preload="auto"></audio>
-  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01363" preload="auto"></audio>
-  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01363" preload="auto"></audio>
-  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01363" preload="auto"></audio>
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01364" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01364" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01364" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01364" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01364" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01364" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01364" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01364" preload="auto"></audio>
 
-  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01363" preload="auto"></audio>
-  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01363" preload="auto"></audio>
-  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01363" preload="auto"></audio>
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01364" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01364" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01364" preload="auto"></audio>
 
-  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01363" preload="auto"></audio>
-  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01363" preload="auto"></audio>
-  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01363" preload="auto"></audio>
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01364" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01364" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01364" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -671,7 +631,7 @@
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01363" alt="SNOW MAPの地図" />
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01364" alt="SNOW MAPの地図" />
         </div>
         <div class="ambient"></div>
         <div class="lights"></div>
@@ -733,7 +693,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01363";
+    const version="01364";
 
     const PLACE_META = {
       "展望台":{
@@ -893,41 +853,40 @@
         document.body.classList.contains("event-christmas") ? "christmas" : null;
       if(!mode) return;
 
-      const deepBluePurple=["#4B4D8E","#8487D9","rgba(95,98,182,.76)","rgba(95,98,182,.28)"];
-      const paleWaterBlue=["#D9F2FF","#F2FBFF","rgba(190,232,255,.82)","rgba(190,232,255,.30)"];
+      const deepBluePurple=["#4B4D8E","#8487D9","rgba(95,98,182,.76)","rgba(95,98,182,.26)"];
+      const paleWaterBlue=["#D9F2FF","#F2FBFF","rgba(190,232,255,.82)","rgba(190,232,255,.28)"];
       const debutPalette=[
-        ["#F2D24B","#FFF4B8","rgba(242,210,75,.82)","rgba(242,210,75,.30)"],
-        ["#7B4BB7","#D9BEFF","rgba(123,75,183,.80)","rgba(123,75,183,.28)"],
+        ["#F2D24B","#FFF4B8","rgba(242,210,75,.80)","rgba(242,210,75,.28)"],
+        ["#7B4BB7","#D9BEFF","rgba(123,75,183,.80)","rgba(123,75,183,.26)"],
         paleWaterBlue,
-        ["#F08AB5","#FFD6E6","rgba(240,138,181,.80)","rgba(240,138,181,.28)"],
-        ["#4FA66A","#C8F1D2","rgba(79,166,106,.80)","rgba(79,166,106,.28)"],
-        ["#D9363E","#FFC1C4","rgba(217,54,62,.80)","rgba(217,54,62,.28)"],
-        ["#168BFF","#CAE7FF","rgba(22,139,255,.84)","rgba(22,139,255,.30)"],
-        ["#F28C38","#FFD8B1","rgba(242,140,56,.82)","rgba(242,140,56,.28)"],
+        ["#F08AB5","#FFD6E6","rgba(240,138,181,.80)","rgba(240,138,181,.26)"],
+        ["#4FA66A","#C8F1D2","rgba(79,166,106,.80)","rgba(79,166,106,.26)"],
+        ["#D9363E","#FFC1C4","rgba(217,54,62,.80)","rgba(217,54,62,.26)"],
+        ["#168BFF","#CAE7FF","rgba(22,139,255,.82)","rgba(22,139,255,.28)"],
+        ["#F28C38","#FFD8B1","rgba(242,140,56,.80)","rgba(242,140,56,.26)"],
         deepBluePurple
       ];
       const birthdayColor=BIRTHDAY_COLORS[today]||BIRTHDAY_COLORS["11-05"];
       const birthdayPalette=(birthdayColor.color==="#4B4D8E") ? deepBluePurple :
         (birthdayColor.color==="#D9F2FF") ? paleWaterBlue :
-        (birthdayColor.color==="#3E78C5") ? ["#168BFF","#CAE7FF","rgba(22,139,255,.84)","rgba(22,139,255,.30)"] :
-        [birthdayColor.color,"#FFFFFF",birthdayColor.glow,birthdayColor.glow.replace(/\.\d+\)$/,'.28)')];
-      const christmasPalette=["#F2B84B","#FFF0C8","rgba(242,184,75,.82)","rgba(242,184,75,.30)"];
+        (birthdayColor.color==="#3E78C5") ? ["#168BFF","#CAE7FF","rgba(22,139,255,.82)","rgba(22,139,255,.28)"] :
+        [birthdayColor.color,"#FFFFFF",birthdayColor.glow,birthdayColor.glow.replace(/\.\d+\)$/,'.26)')];
+      const christmasPalette=["#F2B84B","#FFF0C8","rgba(242,184,75,.82)","rgba(242,184,75,.28)"];
 
       const roofPositions=[
-        [64.4,27.9],[67.2,27.3],[70.1,27.4],[72.4,28.1],
-        [63.3,29.0],[66.1,28.6],[68.7,28.4],[71.1,29.0],
-        [64.7,30.0],[67.6,29.8],[70.0,30.2],[72.0,30.5]
+        [64.7,27.8],[67.4,27.4],[70.0,27.5],[72.1,28.0],
+        [63.6,29.0],[66.1,28.7],[68.7,28.5],[71.2,29.0],
+        [65.0,30.0],[67.7,29.8]
       ];
-      const outerPositions=[
-        [60.5,31.7],[62.0,33.0],[63.8,34.1],[66.2,34.8],
-        [69.2,34.7],[72.0,34.1],[74.4,32.8],[76.2,31.0],
-        [57.8,34.6],[55.2,35.8],[52.4,36.7],[49.7,37.2],
-        [61.8,40.2],[64.3,41.2],[67.0,42.0],[69.8,42.8],[72.2,43.5]
+      const terracePositions=[
+        [61.6,32.4],[64.4,33.7],[67.5,34.2],[70.7,34.1],[73.5,33.2],[75.8,31.7],
+        [58.9,34.9],[55.8,36.1],[52.7,36.9],
+        [62.7,40.0],[66.0,41.2],[69.4,42.5]
       ];
       const rays=[
-        {x:65.5,y:29.8,w:6.2,h:13.6,rot:'-17deg'},
-        {x:68.8,y:29.5,w:7.0,h:15.2,rot:'0deg'},
-        {x:72.0,y:29.8,w:6.2,h:13.6,rot:'17deg'}
+        {x:65.9,y:30.2,w:4.1,h:11.6,rot:'-16deg'},
+        {x:69.0,y:29.8,w:4.8,h:12.8,rot:'0deg'},
+        {x:72.1,y:30.2,w:4.1,h:11.3,rot:'16deg'}
       ];
       const rayPalette=mode==='birthday' ? birthdayPalette : mode==='christmas' ? christmasPalette : paleWaterBlue;
       rays.forEach((ray,idx)=>{
@@ -938,31 +897,23 @@
         el.style.setProperty('--w',`${ray.w}%`);
         el.style.setProperty('--h',`${ray.h}%`);
         el.style.setProperty('--rot',ray.rot);
-        el.style.setProperty('--life',`${(4.2+idx*.7).toFixed(2)}s`);
-        el.style.setProperty('--delay',`${(-1.4*idx).toFixed(2)}s`);
+        el.style.setProperty('--life',`${(4.4+idx*.5).toFixed(2)}s`);
+        el.style.setProperty('--delay',`${(-1.2*idx).toFixed(2)}s`);
         el.style.setProperty('--ray-color',rayPalette[2]);
         glow.appendChild(el);
       });
 
-      /* 診断点：ドーム・歩道橋・広場の3地点 */
-      [[68.5,29.5],[52.4,36.7],[67.0,42.0]].forEach(([x,y])=>{
-        const d=document.createElement('b');
-        d.className='debug-point';
-        d.style.setProperty('--x',`${x}%`);
-        d.style.setProperty('--y',`${y}%`);
-        glow.appendChild(d);
-      });
-
-      const positions=[...roofPositions,...outerPositions];
+      const positions=[...roofPositions,...terracePositions];
       positions.forEach((pos,i)=>{
         const p=document.createElement("i");
         const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
-        const size=i < roofPositions.length ? (4.6+Math.random()*2.0) : (5.0+Math.random()*1.8);
+        const roof=i < roofPositions.length;
+        const size=roof ? (4.2+Math.random()*1.6) : (3.8+Math.random()*1.5);
         p.style.setProperty("--x",`${pos[0]}%`);
         p.style.setProperty("--y",`${pos[1]}%`);
         p.style.setProperty("--size",`${size.toFixed(2)}px`);
-        p.style.setProperty("--life",`${(3.4+Math.random()*2.4).toFixed(2)}s`);
-        p.style.setProperty("--delay",`${(-Math.random()*5).toFixed(2)}s`);
+        p.style.setProperty("--life",`${(3.6+Math.random()*2.2).toFixed(2)}s`);
+        p.style.setProperty("--delay",`${(-Math.random()*4.5).toFixed(2)}s`);
         p.style.setProperty("--particle-color",palette[0]);
         p.style.setProperty("--particle-core",palette[1]);
         p.style.setProperty("--particle-glow",palette[2]);
@@ -1082,9 +1033,15 @@
       return data;
     }
 
-    markEventTestMode();
-    applySpecialDayMode();
-    buildSpecialDayParticles();
+    function refreshSpecialDayEffects(){
+      markEventTestMode();
+      applySpecialDayMode();
+      buildSpecialDayParticles();
+    }
+
+    refreshSpecialDayEffects();
+    window.addEventListener("load",()=>{ window.setTimeout(refreshSpecialDayEffects,80); });
+    window.setTimeout(refreshSpecialDayEffects,450);
 
     const songDataReady=loadSongData().catch(error=>{
       console.error(error);
@@ -1105,10 +1062,10 @@
     const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
-      morning:"snow-map-morning.png?v=01363",
-      day:"snow-map-day.png?v=01363",
-      evening:"snow-map-evening.png?v=01363",
-      night:"snow-map-night.png?v=01363"
+      morning:"snow-map-morning.png?v=01364",
+      day:"snow-map-day.png?v=01364",
+      evening:"snow-map-evening.png?v=01364",
+      night:"snow-map-night.png?v=01364"
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
