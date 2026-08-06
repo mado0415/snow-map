@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.51: イベント粒の色と範囲を修正 -->
+  <!-- SNOW MAP v0.13.52: Snow Dome中心のイベント光へ改善 -->
   <style>
     :root {
       --ink: #31475f;
@@ -474,7 +474,7 @@
 
 
 
-    /* 特別な日：タップ用の暖色光は変えず、装飾粒だけを別レイヤーで表示 */
+    /* 特別な日：ドームを中心に祝祭感を出す */
     .special-day-glow {
       position:absolute;
       inset:0;
@@ -483,10 +483,50 @@
       opacity:0;
       overflow:hidden;
       transition:opacity 1.1s ease;
+      mix-blend-mode:screen;
     }
     body.event-birthday .special-day-glow,
     body.event-christmas .special-day-glow,
     body.event-debut .special-day-glow { opacity:1; }
+
+    /* Snow Domeそのものをイベントの中心として見せる光 */
+    .special-day-glow::before,
+    .special-day-glow::after {
+      content:"";
+      position:absolute;
+      left:68%;
+      top:29.3%;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      pointer-events:none;
+      opacity:0;
+    }
+    body.event-birthday .special-day-glow::before,
+    body.event-christmas .special-day-glow::before,
+    body.event-debut .special-day-glow::before,
+    body.event-birthday .special-day-glow::after,
+    body.event-christmas .special-day-glow::after,
+    body.event-debut .special-day-glow::after { opacity:1; }
+
+    .special-day-glow::before {
+      width:24%;
+      aspect-ratio:1;
+      background:radial-gradient(circle,
+        rgba(255,255,255,.96) 0 10%,
+        rgba(255,244,204,.92) 14%,
+        rgba(255,223,128,.44) 36%,
+        rgba(255,214,110,.18) 54%,
+        transparent 76%);
+      filter:blur(10px);
+      animation:eventDomePulse 3.8s ease-in-out infinite;
+    }
+    .special-day-glow::after {
+      width:17%;
+      aspect-ratio:1;
+      border:1.5px solid rgba(255,244,209,.70);
+      box-shadow:0 0 16px rgba(255,219,126,.34);
+      animation:eventDomeRing 5.4s ease-out infinite;
+    }
 
     .special-day-glow i {
       position:absolute;
@@ -496,40 +536,56 @@
       height:var(--size);
       border-radius:50%;
       background:radial-gradient(circle,
-        rgba(255,255,255,.99) 0 22%,
-        var(--particle-core) 30% 52%,
+        rgba(255,255,255,1) 0 18%,
+        var(--particle-core) 24% 48%,
         var(--particle-color) 62%,
         transparent 100%);
       box-shadow:
-        0 0 2px 1px rgba(255,255,255,.78),
-        0 0 6px 2px var(--particle-glow),
-        0 0 12px 4px var(--particle-soft);
+        0 0 4px 2px rgba(255,255,255,.82),
+        0 0 10px 4px var(--particle-glow),
+        0 0 18px 7px var(--particle-soft);
       opacity:0;
-      transform:translate3d(0,4px,0) scale(.58);
+      transform:translate3d(0,0,0) scale(.72);
       animation:
         eventSparkle var(--life) ease-in-out var(--delay) infinite,
         eventDrift var(--drift-time) ease-in-out var(--delay) infinite alternate;
       will-change:transform,opacity;
     }
     @keyframes eventSparkle {
-      0%,14%,100%{opacity:0;filter:blur(.3px)}
-      28%{opacity:.38}
-      48%{opacity:1;filter:blur(0)}
-      66%{opacity:.55}
-      82%{opacity:0}
+      0%,10%,100%{opacity:0;filter:blur(.2px)}
+      22%{opacity:.45}
+      42%{opacity:1;filter:blur(0)}
+      68%{opacity:.72}
+      84%{opacity:0}
     }
     @keyframes eventDrift {
-      0%{transform:translate3d(0,4px,0) scale(.58)}
-      50%{transform:translate3d(var(--dx),-2px,0) scale(1.05)}
-      100%{transform:translate3d(var(--dx2),-8px,0) scale(.72)}
+      0%{transform:translate3d(0,0,0) scale(.72)}
+      50%{transform:translate3d(var(--dx),var(--dy-mid),0) scale(1.15)}
+      100%{transform:translate3d(var(--dx2),var(--dy),0) scale(.88)}
     }
-    body.event-birthday{--night-light-alpha:.27}
+    @keyframes eventDomePulse {
+      0%,100%{opacity:.52;transform:translate(-50%,-50%) scale(.94)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+    }
+    @keyframes eventDomeRing {
+      0%{opacity:0;transform:translate(-50%,-50%) scale(.58)}
+      18%{opacity:.72}
+      100%{opacity:0;transform:translate(-50%,-50%) scale(1.56)}
+    }
+
+    body.event-birthday{--night-light-alpha:.30}
     body.event-birthday .dome-aura{
-      background:radial-gradient(circle,rgba(255,255,255,.20) 0%,rgba(78,160,255,.16) 44%,transparent 74%);
-      animation-duration:3.7s;
+      background:radial-gradient(circle,rgba(255,255,255,.26) 0%,rgba(78,160,255,.22) 44%,transparent 74%);
+      animation-duration:3.5s;
     }
-    body.event-christmas{--night-light-alpha:.30}
-    body.event-debut{--night-light-alpha:.34}
+    body.event-christmas{--night-light-alpha:.34}
+    body.event-christmas .dome-aura{
+      background:radial-gradient(circle,rgba(255,250,224,.28) 0%,rgba(255,214,112,.22) 44%,transparent 74%);
+    }
+    body.event-debut{--night-light-alpha:.38}
+    body.event-debut .dome-aura{
+      background:radial-gradient(circle,rgba(255,255,255,.28) 0%,rgba(166,221,255,.20) 34%,rgba(255,218,120,.18) 52%,transparent 74%);
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
@@ -546,50 +602,50 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
-  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="cityNight" src="sounds/night-city.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="forestNight" src="sounds/forest-night.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01351" preload="auto"></audio>
-  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01351" preload="auto"></audio>
-  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01351" preload="auto"></audio>
-  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01351" loop preload="auto"></audio>
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01352" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01352" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01352" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01352" loop preload="auto"></audio>
 
-  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01351" preload="auto"></audio>
-  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01351" loop preload="auto"></audio>
-  <audio id="seagulls" src="sounds/seagulls.mp3?v=01351" preload="auto"></audio>
-  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01351" preload="auto"></audio>
-  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01351" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01351" preload="auto"></audio>
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01352" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01352" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01352" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01352" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01352" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01352" preload="auto"></audio>
 
-  <audio id="doorChime" src="sounds/door-chime.mp3?v=01351" preload="auto"></audio>
-  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01351" preload="auto"></audio>
-  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01351" preload="auto"></audio>
-  <audio id="settingTable" src="sounds/setting-table.mp3?v=01351" preload="auto"></audio>
-  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01351" preload="auto"></audio>
-  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01351" preload="auto"></audio>
-  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01351" preload="auto"></audio>
-  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01351" preload="auto"></audio>
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01352" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01352" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01352" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01352" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01352" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01352" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01352" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01352" preload="auto"></audio>
 
-  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01351" preload="auto"></audio>
-  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01351" preload="auto"></audio>
-  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01351" preload="auto"></audio>
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01352" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01352" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01352" preload="auto"></audio>
 
-  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01351" preload="auto"></audio>
-  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01351" preload="auto"></audio>
-  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01351" preload="auto"></audio>
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01352" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01352" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01352" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -613,7 +669,7 @@
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01351" alt="SNOW MAPの地図" />
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01352" alt="SNOW MAPの地図" />
         </div>
         <div class="ambient"></div>
         <div class="lights"></div>
@@ -675,7 +731,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01351";
+    const version="01352";
 
     const PLACE_META = {
       "展望台":{
@@ -827,57 +883,88 @@
       if(!mode) return;
 
       const debutPalette=[
-        ["#F2D24B","#FFF4A8","rgba(242,210,75,.66)","rgba(242,210,75,.25)"],
-        ["#7B4BB7","#D8B9FF","rgba(123,75,183,.66)","rgba(123,75,183,.25)"],
-        ["#EAF7FF","#FFFFFF","rgba(190,226,255,.78)","rgba(190,226,255,.28)"],
-        ["#F08AB5","#FFD1E4","rgba(240,138,181,.66)","rgba(240,138,181,.25)"],
-        ["#4FA66A","#BDF3C9","rgba(79,166,106,.66)","rgba(79,166,106,.25)"],
-        ["#D9363E","#FFB5B8","rgba(217,54,62,.64)","rgba(217,54,62,.25)"],
-        ["#168BFF","#BFE3FF","rgba(22,139,255,.72)","rgba(22,139,255,.28)"],
-        ["#F28C38","#FFD0A5","rgba(242,140,56,.68)","rgba(242,140,56,.25)"],
-        ["#23262F","#F5F7FF","rgba(255,255,255,.78)","rgba(35,38,47,.32)"]
+        ["#F2D24B","#FFF4A8","rgba(242,210,75,.72)","rgba(242,210,75,.30)"],
+        ["#7B4BB7","#D8B9FF","rgba(123,75,183,.70)","rgba(123,75,183,.28)"],
+        ["#EAF7FF","#FFFFFF","rgba(190,226,255,.82)","rgba(190,226,255,.30)"],
+        ["#F08AB5","#FFD1E4","rgba(240,138,181,.72)","rgba(240,138,181,.28)"],
+        ["#4FA66A","#BDF3C9","rgba(79,166,106,.72)","rgba(79,166,106,.28)"],
+        ["#D9363E","#FFB5B8","rgba(217,54,62,.68)","rgba(217,54,62,.28)"],
+        ["#168BFF","#BFE3FF","rgba(22,139,255,.78)","rgba(22,139,255,.30)"],
+        ["#F28C38","#FFD0A5","rgba(242,140,56,.74)","rgba(242,140,56,.28)"],
+        ["#23262F","#F5F7FF","rgba(255,255,255,.82)","rgba(35,38,47,.34)"]
       ];
       const birthdayColor=BIRTHDAY_COLORS[today]||BIRTHDAY_COLORS["11-05"];
       const birthdayPalette=[
         birthdayColor.color==="#3E78C5" ? "#168BFF" : birthdayColor.color,
-        birthdayColor.color==="#3E78C5" ? "#BFE3FF" : "#FFFFFF",
-        birthdayColor.color==="#3E78C5" ? "rgba(22,139,255,.76)" : birthdayColor.glow,
-        birthdayColor.color==="#3E78C5" ? "rgba(22,139,255,.28)" : birthdayColor.glow.replace(/\.\d+\)$/,'.25)')
+        birthdayColor.color==="#3E78C5" ? "#D7ECFF" : "#FFFFFF",
+        birthdayColor.color==="#3E78C5" ? "rgba(22,139,255,.80)" : birthdayColor.glow,
+        birthdayColor.color==="#3E78C5" ? "rgba(22,139,255,.30)" : "rgba(255,255,255,.22)"
       ];
-      const christmasPalette=["#FFD78A","#FFF7D6","rgba(255,215,138,.70)","rgba(255,215,138,.26)"];
+      const christmasPalette=["#FFD78A","#FFF7D6","rgba(255,215,138,.78)","rgba(255,215,138,.30)"];
 
-      /* Snow Dome、歩道橋入口、はじまりの広場だけ */
-      const zones=[
-        {x:[62,74],y:[24,36],weight:5},
-        {x:[48,59],y:[32,43],weight:3},
-        {x:[61,75],y:[43,55],weight:5}
-      ];
-      const weighted=[];
-      zones.forEach(z=>{for(let i=0;i<z.weight;i++) weighted.push(z)});
-      const count=48;
-
-      for(let i=0;i<count;i++){
-        const zone=weighted[Math.floor(Math.random()*weighted.length)];
-        const p=document.createElement("i");
-        const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
-        const x=zone.x[0]+Math.random()*(zone.x[1]-zone.x[0]);
-        const y=zone.y[0]+Math.random()*(zone.y[1]-zone.y[0]);
-        const dx=-4+Math.random()*8;
-
-        p.style.setProperty("--x",`${x.toFixed(2)}%`);
-        p.style.setProperty("--y",`${y.toFixed(2)}%`);
-        p.style.setProperty("--size",`${(1.25+Math.random()*1.65).toFixed(2)}px`);
-        p.style.setProperty("--life",`${(4.8+Math.random()*4.8).toFixed(2)}s`);
-        p.style.setProperty("--drift-time",`${(4.0+Math.random()*4.5).toFixed(2)}s`);
-        p.style.setProperty("--delay",`${(-Math.random()*9).toFixed(2)}s`);
-        p.style.setProperty("--dx",`${dx.toFixed(2)}px`);
-        p.style.setProperty("--dx2",`${(-dx*.55).toFixed(2)}px`);
-        p.style.setProperty("--particle-color",palette[0]);
-        p.style.setProperty("--particle-core",palette[1]);
-        p.style.setProperty("--particle-glow",palette[2]);
-        p.style.setProperty("--particle-soft",palette[3]);
-        glow.appendChild(p);
+      function pickPalette(index){
+        if(mode==="debut") return debutPalette[index%debutPalette.length];
+        if(mode==="birthday") return birthdayPalette;
+        return christmasPalette;
       }
+
+      function ellipsePoint(cx,cy,rx,ry,inner=0){
+        const angle=Math.random()*Math.PI*2;
+        const radius=Math.sqrt(inner+Math.random()*(1-inner));
+        return {
+          x:cx+Math.cos(angle)*rx*radius,
+          y:cy+Math.sin(angle)*ry*radius
+        };
+      }
+
+      function arcPoint(cx,cy,rx,ry,startDeg,endDeg){
+        const angle=(startDeg+Math.random()*(endDeg-startDeg))*Math.PI/180;
+        const radius=.78+Math.random()*.28;
+        return {
+          x:cx+Math.cos(angle)*rx*radius,
+          y:cy+Math.sin(angle)*ry*radius
+        };
+      }
+
+      const batches=[
+        /* ドーム中心：最も密度と光を強くする */
+        {count:24,point:()=>ellipsePoint(68.0,29.3,5.8,3.3,.12),size:[3.8,6.2],drift:[1.8,4.2]},
+        /* ドーム周囲：祝祭の光を円形に広げる */
+        {count:28,point:()=>ellipsePoint(68.0,29.3,10.8,6.2,.42),size:[2.6,4.8],drift:[2.5,5.6]},
+        /* はじまりの広場前：余韻を残す */
+        {count:14,point:()=>arcPoint(67.5,45.8,10.5,4.9,198,346),size:[2.2,4.0],drift:[2.2,4.8]},
+        /* 歩道橋入口：ドームへつながる光 */
+        {count:10,point:()=>ellipsePoint(53.4,36.9,5.1,3.8,.20),size:[1.9,3.4],drift:[1.6,3.8]}
+      ];
+
+      let index=0;
+      batches.forEach(batch=>{
+        for(let n=0;n<batch.count;n++,index++){
+          const p=document.createElement("i");
+          const palette=pickPalette(index);
+          const pos=batch.point();
+          const size=batch.size[0]+Math.random()*(batch.size[1]-batch.size[0]);
+          const driftBase=batch.drift[0]+Math.random()*(batch.drift[1]-batch.drift[0]);
+          const dx=(-1+Math.random()*2)*driftBase;
+          const dy=-(1.6+Math.random()*5.4);
+
+          p.style.setProperty("--x",`${pos.x.toFixed(2)}%`);
+          p.style.setProperty("--y",`${pos.y.toFixed(2)}%`);
+          p.style.setProperty("--size",`${size.toFixed(2)}px`);
+          p.style.setProperty("--life",`${(3.6+Math.random()*2.5).toFixed(2)}s`);
+          p.style.setProperty("--drift-time",`${(3.7+Math.random()*2.2).toFixed(2)}s`);
+          p.style.setProperty("--delay",`${(-Math.random()*6).toFixed(2)}s`);
+          p.style.setProperty("--dx",`${dx.toFixed(2)}px`);
+          p.style.setProperty("--dx2",`${(dx*.35).toFixed(2)}px`);
+          p.style.setProperty("--dy-mid",`${(dy*.45).toFixed(2)}px`);
+          p.style.setProperty("--dy",`${dy.toFixed(2)}px`);
+          p.style.setProperty("--particle-color",palette[0]);
+          p.style.setProperty("--particle-core",palette[1]);
+          p.style.setProperty("--particle-glow",palette[2]);
+          p.style.setProperty("--particle-soft",palette[3]);
+          glow.appendChild(p);
+        }
+      });
     }
 
     function markEventTestMode(){
@@ -1014,10 +1101,10 @@
     const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
-      morning:"snow-map-morning.png?v=01351",
-      day:"snow-map-day.png?v=01351",
-      evening:"snow-map-evening.png?v=01351",
-      night:"snow-map-night.png?v=01351"
+      morning:"snow-map-morning.png?v=01352",
+      day:"snow-map-day.png?v=01352",
+      evening:"snow-map-evening.png?v=01352",
+      night:"snow-map-night.png?v=01352"
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
