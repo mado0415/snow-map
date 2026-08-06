@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.41: 曲データをdata/songs.jsonへ分離 -->
+  <!-- SNOW MAP v0.13.42: schemaVersion 2 songs.json対応 -->
   <style>
     :root {
       --ink: #31475f;
@@ -488,50 +488,50 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
-  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="cityNight" src="sounds/night-city.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="forestNight" src="sounds/forest-night.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01341" preload="auto"></audio>
-  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01341" preload="auto"></audio>
-  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01341" preload="auto"></audio>
-  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01341" loop preload="auto"></audio>
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01342" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01342" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01342" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01342" loop preload="auto"></audio>
 
-  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01341" preload="auto"></audio>
-  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01341" loop preload="auto"></audio>
-  <audio id="seagulls" src="sounds/seagulls.mp3?v=01341" preload="auto"></audio>
-  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01341" preload="auto"></audio>
-  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01341" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01341" preload="auto"></audio>
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01342" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01342" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01342" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01342" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01342" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01342" preload="auto"></audio>
 
-  <audio id="doorChime" src="sounds/door-chime.mp3?v=01341" preload="auto"></audio>
-  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01341" preload="auto"></audio>
-  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01341" preload="auto"></audio>
-  <audio id="settingTable" src="sounds/setting-table.mp3?v=01341" preload="auto"></audio>
-  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01341" preload="auto"></audio>
-  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01341" preload="auto"></audio>
-  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01341" preload="auto"></audio>
-  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01341" preload="auto"></audio>
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01342" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01342" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01342" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01342" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01342" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01342" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01342" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01342" preload="auto"></audio>
 
-  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01341" preload="auto"></audio>
-  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01341" preload="auto"></audio>
-  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01341" preload="auto"></audio>
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01342" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01342" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01342" preload="auto"></audio>
 
-  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01341" preload="auto"></audio>
-  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01341" preload="auto"></audio>
-  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01341" preload="auto"></audio>
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01342" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01342" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01342" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -555,7 +555,7 @@
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01341" alt="SNOW MAPの地図" />
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01342" alt="SNOW MAPの地図" />
         </div>
         <div class="ambient"></div>
         <div class="lights"></div>
@@ -616,39 +616,150 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
+    const version="01342";
+
+    const PLACE_META = {
+      "展望台":{
+        verb:"見渡す",
+        copy:"少し離れて眺めれば、歩いてきた道も、これからの道も見えてくる。",
+        next:["歩道橋","シティライト","ブルーハーバー"]
+      },
+      "シティライト":{
+        verb:"駆け抜ける",
+        copy:"光と速度、少しの孤独。街の中で感情が揺れる。",
+        next:["歩道橋","Snow Dome","展望台","ブルーハーバー"]
+      },
+      "Snow Dome":{
+        verb:"熱くなる",
+        copy:"光も歓声も、この街でいちばん熱い場所。",
+        next:["はじまりの広場","シティライト","歩道橋"]
+      },
+      "木漏れ日の道":{
+        verb:"歩いていく",
+        copy:"生活の続きにある小道。風に背中を押されて、また少し前へ。",
+        next:["歩道橋","はじまりの広場","ブルーハーバー","シーズンガーデン"]
+      },
+      "歩道橋":{
+        verb:"交差する",
+        copy:"出会い、すれ違い、見送り。人と人との距離が変わる場所。",
+        next:["展望台","シティライト","Snow Dome","木漏れ日の道","はじまりの広場"]
+      },
+      "はじまりの広場":{
+        verb:"始まる",
+        copy:"誰かと出会い、同じ方向を向く。今日の景色はここから動き始める。",
+        next:["Snow Dome","木漏れ日の道","カフェ","歩道橋"]
+      },
+      "カフェ":{
+        verb:"整える",
+        copy:"少し立ち止まり、静かな時間の中で気持ちを整える。",
+        next:["はじまりの広場","木漏れ日の道","シーズンガーデン","シーサイド"]
+      },
+      "ブルーハーバー":{
+        verb:"見つめる",
+        copy:"まだ見えない行く先を、希望を持って見つめる港。",
+        next:["シーサイド","木漏れ日の道","展望台","シティライト"]
+      },
+      "シーサイド":{
+        verb:"走る",
+        copy:"風を受けながら、今この瞬間を明るく駆け抜ける。",
+        next:["ブルーハーバー","シーズンガーデン","カフェ","シティライト"]
+      },
+      "シーズンガーデン":{
+        verb:"巡る",
+        copy:"季節が変わるたび、心のほどけ方も少しずつ変わっていく。",
+        next:["シーサイド","カフェ","木漏れ日の道","はじまりの広場"]
+      }
+    };
+
     let places = {};
+    let songData = null;
     const songCatalog = new Map();
     let songDataLoaded = false;
 
+    function currentJapaneseTimeBand(){
+      const key=timeBand();
+      return key==="morning" ? "朝" :
+             key==="day" ? "昼" :
+             key==="evening" ? "夕方" : "夜";
+    }
+
+    function currentEventDate(){
+      const now=new Date();
+      return `${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+    }
+
+    function songSelectionWeight(song,place){
+      const isHome=song.home===place;
+      const isSecondary=song.secondaryPlace===place;
+      if(!isHome && !isSecondary) return 0;
+
+      const currentTime=currentJapaneseTimeBand();
+      const currentEvent=currentEventDate();
+
+      let weight=isHome ? 9 : 1;
+
+      if(song.time?.main===currentTime) weight*=3.2;
+      else if(song.time?.sub===currentTime) weight*=1.8;
+      else weight*=.42;
+
+      if(Array.isArray(song.events) && song.events.includes(currentEvent)){
+        weight*=3;
+      }
+
+      return Math.max(.01,weight);
+    }
+
+    function weightedSongOrder(place){
+      const candidates=(songData?.songs||[])
+        .map(song=>({song,weight:songSelectionWeight(song,place)}))
+        .filter(item=>item.weight>0);
+
+      const result=[];
+      const pool=[...candidates];
+
+      while(pool.length){
+        const total=pool.reduce((sum,item)=>sum+item.weight,0);
+        let target=Math.random()*total;
+        let index=0;
+
+        for(;index<pool.length;index++){
+          target-=pool[index].weight;
+          if(target<=0) break;
+        }
+
+        const [chosen]=pool.splice(Math.min(index,pool.length-1),1);
+        result.push(chosen.song.title);
+      }
+
+      return result;
+    }
+
     async function loadSongData(){
-      const response=await fetch("data/songs.json?v=01341",{cache:"no-store"});
+      const response=await fetch(`data/songs.json?v=${version}`,{cache:"no-store"});
       if(!response.ok){
         throw new Error(`songs.json の読み込みに失敗しました (${response.status})`);
       }
 
       const data=await response.json();
-      if(!Array.isArray(data?.places)){
+      if(data?.schemaVersion!==2 || !Array.isArray(data?.songs) || !data?.places){
         throw new Error("songs.json の形式が正しくありません");
       }
 
-      const loadedPlaces={};
+      songData=data;
       songCatalog.clear();
 
-      data.places.forEach(place=>{
-        if(!place?.name || !Array.isArray(place.songs)) return;
+      data.songs.forEach(song=>{
+        if(song?.title) songCatalog.set(song.title,song);
+      });
 
-        const titles=[];
-        place.songs.forEach(song=>{
-          if(!song?.title) return;
-          titles.push(song.title);
-          songCatalog.set(song.title,song);
-        });
-
-        loadedPlaces[place.name]={
-          verb:place.verb||"",
-          copy:place.copy||"",
-          next:Array.isArray(place.next)?place.next:[],
-          songs:titles
+      const loadedPlaces={};
+      Object.keys(PLACE_META).forEach(place=>{
+        const meta=PLACE_META[place];
+        const placeData=data.places[place]||{};
+        loadedPlaces[place]={
+          ...meta,
+          homeSongs:Array.isArray(placeData.homeSongs)?placeData.homeSongs:[],
+          secondarySongs:Array.isArray(placeData.secondarySongs)?placeData.secondarySongs:[]
         };
       });
 
@@ -676,10 +787,10 @@
     const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
-      morning:"snow-map-morning.png?v=01341",
-      day:"snow-map-day.png?v=01341",
-      evening:"snow-map-evening.png?v=01341",
-      night:"snow-map-night.png?v=01341"
+      morning:"snow-map-morning.png?v=01342",
+      day:"snow-map-day.png?v=01342",
+      evening:"snow-map-evening.png?v=01342",
+      night:"snow-map-night.png?v=01342"
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
@@ -1481,6 +1592,14 @@
       preload.src=nextSrc;
     }
     function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
+    const APPLE_MUSIC_DIRECT_LINKS = {
+      "グッタイム":"https://music.apple.com/jp/song/6785411720",
+      "Crazy F-R-E-S-H Beat":"https://music.apple.com/jp/song/1804833299",
+      "BANG‼︎":"https://music.apple.com/jp/song/1893004670",
+      "BANG!!":"https://music.apple.com/jp/song/1893004670",
+      "SAVE YOUR HEART":"https://music.apple.com/jp/song/6768850574"
+    };
+
     function fallbackSpotifyUrl(title){
       return `https://open.spotify.com/search/${encodeURIComponent(`Snow Man ${title}`)}`;
     }
@@ -1496,13 +1615,14 @@
     function updateLinks(title){
       const song=songCatalog.get(title);
       const links=song?.links||{};
+      const appleDirect=links.appleMusic||APPLE_MUSIC_DIRECT_LINKS[title];
 
       spotifyLink.href=links.spotify||fallbackSpotifyUrl(title);
-      appleLink.href=links.appleMusic||fallbackAppleMusicUrl(title);
+      appleLink.href=appleDirect||fallbackAppleMusicUrl(title);
       youtubeLink.href=links.youtube||fallbackYouTubeUrl(title);
 
       spotifyLink.dataset.direct=links.spotify?"true":"false";
-      appleLink.dataset.direct=links.appleMusic?"true":"false";
+      appleLink.dataset.direct=appleDirect?"true":"false";
       youtubeLink.dataset.direct=links.youtube?"true":"false";
     }
 
@@ -1515,14 +1635,18 @@
       return copy;
     }
     function nextSongFor(place){
-      const songs=places[place].songs;
       if(!songQueues[place] || songQueues[place].length===0){
-        songQueues[place]=shuffled(songs);
+        songQueues[place]=weightedSongOrder(place);
         if(songQueues[place][0]===previousSong && songQueues[place].length>1){
           songQueues[place].push(songQueues[place].shift());
         }
       }
-      return songQueues[place].shift();
+
+      const next=songQueues[place]?.shift();
+      if(next) return next;
+
+      const fallback=places[place]?.homeSongs||[];
+      return fallback.length ? fallback[Math.floor(Math.random()*fallback.length)] : "曲を準備中";
     }
     function renderSong(song,{animate=false}={}){
       const apply=()=>{
