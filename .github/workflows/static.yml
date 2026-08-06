@@ -1,43 +1,113 @@
-# Simple workflow for deploying static content to GitHub Pages
+# SNOW MAP: publish only the files the site actually uses
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      - name: Build lightweight publish folder
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf public
+          mkdir -p public/data public/sounds
+          touch public/.nojekyll
+
+          # Main page and the four time-of-day maps
+          cp index.html public/
+          cp snow-map-morning.png public/
+          cp snow-map-day.png public/
+          cp snow-map-evening.png public/
+          cp snow-map-night.png public/
+
+          # Song data
+          cp data/songs.json public/data/
+
+          # One sound file that still lives at repository root
+          cp harbor-horn-far-v012-loud-v0128.mp3 public/
+
+          # Only sound files currently referenced by index.html
+          sound_files=(
+            soft-wind.mp3
+            night-city.mp3
+            city-people-day-v2.mp3
+            city-morning-traffic-birds.mp3
+            city-traffic-distant-v1.mp3
+            forest-day-leaves-birds.mp3
+            forest-night.mp3
+            garden-sunny-day.mp3
+            plaza-ambience-fade-v3.mp3
+            plaza-playground-fade-v3.mp3
+            plaza-night-ambience-v1.mp3
+            night-life-ambience-v1.mp3
+            dome-pre-show-fade-v5.mp3
+            dome-show-ambience-v1.mp3
+            dome-wave-bridge-v2.mp3
+            dome-events-normal-v5.mp3
+            dome-events-peak-v5.mp3
+            city-people-day.mp3
+            birds-morning.mp3
+            waves-relaxing.mp3
+            waves-ocean-alt.mp3
+            sea-shore.mp3
+            seagulls.mp3
+            car-pass-01.mp3
+            car-pass-02.mp3
+            door-chime.mp3
+            drink-pour-stir.mp3
+            mug-on-table.mp3
+            setting-table.mp3
+            plate-cutlery.mp3
+            cafe-cup-spoon.mp3
+            coffee-machine.mp3
+            coffee-stir.mp3
+            crowd-clap-cheer-fade-v2.mp3
+            crowd-live-cheer-fade-v4.mp3
+            clock-five-strikes.mp3
+            steps-leaves-grass.mp3
+            steps-concrete.mp3
+            steps-hard-surface-alt.mp3
+          )
+
+          for file in "${sound_files[@]}"; do
+            cp "sounds/$file" "public/sounds/$file"
+          done
+
+          echo "Publish folder size:"
+          du -sh public
+          echo "Published files:"
+          find public -type f | sort
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: public
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
