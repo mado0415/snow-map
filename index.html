@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.49: メンカラ装飾光 -->
+  <!-- SNOW MAP v0.13.50: イベント光を細かな装飾粒へ刷新 -->
   <style>
     :root {
       --ink: #31475f;
@@ -474,174 +474,89 @@
 
 
 
-    /* 地図全体に漂う9色の装飾光。明るい時間も白い芯と輪郭で見えるようにする */
-    .member-sparkles {
-      position: absolute;
-      inset: 0;
-      z-index: 4;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .member-sparkles i {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: #fff;
-      border: 1px solid rgba(255,255,255,.96);
-      box-shadow:
-        0 0 0 1px rgba(49,71,95,.10),
-        0 0 4px 1px var(--spark-color),
-        0 0 10px 3px var(--spark-glow);
-      opacity: .92;
-      animation: memberSparkle 4.8s ease-in-out infinite;
-      transform: translate(-50%,-50%) scale(.82);
-    }
-
-    .member-sparkles i::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 9px;
-      height: 1px;
-      border-radius: 99px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.88), transparent);
-      transform: translate(-50%,-50%) rotate(var(--spark-angle, 0deg));
-      opacity: .70;
-    }
-
-    /* 岩本・深澤・ラウール・佐久間・阿部・宮舘・渡辺・向井・目黒 */
-    .member-sparkles i:nth-child(9n+1){--spark-color:#F2D24B;--spark-glow:rgba(242,210,75,.72)}
-    .member-sparkles i:nth-child(9n+2){--spark-color:#7B4BB7;--spark-glow:rgba(123,75,183,.66)}
-    .member-sparkles i:nth-child(9n+3){--spark-color:#DDEEFF;--spark-glow:rgba(174,218,255,.84)}
-    .member-sparkles i:nth-child(9n+4){--spark-color:#F08AB5;--spark-glow:rgba(240,138,181,.70)}
-    .member-sparkles i:nth-child(9n+5){--spark-color:#4FA66A;--spark-glow:rgba(79,166,106,.68)}
-    .member-sparkles i:nth-child(9n+6){--spark-color:#D9363E;--spark-glow:rgba(217,54,62,.67)}
-    .member-sparkles i:nth-child(9n+7){--spark-color:#3E78C5;--spark-glow:rgba(62,120,197,.74)}
-    .member-sparkles i:nth-child(9n+8){--spark-color:#F28C38;--spark-glow:rgba(242,140,56,.70)}
-    .member-sparkles i:nth-child(9n){
-      --spark-color:#252A34;
-      --spark-glow:rgba(37,42,52,.58);
-      background:#fff;
-      border-color:rgba(255,255,255,1);
-      box-shadow:0 0 0 1px rgba(37,42,52,.72),0 0 5px 1px rgba(255,255,255,.95),0 0 11px 3px rgba(37,42,52,.50);
-    }
-
-    .member-sparkles i:nth-child(3n){ width: 3px; height: 3px; animation-delay: -1.4s; }
-    .member-sparkles i:nth-child(4n){ width: 5px; height: 5px; animation-delay: -2.7s; }
-    .member-sparkles i:nth-child(5n){ animation-delay: -3.6s; --spark-angle: 90deg; }
-    .member-sparkles i:nth-child(7n){ animation-duration: 6.2s; --spark-angle: 45deg; }
-
-    @keyframes memberSparkle {
-      0%,100% { opacity:.54; transform:translate(-50%,-50%) scale(.72); filter:saturate(1.08); }
-      48% { opacity:1; transform:translate(-50%,-50%) scale(1.18); filter:saturate(1.28); }
-      58% { opacity:.86; transform:translate(-50%,-50%) scale(.94); }
-    }
-
-    .time-evening .member-sparkles i,
-    .time-night .member-sparkles i {
-      opacity: 1;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.80),
-        0 0 5px 2px var(--spark-color),
-        0 0 13px 5px var(--spark-glow);
-    }
-
-
-    /* 特別な日：文字ではなく、広場・ドーム周辺の光で伝える */
+    /* 特別な日：タップ光はそのまま、装飾用の細かな光だけを追加 */
     .special-day-glow {
       position: absolute;
       inset: 0;
       z-index: 4;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 1.4s ease;
+      transition: opacity 1.2s ease;
       overflow: hidden;
-      --event-color: rgba(255,245,190,.96);
-      --event-glow: rgba(255,221,122,.52);
+      --event-color: #4ea0ff;
+      --event-glow: rgba(78,160,255,.62);
     }
 
     body.event-birthday .special-day-glow,
     body.event-christmas .special-day-glow,
-    body.event-debut .special-day-glow {
-      opacity: 1;
-    }
+    body.event-debut .special-day-glow { opacity: 1; }
 
     .special-day-glow i {
       position: absolute;
-      width: 5px;
-      height: 5px;
+      left: var(--x);
+      top: var(--y);
+      width: var(--size);
+      height: var(--size);
       border-radius: 50%;
-      background: var(--event-color);
+      background: radial-gradient(circle,
+        rgba(255,255,255,.99) 0 25%,
+        color-mix(in srgb, var(--event-color) 90%, white) 34% 56%,
+        color-mix(in srgb, var(--event-color) 72%, transparent) 67%,
+        transparent 100%);
       box-shadow:
-        0 0 0 1px rgba(255,255,255,.52),
-        0 0 8px 3px var(--event-glow);
-      animation: specialFloat 5.8s ease-in-out infinite;
-      opacity: .74;
+        0 0 2px 1px rgba(255,255,255,.86),
+        0 0 7px 2px var(--event-glow),
+        0 0 14px 4px color-mix(in srgb, var(--event-color) 44%, transparent);
+      opacity: 0;
+      animation:
+        eventSparkle var(--life) ease-in-out var(--delay) infinite,
+        eventDrift var(--drift-time) ease-in-out var(--delay) infinite alternate;
+      transform: translate3d(0,0,0) scale(.55);
+      will-change: transform, opacity;
     }
 
-    /* Snow Dome〜はじまりの広場周辺 */
-    .special-day-glow i:nth-child(1){left:58%;top:39%;animation-delay:-.4s}
-    .special-day-glow i:nth-child(2){left:64%;top:44%;animation-delay:-1.7s}
-    .special-day-glow i:nth-child(3){left:71%;top:40%;animation-delay:-3.1s}
-    .special-day-glow i:nth-child(4){left:76%;top:47%;animation-delay:-2.2s}
-    .special-day-glow i:nth-child(5){left:60%;top:50%;animation-delay:-4.4s}
-    .special-day-glow i:nth-child(6){left:68%;top:54%;animation-delay:-.9s}
-    .special-day-glow i:nth-child(7){left:74%;top:57%;animation-delay:-2.8s}
-    .special-day-glow i:nth-child(8){left:63%;top:60%;animation-delay:-5.1s}
-    .special-day-glow i:nth-child(9){left:70%;top:63%;animation-delay:-1.2s}
-
-    @keyframes specialFloat {
-      0%,100% { transform: translateY(4px) scale(.78); opacity:.24; }
-      50% { transform: translateY(-8px) scale(1.18); opacity:.94; }
+    @keyframes eventSparkle {
+      0%,12%,100% { opacity:0; filter:blur(.35px); }
+      24% { opacity:.42; }
+      46% { opacity:1; filter:blur(0); }
+      66% { opacity:.64; }
+      82% { opacity:0; }
     }
 
-    body.event-birthday {
-      --night-light-alpha: .29;
+    @keyframes eventDrift {
+      0%   { transform:translate3d(0,5px,0) scale(.62); }
+      50%  { transform:translate3d(var(--dx),-3px,0) scale(1.04); }
+      100% { transform:translate3d(calc(var(--dx) * -.55),-9px,0) scale(.74); }
     }
 
+    body.event-birthday { --night-light-alpha:.27; }
     body.event-birthday .dome-aura {
-      background:
-        radial-gradient(circle,
-          color-mix(in srgb, var(--member-color, #8bbff0) 46%, white) 0%,
-          color-mix(in srgb, var(--member-color, #8bbff0) 24%, transparent) 48%,
-          transparent 74%);
-      animation-duration: 3.4s;
+      background: radial-gradient(circle,
+        rgba(255,255,255,.20) 0%,
+        color-mix(in srgb, var(--member-color, #4ea0ff) 28%, transparent) 44%,
+        transparent 74%);
+      animation-duration:3.7s;
     }
 
-    body.event-christmas {
-      --night-light-alpha: .30;
-    }
-
+    body.event-christmas { --night-light-alpha:.30; }
     body.event-christmas .special-day-glow {
-      --event-color: rgba(255,250,225,.98);
-      --event-glow: rgba(255,225,145,.58);
+      --event-color:#ffd78a;
+      --event-glow:rgba(255,215,138,.64);
     }
 
-    body.event-debut {
-      --night-light-alpha: .35;
-    }
-
-    body.event-debut .special-day-glow i {
-      width: 6px;
-      height: 6px;
-    }
-
-    /* デビュー日は9色 */
-    body.event-debut .special-day-glow i:nth-child(1){--event-color:#F2D24B;--event-glow:rgba(242,210,75,.58)}
-    body.event-debut .special-day-glow i:nth-child(2){--event-color:#7B4BB7;--event-glow:rgba(123,75,183,.56)}
-    body.event-debut .special-day-glow i:nth-child(3){--event-color:#F7FBFF;--event-glow:rgba(190,226,255,.68)}
-    body.event-debut .special-day-glow i:nth-child(4){--event-color:#F08AB5;--event-glow:rgba(240,138,181,.58)}
-    body.event-debut .special-day-glow i:nth-child(5){--event-color:#4FA66A;--event-glow:rgba(79,166,106,.58)}
-    body.event-debut .special-day-glow i:nth-child(6){--event-color:#D9363E;--event-glow:rgba(217,54,62,.56)}
-    body.event-debut .special-day-glow i:nth-child(7){--event-color:#3E78C5;--event-glow:rgba(62,120,197,.58)}
-    body.event-debut .special-day-glow i:nth-child(8){--event-color:#F28C38;--event-glow:rgba(242,140,56,.58)}
-    body.event-debut .special-day-glow i:nth-child(9){
-      --event-color:#252A34;
-      --event-glow:rgba(255,255,255,.68);
-      box-shadow:0 0 0 1px rgba(255,255,255,.95),0 0 9px 4px rgba(255,255,255,.52);
+    body.event-debut { --night-light-alpha:.34; }
+    body.event-debut .special-day-glow i:nth-child(9n+1){--event-color:#F2D24B;--event-glow:rgba(242,210,75,.62)}
+    body.event-debut .special-day-glow i:nth-child(9n+2){--event-color:#7B4BB7;--event-glow:rgba(123,75,183,.62)}
+    body.event-debut .special-day-glow i:nth-child(9n+3){--event-color:#F7FBFF;--event-glow:rgba(190,226,255,.75)}
+    body.event-debut .special-day-glow i:nth-child(9n+4){--event-color:#F08AB5;--event-glow:rgba(240,138,181,.62)}
+    body.event-debut .special-day-glow i:nth-child(9n+5){--event-color:#4FA66A;--event-glow:rgba(79,166,106,.62)}
+    body.event-debut .special-day-glow i:nth-child(9n+6){--event-color:#D9363E;--event-glow:rgba(217,54,62,.60)}
+    body.event-debut .special-day-glow i:nth-child(9n+7){--event-color:#3E78C5;--event-glow:rgba(62,120,197,.66)}
+    body.event-debut .special-day-glow i:nth-child(9n+8){--event-color:#F28C38;--event-glow:rgba(242,140,56,.62)}
+    body.event-debut .special-day-glow i:nth-child(9n+9){
+      --event-color:#23262f;
+      --event-glow:rgba(255,255,255,.72);
+      box-shadow:0 0 0 1px rgba(255,255,255,.95),0 0 7px 3px rgba(255,255,255,.62),0 0 13px 5px rgba(50,55,68,.45);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -659,50 +574,50 @@
   <div class="sound-note" id="soundNote" role="status" aria-live="polite"></div>
 
   <!-- Soundscape v4：採用音源は sounds/ に集約。既存の遠い汽笛だけ旧ファイルを継続使用 -->
-  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="cityNight" src="sounds/night-city.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="forestNight" src="sounds/forest-night.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01349" preload="auto"></audio>
-  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01349" preload="auto"></audio>
-  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01349" preload="auto"></audio>
-  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01349" loop preload="auto"></audio>
+  <audio id="ambWind" src="sounds/soft-wind.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="cityNight" src="sounds/night-city.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="cityPeople" src="sounds/city-people-day-v2.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="cityMorning" src="sounds/city-morning-traffic-birds.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="cityTrafficDistant" src="sounds/city-traffic-distant-v1.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="forestDay" src="sounds/forest-day-leaves-birds.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="forestNight" src="sounds/forest-night.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="gardenDay" src="sounds/garden-sunny-day.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="plazaAmbience" src="sounds/plaza-ambience-fade-v3.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="plazaPlayground" src="sounds/plaza-playground-fade-v3.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="plazaNight" src="sounds/plaza-night-ambience-v1.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="nightLifeAmbience" src="sounds/night-life-ambience-v1.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="domePreShow" src="sounds/dome-pre-show-fade-v5.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="domeShowAmbience" src="sounds/dome-show-ambience-v1.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="domeWaveBridge" src="sounds/dome-wave-bridge-v2.mp3?v=01350" preload="auto"></audio>
+  <audio id="domeEventsNormal" src="sounds/dome-events-normal-v5.mp3?v=01350" preload="auto"></audio>
+  <audio id="domeEventsPeak" src="sounds/dome-events-peak-v5.mp3?v=01350" preload="auto"></audio>
+  <audio id="cafeAmbience" src="sounds/city-people-day.mp3?v=01350" loop preload="auto"></audio>
 
-  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01349" preload="auto"></audio>
-  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01349" loop preload="auto"></audio>
-  <audio id="seagulls" src="sounds/seagulls.mp3?v=01349" preload="auto"></audio>
-  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01349" preload="auto"></audio>
-  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01349" preload="auto"></audio>
-  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01349" preload="auto"></audio>
+  <audio id="birdsMorning" src="sounds/birds-morning.mp3?v=01350" preload="auto"></audio>
+  <audio id="waveRelaxing" src="sounds/waves-relaxing.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="waveOceanAlt" src="sounds/waves-ocean-alt.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="seaShore" src="sounds/sea-shore.mp3?v=01350" loop preload="auto"></audio>
+  <audio id="seagulls" src="sounds/seagulls.mp3?v=01350" preload="auto"></audio>
+  <audio id="cityCar1" src="sounds/car-pass-01.mp3?v=01350" preload="auto"></audio>
+  <audio id="cityCar2" src="sounds/car-pass-02.mp3?v=01350" preload="auto"></audio>
+  <audio id="harborHorn" src="harbor-horn-far-v012-loud-v0128.mp3?v=01350" preload="auto"></audio>
 
-  <audio id="doorChime" src="sounds/door-chime.mp3?v=01349" preload="auto"></audio>
-  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01349" preload="auto"></audio>
-  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01349" preload="auto"></audio>
-  <audio id="settingTable" src="sounds/setting-table.mp3?v=01349" preload="auto"></audio>
-  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01349" preload="auto"></audio>
-  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01349" preload="auto"></audio>
-  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01349" preload="auto"></audio>
-  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01349" preload="auto"></audio>
+  <audio id="doorChime" src="sounds/door-chime.mp3?v=01350" preload="auto"></audio>
+  <audio id="drinkPour" src="sounds/drink-pour-stir.mp3?v=01350" preload="auto"></audio>
+  <audio id="mugTable" src="sounds/mug-on-table.mp3?v=01350" preload="auto"></audio>
+  <audio id="settingTable" src="sounds/setting-table.mp3?v=01350" preload="auto"></audio>
+  <audio id="plateCutlery" src="sounds/plate-cutlery.mp3?v=01350" preload="auto"></audio>
+  <audio id="cafeCupSpoon" src="sounds/cafe-cup-spoon.mp3?v=01350" preload="auto"></audio>
+  <audio id="coffeeMachine" src="sounds/coffee-machine.mp3?v=01350" preload="auto"></audio>
+  <audio id="coffeeStir" src="sounds/coffee-stir.mp3?v=01350" preload="auto"></audio>
 
-  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01349" preload="auto"></audio>
-  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01349" preload="auto"></audio>
-  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01349" preload="auto"></audio>
+  <audio id="crowdClap" src="sounds/crowd-clap-cheer-fade-v2.mp3?v=01350" preload="auto"></audio>
+  <audio id="crowdLive" src="sounds/crowd-live-cheer-fade-v4.mp3?v=01350" preload="auto"></audio>
+  <audio id="clockFive" src="sounds/clock-five-strikes.mp3?v=01350" preload="auto"></audio>
 
-  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01349" preload="auto"></audio>
-  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01349" preload="auto"></audio>
-  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01349" preload="auto"></audio>
+  <audio id="stepsLeaves" src="sounds/steps-leaves-grass.mp3?v=01350" preload="auto"></audio>
+  <audio id="stepsConcrete" src="sounds/steps-concrete.mp3?v=01350" preload="auto"></audio>
+  <audio id="stepsHard" src="sounds/steps-hard-surface-alt.mp3?v=01350" preload="auto"></audio>
 
   <div class="intro" id="intro" aria-hidden="true">
     <div class="intro-mark"><strong>SNOW MAP</strong><div class="intro-snow-glow"><svg class="intro-snow snowflake-svg" aria-hidden="true" viewBox="0 0 24 24"></svg></div></div>
@@ -726,29 +641,12 @@
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01349" alt="SNOW MAPの地図" />
+          <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01350" alt="SNOW MAPの地図" />
         </div>
         <div class="ambient"></div>
         <div class="lights"></div>
         <div class="dome-aura" aria-hidden="true"></div>
-
-        <div class="member-sparkles" aria-hidden="true">
-          <i style="left:31%;top:7%"></i><i style="left:56%;top:9%"></i><i style="left:74%;top:13%"></i>
-          <i style="left:22%;top:16%"></i><i style="left:49%;top:17%"></i><i style="left:82%;top:21%"></i>
-          <i style="left:17%;top:25%"></i><i style="left:58%;top:25%"></i><i style="left:88%;top:29%"></i>
-          <i style="left:29%;top:31%"></i><i style="left:77%;top:35%"></i><i style="left:12%;top:38%"></i>
-          <i style="left:39%;top:42%"></i><i style="left:83%;top:44%"></i><i style="left:57%;top:48%"></i>
-          <i style="left:18%;top:52%"></i><i style="left:91%;top:54%"></i><i style="left:34%;top:57%"></i>
-          <i style="left:61%;top:61%"></i><i style="left:10%;top:64%"></i><i style="left:84%;top:66%"></i>
-          <i style="left:46%;top:69%"></i><i style="left:24%;top:72%"></i><i style="left:92%;top:75%"></i>
-          <i style="left:13%;top:78%"></i><i style="left:54%;top:80%"></i><i style="left:77%;top:82%"></i>
-          <i style="left:32%;top:85%"></i><i style="left:89%;top:88%"></i><i style="left:17%;top:91%"></i>
-          <i style="left:63%;top:93%"></i><i style="left:42%;top:12%"></i><i style="left:68%;top:39%"></i>
-          <i style="left:27%;top:47%"></i><i style="left:73%;top:70%"></i><i style="left:48%;top:89%"></i>
-        </div>
-        <div class="special-day-glow" aria-hidden="true">
-          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-        </div>
+        <div class="special-day-glow" id="specialDayGlow" aria-hidden="true"></div>
 
         <button class="beacon" style="left:45.3%;top:5.2%;" data-place="展望台" aria-label="展望台"></button>
         <button class="beacon" style="left:39.2%;top:20.3%;" data-place="シティライト" aria-label="シティライト"></button>
@@ -805,7 +703,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01349";
+    const version="01350";
 
     const PLACE_META = {
       "展望台":{
@@ -965,6 +863,47 @@
       return null;
     }
 
+    function buildSpecialDayParticles(){
+      const glow=document.getElementById("specialDayGlow");
+      if(!glow) return;
+      glow.textContent="";
+
+      const active=
+        document.body.classList.contains("event-birthday")||
+        document.body.classList.contains("event-christmas")||
+        document.body.classList.contains("event-debut");
+      if(!active) return;
+
+      const count=42;
+      const zones=[
+        {x:[56,77],y:[35,48],weight:4},
+        {x:[58,78],y:[45,61],weight:5},
+        {x:[48,63],y:[32,48],weight:2}
+      ];
+      const weightedZones=[];
+      zones.forEach(zone=>{ for(let i=0;i<zone.weight;i++) weightedZones.push(zone); });
+
+      for(let i=0;i<count;i++){
+        const zone=weightedZones[Math.floor(Math.random()*weightedZones.length)];
+        const particle=document.createElement("i");
+        const x=zone.x[0]+Math.random()*(zone.x[1]-zone.x[0]);
+        const y=zone.y[0]+Math.random()*(zone.y[1]-zone.y[0]);
+        const size=(1.7+Math.random()*2.2).toFixed(2);
+        const life=(4.2+Math.random()*4.8).toFixed(2);
+        const drift=(3.8+Math.random()*4.4).toFixed(2);
+        const delay=(-Math.random()*8).toFixed(2);
+        const dx=(-5+Math.random()*10).toFixed(2);
+        particle.style.setProperty("--x",`${x.toFixed(2)}%`);
+        particle.style.setProperty("--y",`${y.toFixed(2)}%`);
+        particle.style.setProperty("--size",`${size}px`);
+        particle.style.setProperty("--life",`${life}s`);
+        particle.style.setProperty("--drift-time",`${drift}s`);
+        particle.style.setProperty("--delay",`${delay}s`);
+        particle.style.setProperty("--dx",`${dx}px`);
+        glow.appendChild(particle);
+      }
+    }
+
     function markEventTestMode(){
       const mode=getEventTestMode();
       if(!mode){
@@ -1078,6 +1017,7 @@
 
     markEventTestMode();
     applySpecialDayMode();
+    buildSpecialDayParticles();
 
     const songDataReady=loadSongData().catch(error=>{
       console.error(error);
@@ -1098,10 +1038,10 @@
     const themeColor=document.getElementById("themeColor");
     const mapImage=document.getElementById("mapImage");
     const timeImages={
-      morning:"snow-map-morning.png?v=01349",
-      day:"snow-map-day.png?v=01349",
-      evening:"snow-map-evening.png?v=01349",
-      night:"snow-map-night.png?v=01349"
+      morning:"snow-map-morning.png?v=01350",
+      day:"snow-map-day.png?v=01350",
+      evening:"snow-map-evening.png?v=01350",
+      night:"snow-map-night.png?v=01350"
     };
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
