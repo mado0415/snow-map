@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.96: スポットカード表示時のiOS下端の不透明帯を解消 -->
+    <!-- SNOW MAP v0.13.97: カードを閉じた後にSafari下端へ残る不透明帯を完全解除 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -600,13 +600,25 @@
       right: 0;
       bottom: -140px;
       z-index: 20;
-      background: rgba(28,40,51,.09);
-      backdrop-filter: blur(2.5px) saturate(.96);
+      background: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity .24s ease;
+      transition:
+        opacity .24s ease,
+        visibility 0s linear .24s;
     }
-    .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .sheet-backdrop.open {
+      background: rgba(28,40,51,.09);
+      -webkit-backdrop-filter: blur(2.5px) saturate(.96);
+      backdrop-filter: blur(2.5px) saturate(.96);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
 
     .sheet {
       position: fixed;
@@ -624,9 +636,20 @@
       box-shadow: 0 -18px 60px rgba(36,55,70,.20), inset 0 1px 0 rgba(255,255,255,.72);
       padding: 9px 15px 12px;
       opacity: 0;
-      transition: transform .38s cubic-bezier(.18,.82,.24,1), opacity .26s ease;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        transform .38s cubic-bezier(.18,.82,.24,1),
+        opacity .26s ease,
+        visibility 0s linear .38s;
     }
-    .sheet.open { transform: translate(-50%,0); opacity: 1; }
+    .sheet.open {
+      transform: translate(-50%,0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
     .handle { width: 30px; height: 4px; margin: 0 auto 8px; border-radius: 99px; background: rgba(49,71,95,.17); }
     .place-label { margin: 0; font-size: 9px; letter-spacing: .16em; opacity: .46; }
     .place-name { margin: 3px 0 0; font-family: Georgia, "Times New Roman", "Yu Mincho", serif; font-size: clamp(20px,5.4vw,25px); line-height: 1.16; letter-spacing: .055em; font-weight: 500; }
@@ -2933,6 +2956,13 @@
       sheet.classList.remove("open");
       document.body.classList.remove("sheet-open");
       backdrop.classList.remove("open");
+
+      // iOS Safari対策：ぼかしレイヤーを閉じた直後に再合成させ、
+      // 下端へ残る半透明帯を持ち越さない。
+      requestAnimationFrame(()=>{
+        void backdrop.offsetHeight;
+      });
+
       if(!keepZoom){
         setFreeRoam(false);
         returnToMap();
