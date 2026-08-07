@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.87: 星の表示開始を22:00へ変更（22:00〜01:59） -->
+    <!-- SNOW MAP v0.13.88: 楽曲を作品内利用しているように見えないよう案内文・配信リンク・ファンメイド表記を整理 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -123,6 +123,21 @@
       letter-spacing: .07em;
       opacity: .5;
       transition: opacity .35s ease;
+    }
+
+    .fanmade-note {
+      margin: -2px auto 18px;
+      padding: 0 24px;
+      max-width: 560px;
+      text-align: center;
+      color: rgba(49,71,95,.46);
+      font-size: 8.5px;
+      line-height: 1.65;
+      letter-spacing: .035em;
+    }
+    .fanmade-note strong {
+      font-weight: 700;
+      letter-spacing: .08em;
     }
 
     .map-viewport {
@@ -434,7 +449,14 @@
     .place-copy { margin: 8px 0 0; max-width: 31em; font-size: 12px; line-height: 1.6; letter-spacing: .045em; color: rgba(49,71,95,.78); }
     .divider { height: 1px; margin: 10px 0 9px; background: linear-gradient(90deg,var(--line),transparent); }
     .song-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .16em; opacity: .44; }
-    .song-name { margin: 2px 0 9px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; transition: opacity .18s ease, transform .22s ease; }
+    .song-name { margin: 2px 0 4px; font-size: clamp(18px,5.1vw,23px); line-height: 1.25; font-weight: 660; letter-spacing: .015em; transition: opacity .18s ease, transform .22s ease; }
+    .song-guide-copy {
+      margin: 0 0 9px;
+      font-size: 9.5px;
+      line-height: 1.55;
+      letter-spacing: .045em;
+      color: rgba(49,71,95,.56);
+    }
     .song-name.changing { opacity: 0; transform: translateY(4px); }
     .actions { display: grid; gap: 7px; }
     .move-next { width: 100%; min-height: 34px; border: 1px solid rgba(49,71,95,.14); border-radius: 13px; color: var(--ink); background: rgba(255,255,255,.48); font-size: 11px; font-weight: 650; letter-spacing: .08em; cursor: pointer; }
@@ -989,6 +1011,10 @@
         <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
       </div>
     </section>
+    <p class="fanmade-note">
+      <strong>FANMADE</strong><br>
+      SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。Snow Manおよび所属事務所、各配信サービスとは関係ありません。
+    </p>
   </main>
 
   <div class="sheet-backdrop" id="backdrop"></div>
@@ -999,12 +1025,13 @@
     <p class="experience" id="experience"></p>
     <p class="place-copy" id="placeCopy"></p>
     <div class="divider"></div>
-    <p class="song-label">MUSIC</p>
+    <p class="song-label">SONG GUIDE</p>
     <h2 class="song-name" id="songName"></h2>
+    <p class="song-guide-copy">この景色で出会った1曲。公式配信サービスで聴けます。</p>
     <div class="services">
-      <a class="service" id="spotifyLink" target="_blank" rel="noopener">Spotify</a>
-      <a class="service" id="appleLink" rel="noopener">Apple Music</a>
-      <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTube</a>
+      <a class="service" id="spotifyLink" target="_blank" rel="noopener">Spotifyで聴く</a>
+      <a class="service" id="appleLink" rel="noopener">Apple Musicで聴く</a>
+      <a class="service" id="youtubeLink" target="_blank" rel="noopener">YouTubeで聴く</a>
     </div>
     <div class="actions">
       <button class="next" id="exploreButton">この場所を散策する</button>
