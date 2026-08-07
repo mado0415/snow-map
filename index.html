@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.93: スポット詳細シート表示中はGuidebookボタンを非表示 -->
+    <!-- SNOW MAP v0.13.94: スポット詳細シート表示中はGuidebookボタンを確実に非表示 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -2857,7 +2857,7 @@
       hint.style.opacity="0";
       backdrop.classList.add("open");
       sheet.classList.remove("open");
-      document.body.classList.remove("sheet-open");
+      document.body.classList.add("sheet-open");
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>sheet.classList.add("open"));
       });
@@ -2894,6 +2894,7 @@
           exploreButton.textContent="もう少し散策する";
           document.body.style.overflow="hidden";
           backdrop.classList.add("open");
+          document.body.classList.add("sheet-open");
           requestAnimationFrame(()=>requestAnimationFrame(()=>sheet.classList.add("open")));
           mapStage.classList.remove("strolling");
           isTransitioning=false;
