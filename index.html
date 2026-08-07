@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.91: 街の音ミュート中はSnow Domeの歓声トラックも再生しない -->
+    <!-- SNOW MAP v0.13.92: Guidebook実装・英語サブタイトル・日本語メイン＋小さめ英語版・X連絡先 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -108,6 +108,16 @@
       font-weight: 500;
       letter-spacing: .13em;
     }
+    .site-subtitle {
+      margin: 0 0 5px;
+      color: var(--top-muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 9.5px;
+      line-height: 1.35;
+      letter-spacing: .08em;
+      opacity: .72;
+    }
+
     .top-copy {
       margin: 4px 0 0;
       color: var(--top-ink);
@@ -125,89 +135,185 @@
       transition: opacity .35s ease;
     }
 
-    .fanmade-note {
+    .guidebook-launcher {
       position: fixed;
-      left: 16px;
-      right: 16px;
+      right: 14px;
       bottom: calc(82px + env(safe-area-inset-bottom));
-      z-index: 60;
-      margin: 0 auto;
-      padding: 10px 38px 11px 12px;
-      max-width: 560px;
-      box-sizing: border-box;
-      text-align: left;
-      color: rgba(49,71,95,.84);
-      background: rgba(255,255,255,.82);
-      border: 1px solid rgba(49,71,95,.10);
-      border-radius: 15px;
-      box-shadow: 0 7px 24px rgba(30,45,65,.12);
-      -webkit-backdrop-filter: blur(14px) saturate(1.06);
-      backdrop-filter: blur(14px) saturate(1.06);
-      font-size: 10.5px;
-      line-height: 1.55;
-      letter-spacing: .018em;
-      transition: width .22s ease, padding .22s ease, border-radius .22s ease, opacity .18s ease;
-    }
-    .fanmade-note strong {
-      display: inline-block;
-      margin-right: .55em;
-      font-size: 9.5px;
+      z-index: 61;
+      border: 1px solid rgba(49,71,95,.12);
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: rgba(255,255,255,.80);
+      color: rgba(49,71,95,.86);
+      box-shadow: 0 6px 20px rgba(30,45,65,.10);
+      -webkit-backdrop-filter: blur(12px) saturate(1.04);
+      backdrop-filter: blur(12px) saturate(1.04);
+      font-size: 8.5px;
       font-weight: 800;
-      letter-spacing: .11em;
-      color: rgba(49,71,95,.92);
-    }
-    .fanmade-copy { display: inline; }
-    .fanmade-close {
-      position: absolute;
-      top: 7px;
-      right: 8px;
-      width: 26px;
-      height: 26px;
-      border: 0;
-      border-radius: 50%;
-      background: rgba(49,71,95,.08);
-      color: currentColor;
-      font: inherit;
-      font-size: 16px;
-      line-height: 1;
+      letter-spacing: .10em;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    .fanmade-note.is-collapsed {
-      left: auto;
-      right: 16px;
-      width: auto;
-      max-width: none;
-      padding: 8px 12px 8px;
+    body.time-evening .guidebook-launcher,
+    body.time-twilight .guidebook-launcher,
+    body.time-night .guidebook-launcher {
+      color: rgba(255,255,255,.94);
+      background: rgba(35,55,78,.68);
+      border-color: rgba(255,255,255,.12);
+    }
+
+    .guidebook-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 79;
+      background: rgba(22,34,48,.22);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    .guidebook-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .guidebook {
+      position: fixed;
+      z-index: 80;
+      left: 50%;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      width: min(calc(100% - 28px), 500px);
+      max-height: calc(100dvh - 46px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      transform: translate(-50%, calc(100% + 30px));
+      opacity: 0;
+      border: 1px solid rgba(255,255,255,.76);
+      border-radius: 24px;
+      background: linear-gradient(160deg, rgba(255,255,255,.97), rgba(244,250,253,.93));
+      box-shadow: 0 -12px 50px rgba(29,45,60,.22);
+      padding: 14px 18px 22px;
+      color: #31475f;
+      transition: transform .36s cubic-bezier(.18,.82,.24,1), opacity .24s ease;
+    }
+    .guidebook.open {
+      transform: translate(-50%,0);
+      opacity: 1;
+    }
+    .guidebook-handle {
+      width: 32px;
+      height: 4px;
+      margin: 0 auto 12px;
       border-radius: 999px;
+      background: rgba(49,71,95,.16);
+    }
+    .guidebook-close {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(49,71,95,.07);
+      color: #31475f;
+      font-size: 17px;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .fanmade-note.is-collapsed .fanmade-copy,
-    .fanmade-note.is-collapsed .fanmade-close {
-      display: none;
-    }
-    .fanmade-note.is-collapsed strong {
+    .guidebook-kicker {
       margin: 0;
       font-size: 9px;
-      letter-spacing: .12em;
+      font-weight: 800;
+      letter-spacing: .16em;
+      opacity: .50;
     }
-    body.time-evening .fanmade-note,
-    body.time-twilight .fanmade-note,
-    body.time-night .fanmade-note {
-      color: rgba(255,255,255,.90);
-      background: rgba(35,55,78,.72);
-      border-color: rgba(255,255,255,.12);
-      box-shadow: 0 8px 26px rgba(5,16,30,.20);
+    .guidebook-title {
+      margin: 4px 36px 0 0;
+      font-family: Georgia, "Times New Roman", "Yu Mincho", serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: .08em;
     }
-    body.time-evening .fanmade-note strong,
-    body.time-twilight .fanmade-note strong,
-    body.time-night .fanmade-note strong {
-      color: rgba(255,255,255,.98);
+    .guidebook-lead {
+      margin: 14px 0 0;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(216,235,244,.38);
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif;
+      font-size: 13px;
+      line-height: 1.9;
+      letter-spacing: .035em;
     }
-    body.time-evening .fanmade-close,
-    body.time-twilight .fanmade-close,
-    body.time-night .fanmade-close {
-      background: rgba(255,255,255,.10);
+    .guidebook-lead strong {
+      font-weight: 600;
+    }
+    .guidebook-section {
+      margin-top: 20px;
+    }
+    .guidebook-section h3 {
+      margin: 0 0 7px;
+      font-family: Georgia, "Times New Roman", "Yu Mincho", serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: .06em;
+    }
+    .guidebook-section p {
+      margin: 0 0 8px;
+      font-size: 11.5px;
+      line-height: 1.8;
+      letter-spacing: .025em;
+      color: rgba(49,71,95,.82);
+    }
+    .guidebook-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      padding: 8px 11px;
+      border: 1px solid rgba(49,71,95,.12);
+      border-radius: 999px;
+      color: #31475f;
+      background: rgba(255,255,255,.72);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .guidebook-english {
+      margin-top: 23px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(49,71,95,.10);
+    }
+    .guidebook-english h3 {
+      margin: 0 0 8px;
+      font-size: 10px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: .55;
+    }
+    .guidebook-english p {
+      margin: 0 0 7px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 9.5px;
+      line-height: 1.65;
+      letter-spacing: .02em;
+      color: rgba(49,71,95,.58);
+    }
+    .guidebook-ending {
+      margin: 24px 0 4px;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11px;
+      line-height: 1.8;
+      letter-spacing: .04em;
+      color: rgba(49,71,95,.68);
+    }
+    .guidebook-ending strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(49,71,95,.82);
     }
 
     .map-viewport {
@@ -1013,6 +1119,7 @@
   <main class="app" id="app">
     <header class="topbar">
       <h1>SNOW MAP</h1>
+      <p class="site-subtitle">A fanmade music guide for Snow Man</p>
       <p class="top-copy">今日は、どの景色を歩きますか。</p>
       <p class="hint" id="hint">小さく光る景色に触れてみてください</p>
       <button class="sound-toggle" id="soundToggle" type="button" aria-label="街の音をオンにする" aria-pressed="false">
@@ -1081,12 +1188,52 @@
         <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
       </div>
     </section>
-    <aside class="fanmade-note" id="fanmadeNote" aria-label="ファンメイド表記">
-      <strong>FANMADE</strong>
-      <span class="fanmade-copy">SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。</span>
-      <button class="fanmade-close" id="fanmadeClose" type="button" aria-label="注意書きを小さくする">×</button>
-    </aside>
+    <button class="guidebook-launcher" id="guidebookOpen" type="button" aria-label="Guidebookを開く">FANMADE · GUIDEBOOK</button>
   </main>
+
+  <div class="guidebook-backdrop" id="guidebookBackdrop"></div>
+  <section class="guidebook" id="guidebook" role="dialog" aria-modal="true" aria-labelledby="guidebookTitle">
+    <div class="guidebook-handle" aria-hidden="true"></div>
+    <button class="guidebook-close" id="guidebookClose" type="button" aria-label="Guidebookを閉じる">×</button>
+    <p class="guidebook-kicker">SNOW MAP</p>
+    <h2 class="guidebook-title" id="guidebookTitle">Guidebook</h2>
+
+    <p class="guidebook-lead"><strong>好きな景色を歩くように、Snow Manの楽曲とも出会える場所があったらいいな。</strong><br><br>そんな思いから、この小さな街を作りました。</p>
+
+    <section class="guidebook-section">
+      <h3>このサイトについて</h3>
+      <p>SNOW MAPは、場所や時間帯を歩きながら、その景色に寄り添うSnow Manの楽曲と出会うための、個人制作による非公式ファンメイドWebコンテンツです。</p>
+      <p>曲と出会ったあとは、各公式配信サービスでお楽しみください。</p>
+    </section>
+
+    <section class="guidebook-section">
+      <h3>音楽について</h3>
+      <p>SNOW MAP内では、Snow Manの楽曲・音源を掲載、配信、再生していません。</p>
+      <p>サイト内で使用している音は、街の環境音や効果音のみです。表示される楽曲名やリンクは、各公式配信サービスへの案内として掲載しています。</p>
+    </section>
+
+    <section class="guidebook-section">
+      <h3>権利について</h3>
+      <p>Snow Manに関する名称・楽曲・その他の権利は、それぞれの権利者に帰属します。</p>
+      <p>SNOW MAPは個人による非公式ファンメイド作品であり、Snow Man、所属事務所、音楽配信サービス各社とは関係ありません。</p>
+      <p>権利者の方から修正・削除等のご連絡をいただいた場合は、内容を確認のうえ速やかに対応いたします。</p>
+    </section>
+
+    <section class="guidebook-section">
+      <h3>Contact</h3>
+      <p>SNOW MAPに関するお問い合わせ、不具合のご報告、ご意見などはXまでお願いいたします。権利者の方からのご連絡も、こちらよりお願いいたします。</p>
+      <a class="guidebook-contact" href="https://x.com/mado_no_yuki" target="_blank" rel="noopener">@mado_no_yuki</a>
+    </section>
+
+    <section class="guidebook-english" aria-label="English">
+      <h3>English</h3>
+      <p>SNOW MAP is an unofficial fanmade web project created by an individual to help visitors discover Snow Man songs through different places and times of day.</p>
+      <p>The website does not contain, stream, or distribute Snow Man's music. Audio used within the site consists only of environmental ambience and sound effects. Song titles are presented as guides and link to official music streaming services.</p>
+      <p>This project is not affiliated with, endorsed by, or operated by Snow Man, their management, or any music streaming service. Rights relating to artist names, songs, and other intellectual property belong to their respective rights holders.</p>
+    </section>
+
+    <p class="guidebook-ending"><strong>Thank you for visiting SNOW MAP.</strong>May you discover another favorite song along your walk.</p>
+  </section>
 
   <div class="sheet-backdrop" id="backdrop"></div>
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="songName">
@@ -2919,30 +3066,28 @@
     closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
     backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
-    const fanmadeNote=document.getElementById("fanmadeNote");
-    const fanmadeClose=document.getElementById("fanmadeClose");
+    const guidebook=document.getElementById("guidebook");
+    const guidebookBackdrop=document.getElementById("guidebookBackdrop");
+    const guidebookOpen=document.getElementById("guidebookOpen");
+    const guidebookClose=document.getElementById("guidebookClose");
 
-    function setFanmadeCollapsed(collapsed){
-      if(!fanmadeNote) return;
-      fanmadeNote.classList.toggle("is-collapsed",collapsed);
-      fanmadeNote.setAttribute("aria-expanded",String(!collapsed));
-      try{ sessionStorage.setItem("snow-map-fanmade-collapsed",collapsed?"1":"0"); }catch(_){}
+    function openGuidebook(){
+      guidebook?.classList.add("open");
+      guidebookBackdrop?.classList.add("open");
+      document.body.style.overflow="hidden";
+    }
+    function closeGuidebook(){
+      guidebook?.classList.remove("open");
+      guidebookBackdrop?.classList.remove("open");
+      document.body.style.overflow="";
     }
 
-    if(fanmadeNote){
-      let collapsed=false;
-      try{ collapsed=sessionStorage.getItem("snow-map-fanmade-collapsed")==="1"; }catch(_){}
-      setFanmadeCollapsed(collapsed);
-
-      fanmadeClose?.addEventListener("click",(e)=>{
-        e.stopPropagation();
-        setFanmadeCollapsed(true);
-      });
-
-      fanmadeNote.addEventListener("click",()=>{
-        if(fanmadeNote.classList.contains("is-collapsed")) setFanmadeCollapsed(false);
-      });
-    }
+    guidebookOpen?.addEventListener("click",openGuidebook);
+    guidebookClose?.addEventListener("click",closeGuidebook);
+    guidebookBackdrop?.addEventListener("click",closeGuidebook);
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Escape" && guidebook?.classList.contains("open")) closeGuidebook();
+    });
 
     setupDevTimeControls();
     setWorldTime(); setInterval(()=>{ setWorldTime(); if(soundEnabled) ambientMix(currentPlace,{duration:60000}); },60000);
