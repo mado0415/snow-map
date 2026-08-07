@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.92: Guidebook実装・英語サブタイトル・日本語メイン＋小さめ英語版・X連絡先 -->
+    <!-- SNOW MAP v0.13.93: スポット詳細シート表示中はGuidebookボタンを非表示 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -153,6 +153,12 @@
       letter-spacing: .10em;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    body.sheet-open .guidebook-launcher {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
     }
     body.time-evening .guidebook-launcher,
     body.time-twilight .guidebook-launcher,
@@ -2851,6 +2857,7 @@
       hint.style.opacity="0";
       backdrop.classList.add("open");
       sheet.classList.remove("open");
+      document.body.classList.remove("sheet-open");
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>sheet.classList.add("open"));
       });
@@ -2863,6 +2870,7 @@
 
       // いったんカードとぼかしを消し、景色だけを見る時間をつくる
       sheet.classList.remove("open");
+      document.body.classList.remove("sheet-open");
       backdrop.classList.remove("open");
       document.body.style.overflow="";
 
@@ -2920,6 +2928,7 @@
     }
     function closeSheet({keepZoom=true}={}){
       sheet.classList.remove("open");
+      document.body.classList.remove("sheet-open");
       backdrop.classList.remove("open");
       document.body.style.overflow="";
       if(!keepZoom){
