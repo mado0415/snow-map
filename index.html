@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.78: 開発モードで時間に加えて日付も切り替え可能（前日・日付指定・翌日・今日） -->
+    <!-- SNOW MAP v0.13.79: イベント日のSnow Dome曲を初回必須＋以後3〜4回に1回で再登場 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -1261,19 +1261,60 @@
       );
     }
 
-    function firstDomeEventSong(){
+    function domeEventSongForVisit(){
       const today=currentEventDate();
       const special=applySpecialDayMode();
       if(!special) return null;
 
-      const storageKey=`snow-map-first-dome-event-${getEventTestMode()?.type||"live"}-${today}`;
-      if(sessionStorage.getItem(storageKey)==="1") return null;
-
       const candidates=eventSongsForToday();
       if(!candidates.length) return null;
 
-      sessionStorage.setItem(storageKey,"1");
-      return candidates[Math.floor(Math.random()*candidates.length)].title;
+      const modeKey=getEventTestMode()?.type||"live";
+      const storageKey=`snow-map-dome-event-cycle-${modeKey}-${today}`;
+
+      let state={firstShown:false,sinceEvent:0,nextGap:Math.random()<.5?3:4};
+      try{
+        const saved=JSON.parse(sessionStorage.getItem(storageKey)||"null");
+        if(saved && typeof saved==="object"){
+          state={
+            firstShown:Boolean(saved.firstShown),
+            sinceEvent:Number.isFinite(saved.sinceEvent)?saved.sinceEvent:0,
+            nextGap:saved.nextGap===4?4:3
+          };
+        }
+      }catch(_){ }
+
+      const chooseEventSong=()=>{
+        const titles=candidates.map(song=>song.title).filter(Boolean);
+        if(!titles.length) return null;
+        const pool=titles.filter(title=>title!==previousSong);
+        const usable=pool.length?pool:titles;
+        return usable[Math.floor(Math.random()*usable.length)];
+      };
+
+      /* イベント日に初めてSnow Domeで曲を出す時は必ず当日の該当曲 */
+      if(!state.firstShown){
+        const title=chooseEventSong();
+        if(!title) return null;
+        state.firstShown=true;
+        state.sinceEvent=0;
+        state.nextGap=Math.random()<.5?3:4;
+        sessionStorage.setItem(storageKey,JSON.stringify(state));
+        return title;
+      }
+
+      /* その後は3〜4回に1回の間隔で、当日の曲をもう一度混ぜる */
+      state.sinceEvent+=1;
+      if(state.sinceEvent>=state.nextGap){
+        const title=chooseEventSong();
+        state.sinceEvent=0;
+        state.nextGap=Math.random()<.5?3:4;
+        sessionStorage.setItem(storageKey,JSON.stringify(state));
+        return title;
+      }
+
+      sessionStorage.setItem(storageKey,JSON.stringify(state));
+      return null;
     }
 
     function songSelectionWeight(song,place){
@@ -2342,7 +2383,7 @@
     }
     function nextSongFor(place){
       if(place==="Snow Dome"){
-        const eventSong=firstDomeEventSong();
+        const eventSong=domeEventSongForVisit();
         if(eventSong){
           previousSong=eventSong;
           return eventSong;
