@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.90: FANMADE注意書きを×で最小化できるようにし、タップ操作への干渉を軽減 -->
+    <!-- SNOW MAP v0.13.91: 街の音ミュート中はSnow Domeの歓声トラックも再生しない -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -2113,6 +2113,7 @@
 
     function startDomeEventTrack(){
       stopDomeEventTrack();
+      if(!soundEnabled) return;
       const track=isDomePeakHours()?domeEventsPeak:domeEventsNormal;
       activeDomeEventTrack=track;
       track.currentTime=0;
@@ -2808,7 +2809,7 @@
     function arriveAt(place,{fromMap=false}={}){
       if(isTransitioning) return;
 
-      if(place==="Snow Dome") startDomeEventTrack();
+      if(place==="Snow Dome" && soundEnabled) startDomeEventTrack();
       else stopDomeEventTrack();
       const beacon=getBeacon(place);
       if(!beacon) return;
