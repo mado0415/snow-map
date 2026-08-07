@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.89: FANMADE注意書きを地図上の固定オーバーレイへ移動し可読性を改善 -->
+    <!-- SNOW MAP v0.13.90: FANMADE注意書きを×で最小化できるようにし、タップ操作への干渉を軽減 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -129,10 +129,10 @@
       position: fixed;
       left: 16px;
       right: 16px;
-      bottom: calc(92px + env(safe-area-inset-bottom));
+      bottom: calc(82px + env(safe-area-inset-bottom));
       z-index: 60;
       margin: 0 auto;
-      padding: 10px 12px 11px;
+      padding: 10px 38px 11px 12px;
       max-width: 560px;
       box-sizing: border-box;
       text-align: left;
@@ -146,7 +146,7 @@
       font-size: 10.5px;
       line-height: 1.55;
       letter-spacing: .018em;
-      pointer-events: none;
+      transition: width .22s ease, padding .22s ease, border-radius .22s ease, opacity .18s ease;
     }
     .fanmade-note strong {
       display: inline-block;
@@ -155,6 +155,41 @@
       font-weight: 800;
       letter-spacing: .11em;
       color: rgba(49,71,95,.92);
+    }
+    .fanmade-copy { display: inline; }
+    .fanmade-close {
+      position: absolute;
+      top: 7px;
+      right: 8px;
+      width: 26px;
+      height: 26px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(49,71,95,.08);
+      color: currentColor;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fanmade-note.is-collapsed {
+      left: auto;
+      right: 16px;
+      width: auto;
+      max-width: none;
+      padding: 8px 12px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .fanmade-note.is-collapsed .fanmade-copy,
+    .fanmade-note.is-collapsed .fanmade-close {
+      display: none;
+    }
+    .fanmade-note.is-collapsed strong {
+      margin: 0;
+      font-size: 9px;
+      letter-spacing: .12em;
     }
     body.time-evening .fanmade-note,
     body.time-twilight .fanmade-note,
@@ -168,6 +203,11 @@
     body.time-twilight .fanmade-note strong,
     body.time-night .fanmade-note strong {
       color: rgba(255,255,255,.98);
+    }
+    body.time-evening .fanmade-close,
+    body.time-twilight .fanmade-close,
+    body.time-night .fanmade-close {
+      background: rgba(255,255,255,.10);
     }
 
     .map-viewport {
@@ -1041,10 +1081,11 @@
         <button class="beacon" style="left:38.8%;top:74.4%;" data-place="シーズンガーデン" aria-label="シーズンガーデン"></button>
       </div>
     </section>
-    <p class="fanmade-note">
+    <aside class="fanmade-note" id="fanmadeNote" aria-label="ファンメイド表記">
       <strong>FANMADE</strong>
-      SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。
-    </p>
+      <span class="fanmade-copy">SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。</span>
+      <button class="fanmade-close" id="fanmadeClose" type="button" aria-label="注意書きを小さくする">×</button>
+    </aside>
   </main>
 
   <div class="sheet-backdrop" id="backdrop"></div>
@@ -2877,6 +2918,31 @@
     closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
     backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
+    const fanmadeNote=document.getElementById("fanmadeNote");
+    const fanmadeClose=document.getElementById("fanmadeClose");
+
+    function setFanmadeCollapsed(collapsed){
+      if(!fanmadeNote) return;
+      fanmadeNote.classList.toggle("is-collapsed",collapsed);
+      fanmadeNote.setAttribute("aria-expanded",String(!collapsed));
+      try{ sessionStorage.setItem("snow-map-fanmade-collapsed",collapsed?"1":"0"); }catch(_){}
+    }
+
+    if(fanmadeNote){
+      let collapsed=false;
+      try{ collapsed=sessionStorage.getItem("snow-map-fanmade-collapsed")==="1"; }catch(_){}
+      setFanmadeCollapsed(collapsed);
+
+      fanmadeClose?.addEventListener("click",(e)=>{
+        e.stopPropagation();
+        setFanmadeCollapsed(true);
+      });
+
+      fanmadeNote.addEventListener("click",()=>{
+        if(fanmadeNote.classList.contains("is-collapsed")) setFanmadeCollapsed(false);
+      });
+    }
+
     setupDevTimeControls();
     setWorldTime(); setInterval(()=>{ setWorldTime(); if(soundEnabled) ambientMix(currentPlace,{duration:60000}); },60000);
     window.addEventListener("resize",()=>{
