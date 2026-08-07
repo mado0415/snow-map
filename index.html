@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.73: 朝昼の光を淡く・夕夜の色を強化・光線を延長 -->
+    <!-- SNOW MAP v0.13.74: イベント光の移動範囲拡大・赤/青紫の彩度緩和・芯から色への境界を滑らかに -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -595,9 +595,11 @@
       height:var(--size);
       border-radius:50%;
       background:radial-gradient(circle,
-        #fff 0 16%,
-        var(--particle-core) 20% 42%,
-        var(--particle-color) 48% 70%,
+        #fff 0 11%,
+        color-mix(in srgb, var(--particle-core) 72%, white) 22%,
+        var(--particle-core) 40%,
+        color-mix(in srgb, var(--particle-color) 68%, var(--particle-core)) 60%,
+        var(--particle-color) 78%,
         transparent 100%);
       box-shadow:
         0 0 3px 1px rgba(255,255,255,.68),
@@ -605,7 +607,7 @@
         0 0 16px 6px var(--particle-soft);
       opacity:.92;
       transform:translate(-50%,-50%);
-      filter:saturate(1.55) contrast(1.05);
+      filter:saturate(1.34) contrast(1.03);
       animation:eventColorDrift var(--life) ease-in-out var(--delay) infinite;
       will-change:transform,opacity;
     }
@@ -627,7 +629,7 @@
 
     body.time-evening .special-day-glow i,
     body.time-night .special-day-glow i {
-      filter:saturate(1.95) contrast(1.08);
+      filter:saturate(1.72) contrast(1.06);
       box-shadow:
         0 0 3px 1px rgba(255,255,255,.72),
         0 0 9px 4px var(--particle-glow),
@@ -1041,7 +1043,7 @@
       if(!mode) return;
 
       /* 黒は深い青紫、白は淡い水色として発光させる */
-      const deepBluePurple=["#3836A8","#7774FF","rgba(74,67,235,.96)","rgba(74,67,235,.46)"];
+      const deepBluePurple=["#625FC0","#D7D5FF","rgba(98,95,192,.84)","rgba(98,95,192,.34)"];
       const paleWaterBlue=["#BDEEFF","#F4FDFF","rgba(86,211,255,.98)","rgba(86,211,255,.46)"];
       const debutPalette=[
         ["#FFE02E","#FFF7A6","rgba(255,224,46,.98)","rgba(255,224,46,.44)"],
@@ -1049,7 +1051,7 @@
         paleWaterBlue,
         ["#FF5BA9","#FFD0E8","rgba(255,91,169,.98)","rgba(255,91,169,.44)"],
         ["#25C95A","#C8FFD7","rgba(37,201,90,.98)","rgba(37,201,90,.44)"],
-        ["#FF303B","#FFC2C6","rgba(255,48,59,.98)","rgba(255,48,59,.44)"],
+        ["#FF6F78","#FFE1E4","rgba(255,96,108,.84)","rgba(255,96,108,.34)"],
         ["#078CFF","#BFE3FF","rgba(7,140,255,.98)","rgba(7,140,255,.46)"],
         ["#FF861B","#FFD2A4","rgba(255,134,27,.98)","rgba(255,134,27,.44)"],
         deepBluePurple
@@ -1063,8 +1065,8 @@
 
       /* イベント日だけ。ドーム屋根とその少し上へ、疎らに漂わせる。 */
       const positions=[
-        [61.5,28.6],[65.1,25.8],[69.2,24.9],[73.4,26.2],
-        [76.0,29.1],[63.4,31.2],[68.2,29.2],[72.0,31.0],[66.8,33.0]
+        [59.2,29.2],[63.1,25.2],[68.2,23.8],[73.8,24.9],
+        [78.0,28.4],[60.8,32.8],[66.2,30.2],[72.3,32.2],[68.8,34.4]
       ];
 
       /* 光線はドーム屋根から空へ伸ばす。広場側には出さない。 */
@@ -1094,11 +1096,11 @@
         const p=document.createElement("i");
         const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
         const size=5.2+Math.random()*3.2;
-        const drift=()=>`${(Math.random()*10-5).toFixed(1)}px`;
+        const drift=()=>`${(Math.random()*22-11).toFixed(1)}px`;
         p.style.setProperty("--x",`${pos[0]}%`);
         p.style.setProperty("--y",`${pos[1]}%`);
         p.style.setProperty("--size",`${size.toFixed(2)}px`);
-        p.style.setProperty("--life",`${(5.2+Math.random()*3.2).toFixed(2)}s`);
+        p.style.setProperty("--life",`${(6.4+Math.random()*4.0).toFixed(2)}s`);
         p.style.setProperty("--delay",`${(-Math.random()*7).toFixed(2)}s`);
         p.style.setProperty("--dx1",drift()); p.style.setProperty("--dy1",drift());
         p.style.setProperty("--dx2",drift()); p.style.setProperty("--dy2",drift());
