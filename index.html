@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.83: 夕方と夜の間に夕暮れを追加・昼地図を最新版へ・支給雲素材へ差替え -->
+    <!-- SNOW MAP v0.13.84: v0.13.83のJavaScript構文エラーを修正（起動停止を解消） -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -1506,7 +1506,6 @@
       skyCloudImages.forEach(img=>{
         if(img.getAttribute("src")!==src) img.setAttribute("src",src);
       });
-    });
     }
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
