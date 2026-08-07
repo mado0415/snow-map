@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.79: イベント日のSnow Dome曲を初回必須＋以後3〜4回に1回で再登場 -->
+    <!-- SNOW MAP v0.13.80: 各時間帯の地図下部の雲素材を、島の背面の空へゆっくり流す -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -166,9 +166,64 @@
 
     .map-images {
       position: relative;
+      z-index: 1;
       width: 100%;
       line-height: 0;
     }
+
+    /* 各時間帯の地図下部から切り出した雲。地図画像より後ろを流れる。 */
+    .sky-clouds {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .sky-cloud {
+      position: absolute;
+      left: -36%;
+      width: var(--cloud-width, 25%);
+      height: auto;
+      opacity: var(--cloud-opacity, .42);
+      user-select: none;
+      -webkit-user-drag: none;
+      will-change: transform;
+      animation: snowCloudDrift var(--cloud-duration, 68s) linear infinite;
+      animation-delay: var(--cloud-delay, 0s);
+    }
+    .sky-cloud.cloud-a {
+      top: 4.8%;
+      --cloud-width: 25%;
+      --cloud-opacity: .42;
+      --cloud-duration: 72s;
+      --cloud-delay: -18s;
+    }
+    .sky-cloud.cloud-b {
+      top: 11.8%;
+      --cloud-width: 19%;
+      --cloud-opacity: .30;
+      --cloud-duration: 91s;
+      --cloud-delay: -62s;
+      scale: -1 1;
+    }
+    .sky-cloud.cloud-c {
+      top: 18.8%;
+      --cloud-width: 29%;
+      --cloud-opacity: .25;
+      --cloud-duration: 108s;
+      --cloud-delay: -39s;
+    }
+    @keyframes snowCloudDrift {
+      from { translate: -18vw 0; }
+      to   { translate: 150vw 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sky-cloud { animation: none; }
+      .sky-cloud.cloud-a { left: 8%; }
+      .sky-cloud.cloud-b { left: 64%; }
+      .sky-cloud.cloud-c { left: 36%; }
+    }
+
     .map-image {
       display: block;
       width: 100%;
@@ -820,6 +875,11 @@
 
     <section class="map-viewport" aria-label="SNOW MAPの地図">
       <div class="map-stage">
+        <div class="sky-clouds" id="skyClouds" aria-hidden="true">
+          <img class="sky-cloud cloud-a" data-sky-cloud src="snow-cloud-day.png?v=01380" alt="">
+          <img class="sky-cloud cloud-b" data-sky-cloud src="snow-cloud-day.png?v=01380" alt="">
+          <img class="sky-cloud cloud-c" data-sky-cloud src="snow-cloud-day.png?v=01380" alt="">
+        </div>
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
           <img class="map-image active" id="mapImage" src="snow-map-day.png?v=01373" alt="SNOW MAPの地図" />
         </div>
@@ -1425,6 +1485,19 @@
       evening:"snow-map-evening.png?v=01373",
       night:"snow-map-night.png?v=01373"
     };
+    const timeClouds={
+      morning:"snow-cloud-morning.png?v=01380",
+      day:"snow-cloud-day.png?v=01380",
+      evening:"snow-cloud-evening.png?v=01380",
+      night:"snow-cloud-night.png?v=01380"
+    };
+    const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
+    function setSkyClouds(key){
+      const src=timeClouds[key]||timeClouds.day;
+      skyCloudImages.forEach(img=>{
+        if(img.getAttribute("src")!==src) img.setAttribute("src",src);
+      });
+    }
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
     const placeName=document.getElementById("placeName"), experience=document.getElementById("experience"), placeCopy=document.getElementById("placeCopy"), songName=document.getElementById("songName");
@@ -2227,6 +2300,7 @@
       document.body.classList.remove("time-morning","time-day","time-evening","time-night");
       app.classList.add(`time-${key}`);
       document.body.classList.add(`time-${key}`);
+      setSkyClouds(key);
       if(key===currentTimeKey) return;
       currentTimeKey=key;
       const nextSrc=timeImages[key];
