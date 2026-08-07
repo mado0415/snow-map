@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.88: 楽曲を作品内利用しているように見えないよう案内文・配信リンク・ファンメイド表記を整理 -->
+    <!-- SNOW MAP v0.13.89: FANMADE注意書きを地図上の固定オーバーレイへ移動し可読性を改善 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -126,18 +126,48 @@
     }
 
     .fanmade-note {
-      margin: -2px auto 18px;
-      padding: 0 24px;
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(92px + env(safe-area-inset-bottom));
+      z-index: 60;
+      margin: 0 auto;
+      padding: 10px 12px 11px;
       max-width: 560px;
-      text-align: center;
-      color: rgba(49,71,95,.46);
-      font-size: 8.5px;
-      line-height: 1.65;
-      letter-spacing: .035em;
+      box-sizing: border-box;
+      text-align: left;
+      color: rgba(49,71,95,.84);
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(49,71,95,.10);
+      border-radius: 15px;
+      box-shadow: 0 7px 24px rgba(30,45,65,.12);
+      -webkit-backdrop-filter: blur(14px) saturate(1.06);
+      backdrop-filter: blur(14px) saturate(1.06);
+      font-size: 10.5px;
+      line-height: 1.55;
+      letter-spacing: .018em;
+      pointer-events: none;
     }
     .fanmade-note strong {
-      font-weight: 700;
-      letter-spacing: .08em;
+      display: inline-block;
+      margin-right: .55em;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      color: rgba(49,71,95,.92);
+    }
+    body.time-evening .fanmade-note,
+    body.time-twilight .fanmade-note,
+    body.time-night .fanmade-note {
+      color: rgba(255,255,255,.90);
+      background: rgba(35,55,78,.72);
+      border-color: rgba(255,255,255,.12);
+      box-shadow: 0 8px 26px rgba(5,16,30,.20);
+    }
+    body.time-evening .fanmade-note strong,
+    body.time-twilight .fanmade-note strong,
+    body.time-night .fanmade-note strong {
+      color: rgba(255,255,255,.98);
     }
 
     .map-viewport {
@@ -1012,8 +1042,8 @@
       </div>
     </section>
     <p class="fanmade-note">
-      <strong>FANMADE</strong><br>
-      SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。Snow Manおよび所属事務所、各配信サービスとは関係ありません。
+      <strong>FANMADE</strong>
+      SNOW MAPは個人制作の非公式ファンメイドWebコンテンツです。ページ内の音声は街の環境音・効果音で、Snow Manの楽曲音源は掲載・再生していません。表示される楽曲は各公式配信サービスへの案内です。
     </p>
   </main>
 
