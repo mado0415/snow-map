@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.76: 朝昼は維持・夕夜はドーム中央を空けて周囲へ光を散らし、芯を小さく、光線を屋根上縁から扇状に -->
+    <!-- SNOW MAP v0.13.78: 開発モードで時間に加えて日付も切り替え可能（前日・日付指定・翌日・今日） -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -524,6 +524,33 @@
       color: #fff;
       border-color: #31475f;
     }
+    .dev-date-controls {
+      display: grid;
+      grid-template-columns: 42px 1fr 42px 58px;
+      gap: 5px;
+      margin-top: 7px;
+    }
+    .dev-date-button,
+    .dev-date-input {
+      min-height: 34px;
+      border: 1px solid rgba(49,71,95,.14);
+      border-radius: 11px;
+      background: rgba(255,255,255,.72);
+      color: #31475f;
+      font-size: 10px;
+      font-weight: 700;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dev-date-button {
+      cursor: pointer;
+    }
+    .dev-date-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 8px;
+      font-family: inherit;
+      text-align: center;
+    }
 
     /* 明るい背景では screen 合成を外し、色を残す。夜は柔らかく光らせる。 */
     body.time-morning {
@@ -717,6 +744,12 @@
       <button class="dev-time-button" type="button" data-dev-time="day">昼</button>
       <button class="dev-time-button" type="button" data-dev-time="evening">夕</button>
       <button class="dev-time-button" type="button" data-dev-time="night">夜</button>
+    </div>
+    <div class="dev-date-controls" aria-label="開発用日付切り替え">
+      <button class="dev-date-button" id="devDatePrev" type="button" aria-label="前日">−1</button>
+      <input class="dev-date-input" id="devDateInput" type="date" aria-label="表示する日付">
+      <button class="dev-date-button" id="devDateNext" type="button" aria-label="翌日">+1</button>
+      <button class="dev-date-button" id="devDateToday" type="button">今日</button>
     </div>
   </section>
 
@@ -933,11 +966,28 @@
       return {h,m};
     }
 
+    function getForcedDate(){
+      const raw=(getUrlParams().get("date")||"").trim();
+      const match=raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if(!match) return null;
+      const y=Number(match[1]),mo=Number(match[2]),d=Number(match[3]);
+      const test=new Date(y,mo-1,d);
+      if(test.getFullYear()!==y || test.getMonth()!==mo-1 || test.getDate()!==d) return null;
+      return {y,mo,d,value:raw};
+    }
+
     let devTimeOverride=null;
+    let devDateOverride=null;
 
     function getVirtualNow(){
       const now=new Date();
       if(!isDevMode()) return now;
+
+      const forcedDate=devDateOverride || getForcedDate()?.value;
+      if(forcedDate){
+        const [y,mo,d]=forcedDate.split("-").map(Number);
+        now.setFullYear(y,mo-1,d);
+      }
 
       const presetKey=devTimeOverride || getForcedTimeKey();
       const preset={
@@ -989,7 +1039,7 @@
       const testMode=getEventTestMode();
       if(testMode?.date) return testMode.date;
 
-      const now=new Date();
+      const now=getVirtualNow();
       return `${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
     }
 
@@ -1001,6 +1051,7 @@
       "02-16":{color:"#7B4BB7",glow:"rgba(123,75,183,.62)"}, /* 深澤：紫 */
       "03-25":{color:"#D9363E",glow:"rgba(217,54,62,.60)"},  /* 宮舘：赤 */
       "05-17":{color:"#F2D24B",glow:"rgba(242,210,75,.64)"},/* 岩本：黄 */
+      "06-09":{color:"#BFEFFF",glow:"rgba(191,239,255,.78)"},/* 06/09：氷のような水色＋白 */
       "06-21":{color:"#F28C38",glow:"rgba(242,140,56,.62)"}, /* 向井：橙 */
       "06-27":{color:"#D9F2FF",glow:"rgba(190,232,255,.78)"},/* ラウール：白→淡い水色 */
       "07-05":{color:"#F08AB5",glow:"rgba(240,138,181,.64)"},/* 佐久間：桃 */
@@ -1095,8 +1146,22 @@
         (birthdayColor.color==="#D9F2FF") ? paleWaterBlueVivid :
         (birthdayColor.color==="#3E78C5") ? ["#078CFF","#BFE3FF","rgba(7,140,255,.98)","rgba(7,140,255,.46)"] :
         [birthdayColor.color,"#FFFFFF",birthdayColor.glow.replace(/\.\d+\)$/,'.98)'),birthdayColor.glow.replace(/\.\d+\)$/,'.44)')];
-      const christmasPalette=["#FFB517","#FFF0A6","rgba(255,181,23,.98)","rgba(255,181,23,.44)"];
-      const christmasPaletteVivid=["#FFB517","#FFF0A6","rgba(255,181,23,.98)","rgba(255,181,23,.44)"];
+      const christmasPalette=[
+        ["#D8B24A","#FFF0B8","rgba(216,178,74,.96)","rgba(216,178,74,.40)"],   /* 金 */
+        ["#C8CED8","#FFFFFF","rgba(200,206,216,.96)","rgba(200,206,216,.40)"]  /* 銀 */
+      ];
+      const christmasPaletteVivid=[
+        ["#D6A928","#FFF2A6","rgba(214,169,40,.98)","rgba(214,169,40,.44)"],
+        ["#BFC6D2","#FFFFFF","rgba(191,198,210,.98)","rgba(191,198,210,.44)"]
+      ];
+      const icePalette=[
+        ["#B9ECFF","#FFFFFF","rgba(185,236,255,.96)","rgba(185,236,255,.40)"],
+        ["#F5FCFF","#FFFFFF","rgba(245,252,255,.98)","rgba(220,247,255,.40)"]
+      ];
+      const icePaletteVivid=[
+        ["#8EDFFF","#F8FEFF","rgba(142,223,255,.98)","rgba(142,223,255,.44)"],
+        ["#F4FBFF","#FFFFFF","rgba(244,251,255,.98)","rgba(210,244,255,.42)"]
+      ];
 
       /* イベント日だけ。ドーム屋根とその少し上へ、疎らに漂わせる。 */
       const positions=[
@@ -1116,8 +1181,15 @@
         {x:70.2,y:26.8,w:2.9,h:19.2,rot:'6deg',  darkX:72.6,darkY:24.7,darkRot:'10deg', colorIndex:0},
         {x:73.4,y:27.6,w:2.7,h:16.6,rot:'16deg', darkX:76.6,darkY:25.2,darkRot:'24deg', colorIndex:3}
       ];
-      const raySource=mode==='debut' ? debutPalette : mode==='birthday' ? [birthdayPalette] : [christmasPalette];
-      const raySourceVivid=mode==='debut' ? debutPaletteVivid : mode==='birthday' ? [birthdayPaletteVivid] : [christmasPaletteVivid];
+      const isIceDay = today==="06-09";
+      const raySource =
+        mode==='debut' ? debutPalette :
+        mode==='birthday' ? (isIceDay ? icePalette : [birthdayPalette]) :
+        christmasPalette;
+      const raySourceVivid =
+        mode==='debut' ? debutPaletteVivid :
+        mode==='birthday' ? (isIceDay ? icePaletteVivid : [birthdayPaletteVivid]) :
+        christmasPaletteVivid;
       rays.forEach((ray,idx)=>{
         const palette=raySource[ray.colorIndex%raySource.length];
         const vividPalette=raySourceVivid[ray.colorIndex%raySourceVivid.length];
@@ -1141,8 +1213,14 @@
       positions.forEach((pos,i)=>{
         const p=document.createElement("i");
         const darkPos=darkPositions[i] || pos;
-        const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
-        const vividPalette=mode==="debut" ? debutPaletteVivid[i%debutPaletteVivid.length] : mode==="birthday" ? birthdayPaletteVivid : christmasPaletteVivid;
+        const palette =
+          mode==="debut" ? debutPalette[i%debutPalette.length] :
+          mode==="birthday" ? (isIceDay ? icePalette[i%icePalette.length] : birthdayPalette) :
+          christmasPalette[i%christmasPalette.length];
+        const vividPalette =
+          mode==="debut" ? debutPaletteVivid[i%debutPaletteVivid.length] :
+          mode==="birthday" ? (isIceDay ? icePaletteVivid[i%icePaletteVivid.length] : birthdayPaletteVivid) :
+          christmasPaletteVivid[i%christmasPaletteVivid.length];
         const size=5.2+Math.random()*3.2;
         const drift=()=>`${(Math.random()*22-11).toFixed(1)}px`;
         p.style.setProperty("--x",`${pos[0]}%`);
@@ -1317,6 +1395,8 @@
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const devTimePanel=document.getElementById("devTimePanel"), devTimeTitle=document.getElementById("devTimeTitle");
     const devTimeButtons=[...document.querySelectorAll("[data-dev-time]")];
+    const devDateInput=document.getElementById("devDateInput");
+    const devDatePrev=document.getElementById("devDatePrev"), devDateNext=document.getElementById("devDateNext"), devDateToday=document.getElementById("devDateToday");
     const ambWind=document.getElementById("ambWind");
     const cityNight=document.getElementById("cityNight"), cityPeople=document.getElementById("cityPeople"), cityMorning=document.getElementById("cityMorning");
     const cityTrafficDistant=document.getElementById("cityTrafficDistant");
@@ -2132,21 +2212,61 @@
         night:"夜 21:00"
       };
 
+      const pad2=n=>String(n).padStart(2,"0");
+      const dateValueFrom=(date)=>`${date.getFullYear()}-${pad2(date.getMonth()+1)}-${pad2(date.getDate())}`;
+
       function activeKey(){
         return devTimeOverride || getForcedTimeKey() || (getForcedClock() ? "clock" : "realtime");
       }
 
-      function refreshButtons(){
+      function selectedDateValue(){
+        return devDateOverride || getForcedDate()?.value || dateValueFrom(new Date());
+      }
+
+      function setDateOverride(value){
+        devDateOverride=value || null;
+        const url=new URL(window.location.href);
+        if(value) url.searchParams.set("date",value);
+        else url.searchParams.delete("date");
+        /* 旧event疑似指定より、日付切替を優先して分かりやすくする */
+        url.searchParams.delete("event");
+        history.replaceState(null,"",url);
+
+        markEventTestMode();
+        applySpecialDayMode();
+        buildSpecialDayParticles();
+        currentTimeKey=null;
+        setWorldTime();
+        if(soundEnabled) ambientMix(currentPlace,{duration:700});
+        refreshControls();
+      }
+
+      function shiftDate(days){
+        const base=selectedDateValue().split("-").map(Number);
+        const date=new Date(base[0],base[1]-1,base[2]);
+        date.setDate(date.getDate()+days);
+        setDateOverride(dateValueFrom(date));
+      }
+
+      function refreshControls(){
         const active=activeKey();
         devTimeButtons.forEach(button=>{
           button.classList.toggle("active",button.dataset.devTime===active);
         });
+
+        const dateValue=selectedDateValue();
+        if(devDateInput && devDateInput.value!==dateValue) devDateInput.value=dateValue;
+
         if(devTimeTitle){
           const clock=getForcedClock();
-          const title=active==="clock" && clock
-            ? `${String(clock.h).padStart(2,"0")}:${String(clock.m).padStart(2,"0")}`
+          const timeTitle=active==="clock" && clock
+            ? `${pad2(clock.h)}:${pad2(clock.m)}`
             : labels[active] || labels.realtime;
-          devTimeTitle.textContent=`開発モード：${title}`;
+
+          const [y,mo,d]=dateValue.split("-");
+          const realToday=dateValueFrom(new Date());
+          const dateTitle=dateValue===realToday ? "今日" : `${Number(mo)}/${Number(d)}`;
+          devTimeTitle.textContent=`開発モード：${dateTitle}・${timeTitle}`;
         }
       }
 
@@ -2163,11 +2283,18 @@
           currentTimeKey=null;
           setWorldTime();
           if(soundEnabled) ambientMix(currentPlace,{duration:700});
-          refreshButtons();
+          refreshControls();
         });
       });
 
-      refreshButtons();
+      devDateInput?.addEventListener("change",()=>{
+        if(devDateInput.value) setDateOverride(devDateInput.value);
+      });
+      devDatePrev?.addEventListener("click",()=>shiftDate(-1));
+      devDateNext?.addEventListener("click",()=>shiftDate(1));
+      devDateToday?.addEventListener("click",()=>setDateOverride(null));
+
+      refreshControls();
     }
 
     function pick(list,excluded=null){ const c=list.filter(x=>x!==excluded); const p=c.length?c:list; return p[Math.floor(Math.random()*p.length)]; }
