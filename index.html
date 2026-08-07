@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.74: イベント光の移動範囲拡大・赤/青紫の彩度緩和・芯から色への境界を滑らかに -->
+    <!-- SNOW MAP v0.13.75: 朝昼はv0.13.74の柔らかい光を維持し、夕夜だけv0.13.73相当の鮮やかな見え方へ復帰 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -629,7 +629,16 @@
 
     body.time-evening .special-day-glow i,
     body.time-night .special-day-glow i {
-      filter:saturate(1.72) contrast(1.06);
+      --particle-color: var(--particle-vivid-color);
+      --particle-core: var(--particle-vivid-core);
+      --particle-glow: var(--particle-vivid-glow);
+      --particle-soft: var(--particle-vivid-soft);
+      background:radial-gradient(circle,
+        #fff 0 16%,
+        var(--particle-core) 20% 42%,
+        var(--particle-color) 48% 70%,
+        transparent 100%);
+      filter:saturate(1.95) contrast(1.08);
       box-shadow:
         0 0 3px 1px rgba(255,255,255,.72),
         0 0 9px 4px var(--particle-glow),
@@ -638,6 +647,7 @@
 
     body.time-evening .special-day-glow .event-ray,
     body.time-night .special-day-glow .event-ray {
+      --ray-color: var(--ray-vivid-color);
       opacity:.84;
       filter:blur(.28px) saturate(1.95) contrast(1.08);
     }
@@ -1042,9 +1052,11 @@
         document.body.classList.contains("event-christmas") ? "christmas" : null;
       if(!mode) return;
 
-      /* 黒は深い青紫、白は淡い水色として発光させる */
+      /* 朝昼は柔らかい色、夕夜は以前の鮮やかな色を使い分ける */
       const deepBluePurple=["#625FC0","#D7D5FF","rgba(98,95,192,.84)","rgba(98,95,192,.34)"];
+      const deepBluePurpleVivid=["#3836A8","#7774FF","rgba(74,67,235,.96)","rgba(74,67,235,.46)"];
       const paleWaterBlue=["#BDEEFF","#F4FDFF","rgba(86,211,255,.98)","rgba(86,211,255,.46)"];
+      const paleWaterBlueVivid=["#BDEEFF","#F4FDFF","rgba(86,211,255,.98)","rgba(86,211,255,.46)"];
       const debutPalette=[
         ["#FFE02E","#FFF7A6","rgba(255,224,46,.98)","rgba(255,224,46,.44)"],
         ["#8A35E8","#E3C3FF","rgba(138,53,232,.98)","rgba(138,53,232,.44)"],
@@ -1056,12 +1068,28 @@
         ["#FF861B","#FFD2A4","rgba(255,134,27,.98)","rgba(255,134,27,.44)"],
         deepBluePurple
       ];
+      const debutPaletteVivid=[
+        ["#FFE02E","#FFF7A6","rgba(255,224,46,.98)","rgba(255,224,46,.44)"],
+        ["#8A35E8","#E3C3FF","rgba(138,53,232,.98)","rgba(138,53,232,.44)"],
+        paleWaterBlueVivid,
+        ["#FF5BA9","#FFD0E8","rgba(255,91,169,.98)","rgba(255,91,169,.44)"],
+        ["#25C95A","#C8FFD7","rgba(37,201,90,.98)","rgba(37,201,90,.44)"],
+        ["#FF303B","#FFC2C6","rgba(255,48,59,.98)","rgba(255,48,59,.44)"],
+        ["#078CFF","#BFE3FF","rgba(7,140,255,.98)","rgba(7,140,255,.46)"],
+        ["#FF861B","#FFD2A4","rgba(255,134,27,.98)","rgba(255,134,27,.44)"],
+        deepBluePurpleVivid
+      ];
       const birthdayColor=BIRTHDAY_COLORS[today]||BIRTHDAY_COLORS["11-05"];
       const birthdayPalette=(birthdayColor.color==="#4B4D8E") ? deepBluePurple :
         (birthdayColor.color==="#D9F2FF") ? paleWaterBlue :
         (birthdayColor.color==="#3E78C5") ? ["#078CFF","#BFE3FF","rgba(7,140,255,.98)","rgba(7,140,255,.46)"] :
         [birthdayColor.color,"#FFFFFF",birthdayColor.glow.replace(/\.\d+\)$/,'.98)'),birthdayColor.glow.replace(/\.\d+\)$/,'.44)')];
+      const birthdayPaletteVivid=(birthdayColor.color==="#4B4D8E") ? deepBluePurpleVivid :
+        (birthdayColor.color==="#D9F2FF") ? paleWaterBlueVivid :
+        (birthdayColor.color==="#3E78C5") ? ["#078CFF","#BFE3FF","rgba(7,140,255,.98)","rgba(7,140,255,.46)"] :
+        [birthdayColor.color,"#FFFFFF",birthdayColor.glow.replace(/\.\d+\)$/,'.98)'),birthdayColor.glow.replace(/\.\d+\)$/,'.44)')];
       const christmasPalette=["#FFB517","#FFF0A6","rgba(255,181,23,.98)","rgba(255,181,23,.44)"];
+      const christmasPaletteVivid=["#FFB517","#FFF0A6","rgba(255,181,23,.98)","rgba(255,181,23,.44)"];
 
       /* イベント日だけ。ドーム屋根とその少し上へ、疎らに漂わせる。 */
       const positions=[
@@ -1077,8 +1105,10 @@
         {x:73.4,y:27.6,w:2.7,h:16.6,rot:'16deg',colorIndex:3}
       ];
       const raySource=mode==='debut' ? debutPalette : mode==='birthday' ? [birthdayPalette] : [christmasPalette];
+      const raySourceVivid=mode==='debut' ? debutPaletteVivid : mode==='birthday' ? [birthdayPaletteVivid] : [christmasPaletteVivid];
       rays.forEach((ray,idx)=>{
         const palette=raySource[ray.colorIndex%raySource.length];
+        const vividPalette=raySourceVivid[ray.colorIndex%raySourceVivid.length];
         const el=document.createElement('span');
         el.className='event-ray';
         el.style.setProperty('--x',`${ray.x}%`);
@@ -1089,12 +1119,14 @@
         el.style.setProperty('--life',`${(5.2+idx*.55).toFixed(2)}s`);
         el.style.setProperty('--delay',`${(-1.05*idx).toFixed(2)}s`);
         el.style.setProperty('--ray-color',palette[0]);
+        el.style.setProperty('--ray-vivid-color',vividPalette[0]);
         glow.appendChild(el);
       });
 
       positions.forEach((pos,i)=>{
         const p=document.createElement("i");
         const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
+        const vividPalette=mode==="debut" ? debutPaletteVivid[i%debutPaletteVivid.length] : mode==="birthday" ? birthdayPaletteVivid : christmasPaletteVivid;
         const size=5.2+Math.random()*3.2;
         const drift=()=>`${(Math.random()*22-11).toFixed(1)}px`;
         p.style.setProperty("--x",`${pos[0]}%`);
@@ -1109,6 +1141,10 @@
         p.style.setProperty("--particle-core",palette[1]);
         p.style.setProperty("--particle-glow",palette[2]);
         p.style.setProperty("--particle-soft",palette[3]);
+        p.style.setProperty("--particle-vivid-color",vividPalette[0]);
+        p.style.setProperty("--particle-vivid-core",vividPalette[1]);
+        p.style.setProperty("--particle-vivid-glow",vividPalette[2]);
+        p.style.setProperty("--particle-vivid-soft",vividPalette[3]);
         glow.appendChild(p);
       });
     }
