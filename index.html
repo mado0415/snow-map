@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.100: 全景復帰後のスクロール跳ねを修正。強制smooth scrollを廃止し、地図上のタップ領域でも縦スクロールを許可 -->
+    <!-- SNOW MAP v0.13.101: 全景時は地図本体をタッチ対象から外し、光る地点だけタップ可能にして通常スクロールを優先 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -355,11 +355,20 @@
     .map-viewport:not(.free-roam) {
       touch-action: pan-y pinch-zoom;
     }
-    .map-viewport:not(.free-roam) .map-stage,
-    .map-viewport:not(.free-roam) .map-images,
-    .map-viewport:not(.free-roam) .map-image,
+
+    /* 全景では地図画像そのものに指を取らせない。
+       タップできるのは光る地点だけ。これで地図上からの縦スクロールをSafariへそのまま渡す。 */
+    .map-viewport:not(.free-roam) .map-stage {
+      pointer-events: none;
+    }
     .map-viewport:not(.free-roam) .beacon {
+      pointer-events: auto;
       touch-action: pan-y pinch-zoom;
+    }
+
+    /* ズーム後の自由移動では、地図本体を再びドラッグ対象に戻す。 */
+    .map-viewport.free-roam .map-stage {
+      pointer-events: auto;
     }
     .map-viewport.free-roam {
       touch-action: none;
