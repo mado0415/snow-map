@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.101: 全景時は地図本体をタッチ対象から外し、光る地点だけタップ可能にして通常スクロールを優先 -->
+    <!-- SNOW MAP v0.13.102: 全景時はbeaconボタンもタッチ対象から外し、タップ時だけ座標判定。スクロール競合を根本回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -362,12 +362,12 @@
       pointer-events: none;
     }
     .map-viewport:not(.free-roam) .beacon {
-      pointer-events: auto;
-      touch-action: pan-y pinch-zoom;
+      pointer-events: none;
     }
 
-    /* ズーム後の自由移動では、地図本体を再びドラッグ対象に戻す。 */
-    .map-viewport.free-roam .map-stage {
+    /* ズーム後の自由移動では、地図本体と地点ボタンを再び操作対象に戻す。 */
+    .map-viewport.free-roam .map-stage,
+    .map-viewport.free-roam .beacon {
       pointer-events: auto;
     }
     .map-viewport.free-roam {
@@ -3139,6 +3139,39 @@
         }
       }
     }
+    // 全景ではbeacon自体にpointerを持たせない。
+    // 通常のページスクロールを完全にSafariへ渡し、純粋な「タップ」が成立した時だけ
+    // 座標から最寄りの光る地点を判定する。
+    mapViewport?.addEventListener("click",async e=>{
+      if(isZoomed || mapViewport.classList.contains("free-roam") || sheet.classList.contains("open") || isTransitioning) return;
+
+      const beacons=[...document.querySelectorAll(".beacon")];
+      let best=null;
+      let bestDist=Infinity;
+
+      for(const b of beacons){
+        const r=b.getBoundingClientRect();
+        const cx=r.left+r.width/2;
+        const cy=r.top+r.height/2;
+        const d=Math.hypot(e.clientX-cx,e.clientY-cy);
+        if(d<bestDist){
+          bestDist=d;
+          best=b;
+        }
+      }
+
+      // 約44〜56pxのタップ領域。スクロール開始時にはclick自体が発生しない。
+      const hitRadius=Math.max(28,Math.min(38,(mapViewport.clientWidth||390)*0.09));
+      if(!best || bestDist>hitRadius) return;
+
+      try{
+        await songDataReady;
+        arriveAt(best.dataset.place,{fromMap:true});
+      }catch(_){
+        showSoundNote("曲データを読み込めませんでした");
+      }
+    });
+
     document.querySelectorAll(".beacon").forEach(b=>{
       b.addEventListener("click",async()=>{
         try{
