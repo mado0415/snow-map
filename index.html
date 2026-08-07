@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.99: 全景時は地図パン用pointerリスナー自体を外し、Safariの通常ページスクロールを完全復帰 -->
+    <!-- SNOW MAP v0.13.100: 全景復帰後のスクロール跳ねを修正。強制smooth scrollを廃止し、地図上のタップ領域でも縦スクロールを許可 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -353,7 +353,13 @@
     }
 
     .map-viewport:not(.free-roam) {
-      touch-action: auto;
+      touch-action: pan-y pinch-zoom;
+    }
+    .map-viewport:not(.free-roam) .map-stage,
+    .map-viewport:not(.free-roam) .map-images,
+    .map-viewport:not(.free-roam) .map-image,
+    .map-viewport:not(.free-roam) .beacon {
+      touch-action: pan-y pinch-zoom;
     }
     .map-viewport.free-roam {
       touch-action: none;
@@ -3020,7 +3026,13 @@
       mapViewport?.style.removeProperty("touch-action");
       mapStage?.style.setProperty("--pan-x", "0px");
       mapStage?.style.setProperty("--pan-y", "0px");
-      window.scrollTo({top:0, behavior:"smooth"});
+
+      // iOS Safari: 全景復帰直後の次のスワイプをブラウザ標準スクロールへ返す
+      requestAnimationFrame(()=>{
+        mapViewport?.classList.remove("dragging");
+        mapStage?.classList.remove("free-panning");
+      });
+
       hint.style.opacity=".5";
       if(soundEnabled) ambientMix(null,{duration:1200});
     }
