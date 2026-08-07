@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.98: 全景へ戻った後は地図パンを完全解除し、ページ全体の通常スクロールへ復帰 -->
+    <!-- SNOW MAP v0.13.99: 全景時は地図パン用pointerリスナー自体を外し、Safariの通常ページスクロールを完全復帰 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -353,7 +353,7 @@
     }
 
     .map-viewport:not(.free-roam) {
-      touch-action: pan-y pinch-zoom;
+      touch-action: auto;
     }
     .map-viewport.free-roam {
       touch-action: none;
@@ -1943,7 +1943,27 @@
     let roamHintShown=false;
 
     function clamp(value,min,max){ return Math.max(min,Math.min(max,value)); }
-    function setFreeRoam(enabled){ mapViewport?.classList.toggle("free-roam",Boolean(enabled)); }
+    let freePanListenersAttached=false;
+    function setFreeRoam(enabled){
+      const on=Boolean(enabled);
+      mapViewport?.classList.toggle("free-roam",on);
+
+      if(!mapViewport) return;
+
+      if(on && !freePanListenersAttached){
+        mapViewport.addEventListener("pointerdown",handleFreePanDown);
+        mapViewport.addEventListener("pointermove",handleFreePanMove);
+        mapViewport.addEventListener("pointerup",finishFreePan);
+        mapViewport.addEventListener("pointercancel",finishFreePan);
+        freePanListenersAttached=true;
+      }else if(!on && freePanListenersAttached){
+        mapViewport.removeEventListener("pointerdown",handleFreePanDown);
+        mapViewport.removeEventListener("pointermove",handleFreePanMove);
+        mapViewport.removeEventListener("pointerup",finishFreePan);
+        mapViewport.removeEventListener("pointercancel",finishFreePan);
+        freePanListenersAttached=false;
+      }
+    }
     function showSoundNote(message){
       soundNote.textContent=message;
       soundNote.classList.add("show");
@@ -2997,6 +3017,7 @@
       setFreeRoam(false);
       mapViewport?.classList.remove("dragging");
       mapStage?.classList.remove("free-panning");
+      mapViewport?.style.removeProperty("touch-action");
       mapStage?.style.setProperty("--pan-x", "0px");
       mapStage?.style.setProperty("--pan-y", "0px");
       window.scrollTo({top:0, behavior:"smooth"});
@@ -3042,15 +3063,15 @@
       arriveAt(destination,{fromMap:false});
     }
 
-    mapViewport?.addEventListener("pointerdown",e=>{
+    function handleFreePanDown(e){
       if(!isZoomed || !mapViewport.classList.contains("free-roam") || sheet.classList.contains("open") || isTransitioning) return;
       freePan={active:true,moved:false,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,startPanX:currentPanX,startPanY:currentPanY};
       mapViewport.setPointerCapture?.(e.pointerId);
       mapViewport.classList.add("dragging");
       mapStage.classList.add("free-panning");
-    });
+    }
 
-    mapViewport?.addEventListener("pointermove",e=>{
+    function handleFreePanMove(e){
       if(!mapViewport.classList.contains("free-roam") || !freePan.active || e.pointerId!==freePan.pointerId) return;
       const dx=e.clientX-freePan.startX;
       const dy=e.clientY-freePan.startY;
@@ -3064,7 +3085,7 @@
       mapStage.style.setProperty("--pan-x",`${currentPanX}px`);
       mapStage.style.setProperty("--pan-y",`${currentPanY}px`);
       if(freePan.moved) e.preventDefault();
-    });
+    }
 
     function finishFreePan(e){
       if(!freePan.active || (e?.pointerId!=null && e.pointerId!==freePan.pointerId)) return;
@@ -3097,9 +3118,6 @@
         }
       }
     }
-    mapViewport?.addEventListener("pointerup",finishFreePan);
-    mapViewport?.addEventListener("pointercancel",finishFreePan);
-
     document.querySelectorAll(".beacon").forEach(b=>{
       b.addEventListener("click",async()=>{
         try{
