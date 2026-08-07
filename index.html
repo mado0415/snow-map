@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.75: 朝昼はv0.13.74の柔らかい光を維持し、夕夜だけv0.13.73相当の鮮やかな見え方へ復帰 -->
+    <!-- SNOW MAP v0.13.76: 朝昼は維持・夕夜はドーム中央を空けて周囲へ光を散らし、芯を小さく、光線を屋根上縁から扇状に -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -633,21 +633,28 @@
       --particle-core: var(--particle-vivid-core);
       --particle-glow: var(--particle-vivid-glow);
       --particle-soft: var(--particle-vivid-soft);
+      left:var(--dark-x);
+      top:var(--dark-y);
       background:radial-gradient(circle,
-        #fff 0 16%,
-        var(--particle-core) 20% 42%,
-        var(--particle-color) 48% 70%,
+        #fff 0 8%,
+        color-mix(in srgb, var(--particle-core) 82%, white) 14%,
+        var(--particle-core) 30%,
+        var(--particle-color) 58%,
+        color-mix(in srgb, var(--particle-color) 76%, transparent) 78%,
         transparent 100%);
       filter:saturate(1.95) contrast(1.08);
       box-shadow:
-        0 0 3px 1px rgba(255,255,255,.72),
-        0 0 9px 4px var(--particle-glow),
-        0 0 18px 7px var(--particle-soft);
+        0 0 2px 1px rgba(255,255,255,.58),
+        0 0 10px 4px var(--particle-glow),
+        0 0 20px 8px var(--particle-soft);
     }
 
     body.time-evening .special-day-glow .event-ray,
     body.time-night .special-day-glow .event-ray {
       --ray-color: var(--ray-vivid-color);
+      left:var(--dark-ray-x);
+      top:var(--dark-ray-y);
+      transform:translate(-50%,-100%) rotate(var(--dark-ray-rot));
       opacity:.84;
       filter:blur(.28px) saturate(1.95) contrast(1.08);
     }
@@ -1096,13 +1103,18 @@
         [59.2,29.2],[63.1,25.2],[68.2,23.8],[73.8,24.9],
         [78.0,28.4],[60.8,32.8],[66.2,30.2],[72.3,32.2],[68.8,34.4]
       ];
+      /* 夕夜はドーム中央を空け、屋根の左右・上空・前縁へ散らす */
+      const darkPositions=[
+        [57.8,29.2],[61.3,24.0],[66.0,21.9],[74.5,22.3],
+        [80.0,27.2],[59.0,33.6],[63.2,31.7],[76.7,32.0],[81.0,30.5]
+      ];
 
       /* 光線はドーム屋根から空へ伸ばす。広場側には出さない。 */
       const rays=[
-        {x:63.8,y:27.6,w:2.7,h:16.6,rot:'-16deg',colorIndex:6},
-        {x:67.0,y:26.8,w:2.9,h:18.4,rot:'-6deg',colorIndex:2},
-        {x:70.2,y:26.8,w:2.9,h:19.2,rot:'6deg',colorIndex:0},
-        {x:73.4,y:27.6,w:2.7,h:16.6,rot:'16deg',colorIndex:3}
+        {x:63.8,y:27.6,w:2.7,h:16.6,rot:'-16deg',darkX:61.6,darkY:25.2,darkRot:'-24deg',colorIndex:6},
+        {x:67.0,y:26.8,w:2.9,h:18.4,rot:'-6deg', darkX:65.5,darkY:24.7,darkRot:'-10deg',colorIndex:2},
+        {x:70.2,y:26.8,w:2.9,h:19.2,rot:'6deg',  darkX:72.6,darkY:24.7,darkRot:'10deg', colorIndex:0},
+        {x:73.4,y:27.6,w:2.7,h:16.6,rot:'16deg', darkX:76.6,darkY:25.2,darkRot:'24deg', colorIndex:3}
       ];
       const raySource=mode==='debut' ? debutPalette : mode==='birthday' ? [birthdayPalette] : [christmasPalette];
       const raySourceVivid=mode==='debut' ? debutPaletteVivid : mode==='birthday' ? [birthdayPaletteVivid] : [christmasPaletteVivid];
@@ -1116,6 +1128,9 @@
         el.style.setProperty('--w',`${ray.w}%`);
         el.style.setProperty('--h',`${ray.h}%`);
         el.style.setProperty('--rot',ray.rot);
+        el.style.setProperty('--dark-ray-x',`${ray.darkX}%`);
+        el.style.setProperty('--dark-ray-y',`${ray.darkY}%`);
+        el.style.setProperty('--dark-ray-rot',ray.darkRot);
         el.style.setProperty('--life',`${(5.2+idx*.55).toFixed(2)}s`);
         el.style.setProperty('--delay',`${(-1.05*idx).toFixed(2)}s`);
         el.style.setProperty('--ray-color',palette[0]);
@@ -1125,12 +1140,15 @@
 
       positions.forEach((pos,i)=>{
         const p=document.createElement("i");
+        const darkPos=darkPositions[i] || pos;
         const palette=mode==="debut" ? debutPalette[i%debutPalette.length] : mode==="birthday" ? birthdayPalette : christmasPalette;
         const vividPalette=mode==="debut" ? debutPaletteVivid[i%debutPaletteVivid.length] : mode==="birthday" ? birthdayPaletteVivid : christmasPaletteVivid;
         const size=5.2+Math.random()*3.2;
         const drift=()=>`${(Math.random()*22-11).toFixed(1)}px`;
         p.style.setProperty("--x",`${pos[0]}%`);
         p.style.setProperty("--y",`${pos[1]}%`);
+        p.style.setProperty("--dark-x",`${darkPos[0]}%`);
+        p.style.setProperty("--dark-y",`${darkPos[1]}%`);
         p.style.setProperty("--size",`${size.toFixed(2)}px`);
         p.style.setProperty("--life",`${(6.4+Math.random()*4.0).toFixed(2)}s`);
         p.style.setProperty("--delay",`${(-Math.random()*7).toFixed(2)}s`);
