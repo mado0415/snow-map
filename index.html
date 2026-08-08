@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.137: ズーム維持のまま地点移動時のtransform-origin切替を位置補正し、下部スポット到着直前の縦跳ねを抑制 -->
+  <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -3532,14 +3532,10 @@
       if(!beacon || !mapStage || !mapViewport) return;
 
       /*
-       * 下部スポットは、目的地を画面上部寄りへ持ち上げるために必要な
-       * window.scrollY がページ末尾を越えることがある。
-       * transform で拡大した地図は document のレイアウト高を増やさないため、
-       * その不足分を window スクロールに任せると iOS Safari で下端補正が入り、
-       * 到着直前に上へ戻されたように見える。
-       *
-       * そこでページ内で動けるところまでは window を動かし、
-       * 足りない分だけ mapStage の縦 pan で補う。
+       * 下部3地点は、ページ末尾付近でwindowスクロールを使うと
+       * iOS Safariの下端補正が入り、到着直前に縦へ跳ねることがある。
+       * その3地点だけはwindowを動かさず、mapStageの縦panで位置を合わせる。
+       * それ以外の地点は従来どおりページスクロールで中央寄せする。
        */
       const y=parseFloat(beacon.style.top || "50");
       const viewportTop=window.scrollY + mapViewport.getBoundingClientRect().top;
@@ -3552,18 +3548,10 @@
         Math.max(doc.scrollHeight,document.body.scrollHeight)-window.innerHeight
       );
       const targetY=Math.max(0,Math.min(maxScroll,rawTarget));
-      const shortage=Math.max(0,rawTarget-targetY);
       const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
 
       if(lowerPlace){
-        /*
-         * 下部3地点では window 自体を動かさない。
-         * iOS Safari のページ最下端補正／rubber-band に触れず、
-         * 目的地の未変形レイアウト位置と画面上の目標位置との差を
-         * mapStage の縦 pan だけで吸収する。
-         * beacon は transform-origin 上にあるため、scale 中もこの pan 値で
-         * 到着地点の画面内位置を安定して決められる。
-         */
+        // ページ下端には触れず、地図レイヤーだけを縦に動かす。
         const beaconViewportY=mapViewport.getBoundingClientRect().top
           + mapStage.offsetTop
           + mapStage.offsetHeight*(y/100);
