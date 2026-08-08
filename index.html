@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.118: 噴水の波紋と水のきらめきを一段見えやすく調整 -->
+    <!-- SNOW MAP v0.13.119: 噴水エフェクトの座標を実際の噴水位置へ補正し、波紋を楕円化 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -729,9 +729,9 @@
     .fountain-ring {
       position: absolute;
       left: 67.3%;
-      top: 49.2%;
-      width: 6.4%;
-      aspect-ratio: 1;
+      top: 44.2%;
+      width: 8.0%;
+      aspect-ratio: 1.9 / 1;
       border-radius: 50%;
       border: 1.3px solid rgba(225,248,255,.76);
       box-shadow:
@@ -745,8 +745,8 @@
     .fountain-ring.r3 { animation-delay: -2.6s; }
     .fountain-glint {
       position: absolute;
-      left: 67.2%;
-      top: 48.9%;
+      left: 67.3%;
+      top: 44.1%;
       width: 3px;
       height: 3px;
       border-radius: 50%;
@@ -757,24 +757,24 @@
       animation-delay: -1.0s;
     }
     .fountain-glint.g2 {
-      left: 66.3%;
-      top: 49.6%;
+      left: 65.7%;
+      top: 44.4%;
       width: 2.4px;
       height: 2.4px;
       animation-delay: -2.1s;
     }
     .fountain-glint.g3 {
-      left: 68.1%;
-      top: 49.4%;
+      left: 68.9%;
+      top: 44.3%;
       width: 2.2px;
       height: 2.2px;
       animation-delay: -.4s;
     }
     @keyframes fountainRipple {
-      0%   { opacity: .10; transform: translate(-50%,-50%) scale(.66); }
-      28%  { opacity: .52; }
-      62%  { opacity: .26; }
-      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.28); }
+      0%   { opacity: .10; transform: translate(-50%,-50%) scale(.70); }
+      28%  { opacity: .50; }
+      62%  { opacity: .24; }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(1.16); }
     }
     @keyframes fountainGlint {
       0%,100% { opacity: .08; transform: translate(-50%,-50%) scale(.65); }
