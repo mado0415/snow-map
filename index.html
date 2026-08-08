@@ -365,6 +365,17 @@
     .map-stage.walking {
       transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38);
     }
+
+    /*
+     * 下部スポットは transform-origin の移動量が大きい。
+     * transform と同じ2.55秒で中心点まで動かすと、終盤に中心が確定して
+     * 地図全体が縦に跳ねて見えるため、中心点だけ早めに収束させる。
+     */
+    .map-stage.lower-arrival {
+      transition:
+        transform 2.55s cubic-bezier(.16,.72,.14,1),
+        transform-origin .48s cubic-bezier(.20,.78,.20,1);
+    }
     .map-stage.strolling {
       transition-duration: 2.45s;
       transition-timing-function: cubic-bezier(.16,.72,.14,1);
@@ -3652,6 +3663,7 @@
        * 先にスクロール位置だけ即時確定し、その次のframeで拡大を開始する。
        */
       const lowerArrival=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(place);
+      mapStage?.classList.toggle("lower-arrival",lowerArrival);
       if(lowerArrival){
         centerBeacon(beacon,"auto");
         requestAnimationFrame(()=>{
@@ -3661,10 +3673,7 @@
         requestAnimationFrame(()=>mapStage?.classList.add("walking"));
         setTimeout(()=>centerBeacon(beacon),90);
       }
-      // 下部3スポットは地図の2.55秒transformが完了してから到着光を開始する。
-      // transform終盤とarrivalGlowの重なりを避け、iOS Safariの合成負荷を分離する。
-      const arrivalGlowDelay=lowerArrival ? 2700 : 2180;
-      setTimeout(()=>beacon.classList.add("arriving"),arrivalGlowDelay);
+      setTimeout(()=>beacon.classList.add("arriving"),2180);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
@@ -3672,6 +3681,7 @@
         finishDestinationPreview(place,previewToken);
         playArrivalSound(place);
         showSong(place);
+        mapStage?.classList.remove("lower-arrival");
         isTransitioning=false;
       },4850);
     }
