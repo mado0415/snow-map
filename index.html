@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.130: 19時台の時間判定を分単位に修正し、下部スポット到着時のスクロール基準を安定化 -->
+    <!-- SNOW MAP v0.13.131: 下部3スポット到着時、smooth scrollと地図transformの同時実行を避けてカクつきを軽減 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -3646,8 +3646,21 @@
       walkStatus.classList.add("show");
       setWalkFocus(beacon);
       isZoomed=true;
-      requestAnimationFrame(()=>mapStage?.classList.add("walking"));
-      setTimeout(()=>centerBeacon(beacon),90);
+      /*
+       * 下部3スポットでは、iOS Safariで地図のscale transformと
+       * windowのsmooth scrollを同時に走らせると合成負荷が跳ねやすい。
+       * 先にスクロール位置だけ即時確定し、その次のframeで拡大を開始する。
+       */
+      const lowerArrival=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(place);
+      if(lowerArrival){
+        centerBeacon(beacon,"auto");
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>mapStage?.classList.add("walking"));
+        });
+      }else{
+        requestAnimationFrame(()=>mapStage?.classList.add("walking"));
+        setTimeout(()=>centerBeacon(beacon),90);
+      }
       setTimeout(()=>beacon.classList.add("arriving"),2180);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
