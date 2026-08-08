@@ -8,6 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
+  <!-- SNOW MAP v0.13.140: 星が出ている時間帯だけ、低頻度で流れ星が横切る演出を追加 -->
   <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
@@ -507,6 +508,52 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .sky-star { animation: none; opacity: .55; }
+    }
+
+    /* 星が見える時間だけ、ごくたまに横切る流れ星。
+       DOMは必要な瞬間だけ生成し、1本流れたらすぐ破棄する。 */
+    .shooting-star {
+      position: absolute;
+      left: var(--meteor-x, 18%);
+      top: var(--meteor-y, 8%);
+      width: var(--meteor-length, 58px);
+      height: 1.15px;
+      border-radius: 999px;
+      opacity: 0;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(220,240,255,.05) 12%,
+        rgba(241,250,255,.56) 70%,
+        rgba(255,255,255,.98) 100%);
+      box-shadow: 1px 0 5px rgba(210,235,255,.36);
+      transform-origin: 100% 50%;
+      transform: translate3d(0,0,0) rotate(var(--meteor-angle, -24deg));
+      animation: shootingStarPass var(--meteor-duration, .86s) cubic-bezier(.22,.70,.18,1) forwards;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    .shooting-star::after {
+      content: "";
+      position: absolute;
+      right: -1.8px;
+      top: 50%;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.98);
+      box-shadow:
+        0 0 4px 1px rgba(255,255,255,.76),
+        0 0 9px 2px rgba(190,225,255,.34);
+      transform: translateY(-50%);
+    }
+    @keyframes shootingStarPass {
+      0% { opacity: 0; transform: translate3d(0,0,0) rotate(var(--meteor-angle, -24deg)) scaleX(.55); }
+      11% { opacity: .92; }
+      64% { opacity: .82; }
+      100% { opacity: 0; transform: translate3d(var(--meteor-dx, 118px), var(--meteor-dy, 54px), 0) rotate(var(--meteor-angle, -24deg)) scaleX(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .shooting-star { display: none; }
     }
 
 
@@ -1849,7 +1896,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01378";
+    const version="01380";
 
     const PLACE_META = {
       "展望台":{
@@ -2409,11 +2456,72 @@
       });
     }
 
+    let shootingStarTimer=null;
+    let shootingStarsActive=false;
+
+    function clearShootingStarTimer(){
+      if(shootingStarTimer){
+        clearTimeout(shootingStarTimer);
+        shootingStarTimer=null;
+      }
+    }
+
+    function spawnShootingStar(){
+      if(!shootingStarsActive || !document.body.classList.contains("show-night-stars") || document.hidden) return;
+      const sky=document.getElementById("skyStars");
+      if(!sky || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const meteor=document.createElement("i");
+      meteor.className="shooting-star";
+
+      const fromLeft=Math.random()<.72;
+      const x=fromLeft ? 8+Math.random()*48 : 52+Math.random()*25;
+      const y=3+Math.random()*14;
+      const length=44+Math.random()*30;
+      const dx=fromLeft ? 92+Math.random()*62 : -(84+Math.random()*52);
+      const dy=36+Math.random()*38;
+      const angle=fromLeft ? -(18+Math.random()*13) : 198+Math.random()*13;
+      const duration=.72+Math.random()*.34;
+
+      meteor.style.setProperty("--meteor-x",`${x.toFixed(1)}%`);
+      meteor.style.setProperty("--meteor-y",`${y.toFixed(1)}%`);
+      meteor.style.setProperty("--meteor-length",`${length.toFixed(0)}px`);
+      meteor.style.setProperty("--meteor-dx",`${dx.toFixed(0)}px`);
+      meteor.style.setProperty("--meteor-dy",`${dy.toFixed(0)}px`);
+      meteor.style.setProperty("--meteor-angle",`${angle.toFixed(1)}deg`);
+      meteor.style.setProperty("--meteor-duration",`${duration.toFixed(2)}s`);
+      meteor.addEventListener("animationend",()=>meteor.remove(),{once:true});
+      sky.appendChild(meteor);
+    }
+
+    function scheduleNextShootingStar(first=false){
+      clearShootingStarTimer();
+      if(!shootingStarsActive) return;
+      /* 初回は18〜50秒、その後は45〜150秒。
+         見ようとして待つほど頻繁にはせず、偶然見つける程度にする。 */
+      const min=first ? 18000 : 45000;
+      const max=first ? 50000 : 150000;
+      shootingStarTimer=setTimeout(()=>{
+        if(shootingStarsActive && !document.hidden) spawnShootingStar();
+        scheduleNextShootingStar(false);
+      },min+Math.random()*(max-min));
+    }
+
+    function setShootingStarsActive(active){
+      const next=Boolean(active);
+      if(next===shootingStarsActive) return;
+      shootingStarsActive=next;
+      clearShootingStarTimer();
+      if(next) scheduleNextShootingStar(true);
+      else document.querySelectorAll(".shooting-star").forEach(el=>el.remove());
+    }
+
     function updateNightStars(){
       const now=getVirtualNow();
       const h=now.getHours();
       const show=h>=22 || h<2;
       document.body.classList.toggle("show-night-stars",show);
+      setShootingStarsActive(show);
     }
     let currentTimeKey=null;
     const sheet=document.getElementById("sheet"), backdrop=document.getElementById("backdrop");
