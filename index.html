@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.105: 素材なしの街の瞬き演出を追加（シティライト窓・展望台・ハーバー反射） -->
+    <!-- SNOW MAP v0.13.106: 元絵の明かりと競合しない、反射・きらめき中心の街の微細演出へ変更 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -511,7 +511,7 @@
     }
 
 
-    /* 街が少しだけ呼吸しているように見せる、素材なしの小さな瞬き */
+    /* 元絵の窓明かりとは別種の、反射・きらめきだけを薄く重ねる */
     .city-sparkles {
       position: absolute;
       inset: 0;
@@ -519,54 +519,63 @@
       pointer-events: none;
       overflow: hidden;
     }
-    .city-sparkle {
+
+    .wall-shimmer {
       position: absolute;
-      width: var(--spark-size, 4px);
-      height: var(--spark-size, 4px);
+      width: var(--shim-w, 18px);
+      height: var(--shim-h, 2px);
+      border-radius: 999px;
+      opacity: 0;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,.10) 20%,
+        rgba(255,255,255,.78) 50%,
+        rgba(255,255,255,.10) 80%,
+        transparent 100%);
+      filter: blur(.15px);
+      transform: translate(-50%,-50%) rotate(var(--shim-rot, -18deg)) scaleX(.35);
+      transition: opacity .3s ease, transform .75s ease;
+    }
+    .wall-shimmer.on {
+      opacity: var(--shim-opacity, .42);
+      transform: translate(-50%,-50%) rotate(var(--shim-rot, -18deg)) scaleX(1);
+    }
+
+    .lookout-glint {
+      position: absolute;
+      width: var(--spark-size, 3.5px);
+      height: var(--spark-size, 3.5px);
       border-radius: 50%;
       opacity: 0;
       background: rgba(255,255,255,.96);
       box-shadow:
-        0 0 3px 1px rgba(255,255,255,.72),
-        0 0 8px 3px var(--spark-glow, rgba(255,220,140,.48));
-      transform: translate(-50%,-50%) scale(.65);
-      transition: opacity .28s ease, transform .28s ease;
+        0 0 3px 1px rgba(255,255,255,.62),
+        0 0 8px 2px rgba(205,228,255,.28);
+      transform: translate(-50%,-50%) scale(.6);
+      transition: opacity .22s ease, transform .28s ease;
     }
-    .city-sparkle::before,
-    .city-sparkle::after {
+    .lookout-glint::before,
+    .lookout-glint::after {
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
       border-radius: 999px;
-      background: rgba(255,255,255,.52);
+      background: rgba(255,255,255,.45);
     }
-    .city-sparkle::before {
-      width: calc(var(--spark-size) * 3.5);
+    .lookout-glint::before {
+      width: calc(var(--spark-size) * 3.2);
       height: 1px;
     }
-    .city-sparkle::after {
+    .lookout-glint::after {
       width: 1px;
-      height: calc(var(--spark-size) * 3.5);
+      height: calc(var(--spark-size) * 3.2);
     }
-    .city-sparkle.on {
-      opacity: var(--spark-opacity, .82);
+    .lookout-glint.on {
+      opacity: var(--spark-opacity, .62);
       transform: translate(-50%,-50%) scale(1);
     }
-
-    .city-window-light {
-      position: absolute;
-      width: var(--win-w, 6px);
-      height: var(--win-h, 3px);
-      border-radius: 2px;
-      opacity: 0;
-      background: rgba(255,226,154,.92);
-      box-shadow: 0 0 6px 2px rgba(255,208,108,.36);
-      transform: translate(-50%,-50%);
-      transition: opacity .5s ease;
-    }
-    .city-window-light.on { opacity: var(--win-opacity, .58); }
 
     .harbor-glint {
       position: absolute;
@@ -574,13 +583,13 @@
       height: 1.5px;
       border-radius: 999px;
       opacity: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.78), transparent);
       filter: blur(.2px);
-      transform: translate(-50%,-50%) rotate(var(--glint-rot, -10deg)) scaleX(.5);
-      transition: opacity .4s ease, transform .7s ease;
+      transform: translate(-50%,-50%) rotate(var(--glint-rot, -10deg)) scaleX(.45);
+      transition: opacity .35s ease, transform .75s ease;
     }
     .harbor-glint.on {
-      opacity: var(--glint-opacity, .52);
+      opacity: var(--glint-opacity, .46);
       transform: translate(-50%,-50%) rotate(var(--glint-rot, -10deg)) scaleX(1);
     }
 
@@ -3308,23 +3317,24 @@
       return el;
     }
 
-    const cityWindowLights=[
-      addSpark("city-window-light",37.7,16.5,{"--win-w":"5px","--win-h":"2.4px","--win-opacity":".54"}),
-      addSpark("city-window-light",39.0,18.1,{"--win-w":"6px","--win-h":"2.5px","--win-opacity":".62"}),
-      addSpark("city-window-light",40.8,16.9,{"--win-w":"5px","--win-h":"2.2px","--win-opacity":".50"}),
-      addSpark("city-window-light",42.2,19.4,{"--win-w":"6px","--win-h":"2.6px","--win-opacity":".56"}),
-      addSpark("city-window-light",36.8,20.2,{"--win-w":"5px","--win-h":"2.3px","--win-opacity":".48"})
+    // シティライト：窓を点滅させず、建物の面にごく細い反射だけ走らせる
+    const cityWallShimmers=[
+      addSpark("wall-shimmer",36.5,17.7,{"--shim-w":"15px","--shim-h":"1.6px","--shim-rot":"-18deg","--shim-opacity":".34"}),
+      addSpark("wall-shimmer",39.8,15.6,{"--shim-w":"18px","--shim-h":"1.7px","--shim-rot":"-14deg","--shim-opacity":".38"}),
+      addSpark("wall-shimmer",42.0,19.0,{"--shim-w":"13px","--shim-h":"1.5px","--shim-rot":"-21deg","--shim-opacity":".30"})
     ].filter(Boolean);
 
-    const lookoutSparkles=[
-      addSpark("city-sparkle",44.1,6.4,{"--spark-size":"3.5px","--spark-opacity":".72","--spark-glow":"rgba(210,230,255,.42)"}),
-      addSpark("city-sparkle",47.2,7.6,{"--spark-size":"3px","--spark-opacity":".60","--spark-glow":"rgba(210,230,255,.34)"})
+    // 展望台：手すり付近にごく短い白いきらめき
+    const lookoutGlints=[
+      addSpark("lookout-glint",44.4,6.4,{"--spark-size":"3.2px","--spark-opacity":".58"}),
+      addSpark("lookout-glint",47.0,7.3,{"--spark-size":"2.8px","--spark-opacity":".50"})
     ].filter(Boolean);
 
+    // ブルーハーバー：水面だけに細い反射
     const harborGlints=[
-      addSpark("harbor-glint",26.8,68.5,{"--glint-w":"17px","--glint-opacity":".48","--glint-rot":"-11deg"}),
-      addSpark("harbor-glint",30.6,66.9,{"--glint-w":"13px","--glint-opacity":".40","--glint-rot":"-8deg"}),
-      addSpark("harbor-glint",23.7,71.0,{"--glint-w":"15px","--glint-opacity":".36","--glint-rot":"-14deg"})
+      addSpark("harbor-glint",26.8,68.5,{"--glint-w":"18px","--glint-opacity":".42","--glint-rot":"-11deg"}),
+      addSpark("harbor-glint",30.7,66.9,{"--glint-w":"14px","--glint-opacity":".34","--glint-rot":"-8deg"}),
+      addSpark("harbor-glint",23.8,71.0,{"--glint-w":"16px","--glint-opacity":".32","--glint-rot":"-14deg"})
     ].filter(Boolean);
 
     function scheduleRandomBlink(el,minMs,maxMs,onMsRange=[500,1100]){
@@ -3348,24 +3358,24 @@
     function restartCitySparkles(){
       clearCitySparkleTimers();
 
-      [...cityWindowLights,...lookoutSparkles,...harborGlints].forEach(el=>el?.classList.remove("on"));
+      [...cityWallShimmers,...lookoutGlints,...harborGlints].forEach(el=>el?.classList.remove("on"));
 
       const h=getVirtualNow().getHours();
 
-      // シティライトの窓：夕暮れ〜深夜だけ。全部同時には点かない。
-      if(h>=17 || h<2){
-        cityWindowLights.forEach((el,i)=>scheduleRandomBlink(el,7000+i*900,22000+i*1200,[1600,4200]));
+      // シティライトの反射：夕方〜夜。忘れた頃に一筋だけ。
+      if(h>=17 || h<1){
+        cityWallShimmers.forEach((el,i)=>scheduleRandomBlink(el,12000+i*1800,32000+i*2600,[420,900]));
       }
 
-      // 展望台：夕方〜夜にごくたまに一瞬だけ。
+      // 展望台：夕方〜深夜。かなり控えめ。
       if(h>=18 || h<1){
-        lookoutSparkles.forEach((el,i)=>scheduleRandomBlink(el,13000+i*2500,34000+i*3000,[350,900]));
+        lookoutGlints.forEach((el,i)=>scheduleRandomBlink(el,17000+i*3000,42000+i*3500,[260,650]));
       }
 
-      // ハーバーの水面反射：昼〜夜まで。夜は少し多め。
-      const harborMin=(h>=19 || h<2)?7000:12000;
-      const harborMax=(h>=19 || h<2)?22000:32000;
-      harborGlints.forEach((el,i)=>scheduleRandomBlink(el,harborMin+i*1200,harborMax+i*1800,[600,1400]));
+      // ハーバー反射：昼〜夜。夜は少しだけ出やすくする。
+      const harborMin=(h>=19 || h<2)?9000:15000;
+      const harborMax=(h>=19 || h<2)?26000:36000;
+      harborGlints.forEach((el,i)=>scheduleRandomBlink(el,harborMin+i*1500,harborMax+i*2200,[550,1200]));
     }
 
     const guidebook=document.getElementById("guidebook");
