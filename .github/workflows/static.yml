@@ -38,12 +38,14 @@ jobs:
           mkdir -p public/data public/sounds
           touch public/.nojekyll
 
-          # Main page and the four time-of-day maps
+          # Main page and all time-of-day maps
           cp index.html public/
           cp snow-map-morning.png public/
           cp snow-map-day.png public/
           cp snow-map-evening.png public/
+          cp snow-map-twilight.png public/
           cp snow-map-night.png public/
+          cp snow-map-midnight.png public/
 
           # Song data
           cp data/songs.json public/data/
