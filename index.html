@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.115: 公園の池のきらめき位置をさらに左へ補正 -->
+    <!-- SNOW MAP v0.13.116: 開発モードの日付入力でiOSがページを自動ズームし、カードや地図幅が崩れる問題を修正 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -1120,6 +1120,10 @@
       color: #31475f;
     }
     .dev-time-panel[hidden] { display: none; }
+    .dev-time-panel input,
+    .dev-time-panel button {
+      max-width: 100%;
+    }
     .dev-time-toggle {
       position: absolute;
       right: 10px;
@@ -1204,8 +1208,11 @@
       border-radius: 11px;
       background: rgba(255,255,255,.72);
       color: #31475f;
-      font-size: 10px;
+      /* iOS/WebKitのフォーム自動ズーム防止 */
+      font-size: 16px;
       font-weight: 700;
+      line-height: 1;
+      -webkit-text-size-adjust: 100%;
       -webkit-tap-highlight-color: transparent;
     }
     .dev-date-button {
@@ -1214,9 +1221,10 @@
     .dev-date-input {
       width: 100%;
       box-sizing: border-box;
-      padding: 0 8px;
+      padding: 0 5px;
       font-family: inherit;
       text-align: center;
+      letter-spacing: -.02em;
     }
 
     /* 明るい背景では screen 合成を外し、色を残す。夜は柔らかく光らせる。 */
