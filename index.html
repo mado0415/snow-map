@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.106: 元絵の明かりと競合しない、反射・きらめき中心の街の微細演出へ変更 -->
+    <!-- SNOW MAP v0.13.107: 元絵の明かりと競合しない、反射・きらめき中心の街の微細演出へ変更 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -954,6 +954,48 @@
       color: #31475f;
     }
     .dev-time-panel[hidden] { display: none; }
+    .dev-time-toggle {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid rgba(49,71,95,.14);
+      border-radius: 999px;
+      background: rgba(255,255,255,.76);
+      color: #31475f;
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dev-time-content {
+      overflow: hidden;
+      max-height: 150px;
+      opacity: 1;
+      transition: max-height .22s ease, opacity .16s ease, margin .22s ease;
+    }
+    .dev-time-panel.collapsed {
+      width: min(calc(100% - 24px), 250px);
+      padding: 8px 42px 8px 12px;
+      border-radius: 999px;
+    }
+    .dev-time-panel.collapsed .dev-time-title {
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      line-height: 28px;
+    }
+    .dev-time-panel.collapsed .dev-time-content {
+      max-height: 0;
+      opacity: 0;
+      margin: 0;
+      pointer-events: none;
+    }
     .dev-time-title {
       margin: 0 0 7px;
       font-size: 10px;
@@ -1200,19 +1242,22 @@
 
   <section class="dev-time-panel" id="devTimePanel" aria-label="開発用時間切り替え" hidden>
     <p class="dev-time-title" id="devTimeTitle">開発モード：リアルタイム</p>
-    <div class="dev-time-buttons">
-      <button class="dev-time-button" type="button" data-dev-time="realtime">現在</button>
-      <button class="dev-time-button" type="button" data-dev-time="morning">朝</button>
-      <button class="dev-time-button" type="button" data-dev-time="day">昼</button>
-      <button class="dev-time-button" type="button" data-dev-time="evening">夕</button>
-      <button class="dev-time-button" type="button" data-dev-time="twilight">暮</button>
-      <button class="dev-time-button" type="button" data-dev-time="night">夜</button>
-    </div>
-    <div class="dev-date-controls" aria-label="開発用日付切り替え">
-      <button class="dev-date-button" id="devDatePrev" type="button" aria-label="前日">−1</button>
-      <input class="dev-date-input" id="devDateInput" type="date" aria-label="表示する日付">
-      <button class="dev-date-button" id="devDateNext" type="button" aria-label="翌日">+1</button>
-      <button class="dev-date-button" id="devDateToday" type="button">今日</button>
+    <button class="dev-time-toggle" id="devTimeToggle" type="button" aria-label="開発パネルをたたむ" aria-expanded="true">⌄</button>
+    <div class="dev-time-content" id="devTimeContent">
+      <div class="dev-time-buttons">
+        <button class="dev-time-button" type="button" data-dev-time="realtime">現在</button>
+        <button class="dev-time-button" type="button" data-dev-time="morning">朝</button>
+        <button class="dev-time-button" type="button" data-dev-time="day">昼</button>
+        <button class="dev-time-button" type="button" data-dev-time="evening">夕</button>
+        <button class="dev-time-button" type="button" data-dev-time="twilight">暮</button>
+        <button class="dev-time-button" type="button" data-dev-time="night">夜</button>
+      </div>
+      <div class="dev-date-controls" aria-label="開発用日付切り替え">
+        <button class="dev-date-button" id="devDatePrev" type="button" aria-label="前日">−1</button>
+        <input class="dev-date-input" id="devDateInput" type="date" aria-label="表示する日付">
+        <button class="dev-date-button" id="devDateNext" type="button" aria-label="翌日">+1</button>
+        <button class="dev-date-button" id="devDateToday" type="button">今日</button>
+      </div>
     </div>
   </section>
 
@@ -2006,6 +2051,7 @@
     const spotifyLink=document.getElementById("spotifyLink"), appleLink=document.getElementById("appleLink"), youtubeLink=document.getElementById("youtubeLink");
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const devTimePanel=document.getElementById("devTimePanel"), devTimeTitle=document.getElementById("devTimeTitle");
+    const devTimeToggle=document.getElementById("devTimeToggle");
     const devTimeButtons=[...document.querySelectorAll("[data-dev-time]")];
     const devDateInput=document.getElementById("devDateInput");
     const devDatePrev=document.getElementById("devDatePrev"), devDateNext=document.getElementById("devDateNext"), devDateToday=document.getElementById("devDateToday");
@@ -2840,6 +2886,13 @@
     function setupDevTimeControls(){
       if(!isDevMode() || !devTimePanel) return;
       devTimePanel.hidden=false;
+
+      devTimeToggle?.addEventListener("click",()=>{
+        const collapsed=devTimePanel.classList.toggle("collapsed");
+        devTimeToggle.textContent=collapsed ? "⌃" : "⌄";
+        devTimeToggle.setAttribute("aria-expanded",String(!collapsed));
+        devTimeToggle.setAttribute("aria-label",collapsed ? "開発パネルを開く" : "開発パネルをたたむ");
+      });
 
       const labels={
         realtime:"リアルタイム",
