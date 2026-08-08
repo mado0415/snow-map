@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.124: 噴水エフェクトをほんの少し左上へ微調整 -->
+    <!-- SNOW MAP v0.13.125: スポットタップ時のズーム倍率を一段深く調整 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -368,7 +368,7 @@
     .map-stage.strolling {
       transition-duration: 2.45s;
       transition-timing-function: cubic-bezier(.16,.72,.14,1);
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--stroll-scale, 1.46));
+      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--stroll-scale, 1.62));
     }
 
     .map-viewport:not(.free-roam) {
