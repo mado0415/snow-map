@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.140: 星が出ている時間帯だけ、低頻度で流れ星が横切る演出を追加 -->
+  <!-- SNOW MAP v0.13.141: 開発モードの夜を23時にし、流れ星の確認間隔を開発時のみ短縮 -->
   <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
@@ -1561,7 +1561,7 @@
         <button class="dev-time-button" type="button" data-dev-time="day">昼</button>
         <button class="dev-time-button" type="button" data-dev-time="evening">夕</button>
         <button class="dev-time-button" type="button" data-dev-time="twilight">暮</button>
-        <button class="dev-time-button" type="button" data-dev-time="night">夜</button>
+        <button class="dev-time-button" type="button" data-dev-time="night">夜★</button>
       </div>
       <div class="dev-date-controls" aria-label="開発用日付切り替え">
         <button class="dev-date-button" id="devDatePrev" type="button" aria-label="前日">−1</button>
@@ -1896,7 +1896,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01380";
+    const version="01381";
 
     const PLACE_META = {
       "展望台":{
@@ -2008,7 +2008,7 @@
         day:{h:12,m:0},
         evening:{h:17,m:30},
         twilight:{h:18,m:45},
-        night:{h:21,m:0}
+        night:{h:23,m:0}
       }[presetKey];
 
       if(preset){
@@ -2497,10 +2497,11 @@
     function scheduleNextShootingStar(first=false){
       clearShootingStarTimer();
       if(!shootingStarsActive) return;
-      /* 初回は18〜50秒、その後は45〜150秒。
-         見ようとして待つほど頻繁にはせず、偶然見つける程度にする。 */
-      const min=first ? 18000 : 45000;
-      const max=first ? 50000 : 150000;
+      /* 公開時は初回18〜50秒、その後45〜150秒。
+         開発モードでは流れ星の確認だけしやすいよう短縮する。 */
+      const dev=isDevMode();
+      const min=dev ? (first ? 2000 : 8000) : (first ? 18000 : 45000);
+      const max=dev ? (first ? 5000 : 15000) : (first ? 50000 : 150000);
       shootingStarTimer=setTimeout(()=>{
         if(shootingStarsActive && !document.hidden) spawnShootingStar();
         scheduleNextShootingStar(false);
