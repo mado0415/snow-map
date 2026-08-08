@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.104: map-viewportが隠れたスクロール領域になるoverflow指定を解消し、全景のページスクロールを修正 -->
+    <!-- SNOW MAP v0.13.105: 素材なしの街の瞬き演出を追加（シティライト窓・展望台・ハーバー反射） -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -508,6 +508,80 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .sky-star { animation: none; opacity: .55; }
+    }
+
+
+    /* 街が少しだけ呼吸しているように見せる、素材なしの小さな瞬き */
+    .city-sparkles {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .city-sparkle {
+      position: absolute;
+      width: var(--spark-size, 4px);
+      height: var(--spark-size, 4px);
+      border-radius: 50%;
+      opacity: 0;
+      background: rgba(255,255,255,.96);
+      box-shadow:
+        0 0 3px 1px rgba(255,255,255,.72),
+        0 0 8px 3px var(--spark-glow, rgba(255,220,140,.48));
+      transform: translate(-50%,-50%) scale(.65);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    .city-sparkle::before,
+    .city-sparkle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      border-radius: 999px;
+      background: rgba(255,255,255,.52);
+    }
+    .city-sparkle::before {
+      width: calc(var(--spark-size) * 3.5);
+      height: 1px;
+    }
+    .city-sparkle::after {
+      width: 1px;
+      height: calc(var(--spark-size) * 3.5);
+    }
+    .city-sparkle.on {
+      opacity: var(--spark-opacity, .82);
+      transform: translate(-50%,-50%) scale(1);
+    }
+
+    .city-window-light {
+      position: absolute;
+      width: var(--win-w, 6px);
+      height: var(--win-h, 3px);
+      border-radius: 2px;
+      opacity: 0;
+      background: rgba(255,226,154,.92);
+      box-shadow: 0 0 6px 2px rgba(255,208,108,.36);
+      transform: translate(-50%,-50%);
+      transition: opacity .5s ease;
+    }
+    .city-window-light.on { opacity: var(--win-opacity, .58); }
+
+    .harbor-glint {
+      position: absolute;
+      width: var(--glint-w, 18px);
+      height: 1.5px;
+      border-radius: 999px;
+      opacity: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
+      filter: blur(.2px);
+      transform: translate(-50%,-50%) rotate(var(--glint-rot, -10deg)) scaleX(.5);
+      transition: opacity .4s ease, transform .7s ease;
+    }
+    .harbor-glint.on {
+      opacity: var(--glint-opacity, .52);
+      transform: translate(-50%,-50%) rotate(var(--glint-rot, -10deg)) scaleX(1);
     }
 
     .map-image {
@@ -1243,6 +1317,7 @@
         <div class="lights"></div>
         <div class="dome-aura" aria-hidden="true"></div>
         <div class="special-day-glow" id="specialDayGlow" aria-hidden="true"></div>
+        <div class="city-sparkles" id="citySparkles" aria-hidden="true"></div>
 
         <button class="beacon" style="left:45.3%;top:5.2%;" data-place="展望台" aria-label="展望台"></button>
         <button class="beacon" style="left:39.2%;top:20.3%;" data-place="シティライト" aria-label="シティライト"></button>
@@ -2738,6 +2813,7 @@
       document.body.classList.add(`time-${key}`);
       setSkyClouds(key);
       updateNightStars();
+      restartCitySparkles();
       if(key===currentTimeKey) return;
       currentTimeKey=key;
       const nextSrc=timeImages[key];
@@ -3212,6 +3288,86 @@
     closeButton.addEventListener("click",()=>closeSheet({keepZoom:false}));
     backdrop.addEventListener("click",()=>closeSheet({keepZoom:true}));
     document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet({keepZoom:true}); });
+
+    const citySparkles=document.getElementById("citySparkles");
+    let citySparkleTimers=[];
+
+    function clearCitySparkleTimers(){
+      citySparkleTimers.forEach(id=>clearTimeout(id));
+      citySparkleTimers=[];
+    }
+
+    function addSpark(type,x,y,opts={}){
+      if(!citySparkles) return null;
+      const el=document.createElement("i");
+      el.className=type;
+      el.style.left=`${x}%`;
+      el.style.top=`${y}%`;
+      Object.entries(opts).forEach(([k,v])=>el.style.setProperty(k,v));
+      citySparkles.appendChild(el);
+      return el;
+    }
+
+    const cityWindowLights=[
+      addSpark("city-window-light",37.7,16.5,{"--win-w":"5px","--win-h":"2.4px","--win-opacity":".54"}),
+      addSpark("city-window-light",39.0,18.1,{"--win-w":"6px","--win-h":"2.5px","--win-opacity":".62"}),
+      addSpark("city-window-light",40.8,16.9,{"--win-w":"5px","--win-h":"2.2px","--win-opacity":".50"}),
+      addSpark("city-window-light",42.2,19.4,{"--win-w":"6px","--win-h":"2.6px","--win-opacity":".56"}),
+      addSpark("city-window-light",36.8,20.2,{"--win-w":"5px","--win-h":"2.3px","--win-opacity":".48"})
+    ].filter(Boolean);
+
+    const lookoutSparkles=[
+      addSpark("city-sparkle",44.1,6.4,{"--spark-size":"3.5px","--spark-opacity":".72","--spark-glow":"rgba(210,230,255,.42)"}),
+      addSpark("city-sparkle",47.2,7.6,{"--spark-size":"3px","--spark-opacity":".60","--spark-glow":"rgba(210,230,255,.34)"})
+    ].filter(Boolean);
+
+    const harborGlints=[
+      addSpark("harbor-glint",26.8,68.5,{"--glint-w":"17px","--glint-opacity":".48","--glint-rot":"-11deg"}),
+      addSpark("harbor-glint",30.6,66.9,{"--glint-w":"13px","--glint-opacity":".40","--glint-rot":"-8deg"}),
+      addSpark("harbor-glint",23.7,71.0,{"--glint-w":"15px","--glint-opacity":".36","--glint-rot":"-14deg"})
+    ].filter(Boolean);
+
+    function scheduleRandomBlink(el,minMs,maxMs,onMsRange=[500,1100]){
+      if(!el) return;
+      const loop=()=>{
+        const wait=minMs+Math.random()*(maxMs-minMs);
+        const timer=setTimeout(()=>{
+          el.classList.add("on");
+          const onMs=onMsRange[0]+Math.random()*(onMsRange[1]-onMsRange[0]);
+          const offTimer=setTimeout(()=>{
+            el.classList.remove("on");
+            loop();
+          },onMs);
+          citySparkleTimers.push(offTimer);
+        },wait);
+        citySparkleTimers.push(timer);
+      };
+      loop();
+    }
+
+    function restartCitySparkles(){
+      clearCitySparkleTimers();
+
+      [...cityWindowLights,...lookoutSparkles,...harborGlints].forEach(el=>el?.classList.remove("on"));
+
+      const h=getVirtualNow().getHours();
+
+      // シティライトの窓：夕暮れ〜深夜だけ。全部同時には点かない。
+      if(h>=17 || h<2){
+        cityWindowLights.forEach((el,i)=>scheduleRandomBlink(el,7000+i*900,22000+i*1200,[1600,4200]));
+      }
+
+      // 展望台：夕方〜夜にごくたまに一瞬だけ。
+      if(h>=18 || h<1){
+        lookoutSparkles.forEach((el,i)=>scheduleRandomBlink(el,13000+i*2500,34000+i*3000,[350,900]));
+      }
+
+      // ハーバーの水面反射：昼〜夜まで。夜は少し多め。
+      const harborMin=(h>=19 || h<2)?7000:12000;
+      const harborMax=(h>=19 || h<2)?22000:32000;
+      harborGlints.forEach((el,i)=>scheduleRandomBlink(el,harborMin+i*1200,harborMax+i*1800,[600,1400]));
+    }
+
     const guidebook=document.getElementById("guidebook");
     const guidebookBackdrop=document.getElementById("guidebookBackdrop");
     const guidebookOpen=document.getElementById("guidebookOpen");
