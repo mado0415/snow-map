@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.128: 場所間の距離に応じて移動時間を変え、短距離到着時のカクつきを抑制 -->
+    <!-- SNOW MAP v0.13.129: 移動安定性優先。v0.13.124の移動・ズーム挙動へ完全復帰 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -358,23 +358,17 @@
       transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1);
       transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
       transition:
-        transform var(--walk-duration, 2.15s) cubic-bezier(.16,.72,.14,1),
-        transform-origin var(--walk-duration, 2.15s) cubic-bezier(.16,.72,.14,1);
+        transform 2.55s cubic-bezier(.16,.72,.14,1),
+        transform-origin 2.55s cubic-bezier(.16,.72,.14,1);
       will-change: transform;
     }
     .map-stage.walking {
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom-scale, 1.62));
+      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38);
     }
     .map-stage.strolling {
       transition-duration: 2.45s;
       transition-timing-function: cubic-bezier(.16,.72,.14,1);
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom-scale, 1.62));
-    }
-
-    /* 自由移動中は倍率を変えず、panだけを更新 */
-    .map-stage.free-pan {
-      transition: none !important;
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--zoom-scale, 1.62)) !important;
+      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(var(--stroll-scale, 1.46));
     }
 
     .map-viewport:not(.free-roam) {
@@ -2493,7 +2487,6 @@
     function setFreeRoam(enabled){
       const on=Boolean(enabled);
       mapViewport?.classList.toggle("free-roam",on);
-      mapStage?.classList.toggle("free-pan",on);
 
       if(!mapViewport) return;
 
@@ -3514,6 +3507,7 @@
           strollSteps[currentPlace]=step+1;
           const x=Math.max(8,Math.min(92,baseX+view.dx));
           const y=Math.max(8,Math.min(92,baseY+view.dy));
+          mapStage.style.setProperty("--stroll-scale", String(view.scale));
           mapStage.classList.add("strolling");
           setMapFocus(x,y);
         }
@@ -3539,34 +3533,25 @@
       window.scrollTo({top:Math.max(0,targetY),behavior});
     }
     function setMapFocus(x,y){
-      if(!mapStage) return 0;
+      if(!mapStage) return;
       const stageWidth=mapStage.offsetWidth || 1;
       const viewportWidth=mapViewport?.clientWidth || stageWidth;
-      const zoomScale=1.62;
-
-      // 端の地点を完全中央にすると、拡大した地図の外側が見えて色帯になる。
-      const safeEdge=50/zoomScale;
-      const safeX=clamp(x,safeEdge,100-safeEdge);
-
-      const targetX=stageWidth*(safeX/100);
+      const targetX=stageWidth*(x/100);
       const panX=viewportWidth/2-targetX;
-      const distancePx=Math.abs(panX-currentPanX);
-
       currentPanX=panX;
       currentPanY=0;
-      mapStage.style.setProperty("--walk-x", `${safeX}%`);
+      mapStage.style.setProperty("--walk-x", `${x}%`);
       mapStage.style.setProperty("--walk-y", `${y}%`);
       mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
       mapStage.style.setProperty("--pan-y", "0px");
-      return distancePx;
     }
     function setWalkFocus(beacon){
-      if(!beacon || !mapStage) return 0;
+      if(!beacon || !mapStage) return;
       const x=parseFloat(beacon.style.left || "50");
       const y=parseFloat(beacon.style.top || "50");
-      return setMapFocus(x,y);
+      setMapFocus(x,y);
     }
-    function closeSheet({keepZoom=true,enableRoam=true}={}){
+    function closeSheet({keepZoom=true}={}){
       sheet.classList.remove("open");
       document.body.classList.remove("sheet-open");
       backdrop.classList.remove("open");
@@ -3582,7 +3567,7 @@
         returnToMap();
         return;
       }
-      if(isZoomed && enableRoam){
+      if(isZoomed){
         setFreeRoam(true);
         if(!roamHintShown){
           roamHintShown=true;
@@ -3598,7 +3583,7 @@
       isZoomed=false;
       mapViewport?.classList.remove("zoomed");
       currentPlace=null;
-      mapStage?.classList.remove("walking","strolling","free-pan");
+      mapStage?.classList.remove("walking");
       mapStage?.style.setProperty("--walk-x", "50%");
       mapStage?.style.setProperty("--walk-y", "50%");
       currentPanX=0;
@@ -3612,8 +3597,6 @@
       mapViewport?.style.removeProperty("touch-action");
       mapStage?.style.setProperty("--pan-x", "0px");
       mapStage?.style.setProperty("--pan-y", "0px");
-      mapStage?.style.removeProperty("--stroll-scale");
-      mapStage?.style.removeProperty("--walk-duration");
 
       // iOS Safari: 全景復帰直後の次のスワイプをブラウザ標準スクロールへ返す
       requestAnimationFrame(()=>{
@@ -3639,27 +3622,14 @@
       currentPlace=place;
       const previewToken=beginDestinationPreview(place);
       startFootsteps(place);
-      closeSheet({keepZoom:true,enableRoam:false});
+      closeSheet({keepZoom:true});
       walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
       walkStatus.classList.add("show");
-
-      // 短距離を固定2秒以上かけて動かすと、1フレームあたりの移動量が小さくなり
-      // iOSでサブピクセルの丸めが目立ってカクつくため、距離に応じて所要時間を変える。
-      const distancePx=setWalkFocus(beacon);
-      const moveMs=Math.round(clamp(780 + distancePx*4.2, 900, 2300));
-      mapStage?.style.setProperty("--walk-duration", `${moveMs}ms`);
-
+      setWalkFocus(beacon);
       isZoomed=true;
       requestAnimationFrame(()=>mapStage?.classList.add("walking"));
-
-      // ページ自体の縦スクロールも、地図移動と同時に長く走らせない。
-      // 短距離ではautoにして小さなスクロール補間のガクつきを避ける。
-      setTimeout(()=>centerBeacon(beacon, distancePx<70 ? "auto" : "smooth"),90);
-
-      const arrivalGlowMs=Math.max(520, moveMs-260);
-      const cardMs=moveMs+1050;
-
-      setTimeout(()=>beacon.classList.add("arriving"),arrivalGlowMs);
+      setTimeout(()=>centerBeacon(beacon),90);
+      setTimeout(()=>beacon.classList.add("arriving"),2180);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
@@ -3668,7 +3638,7 @@
         playArrivalSound(place);
         showSong(place);
         isTransitioning=false;
-      },cardMs);
+      },4850);
     }
 
     function continueWalk(){
