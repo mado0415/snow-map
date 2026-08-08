@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.143: 流れ星の速度を少し落とし、尾の向きと進行方向を維持。開発モードの夜は23時、確認間隔は開発時のみ短縮 -->
+  <!-- SNOW MAP v0.13.144: 流れ星の速度を少し落とし、尾の向きと進行方向を維持。開発モードの夜は23時、確認間隔は開発時のみ短縮 -->
   <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
@@ -2495,14 +2495,19 @@
       sky.appendChild(meteor);
     }
 
+    function isSnowManDebutDay(){
+      const now=getVirtualNow();
+      return now.getMonth()===0 && now.getDate()===22;
+    }
+
     function scheduleNextShootingStar(first=false){
       clearShootingStarTimer();
       if(!shootingStarsActive) return;
-      /* 公開時は初回18〜50秒、その後45〜150秒。
-         開発モードでは流れ星の確認だけしやすいよう短縮する。 */
-      const dev=isDevMode();
-      const min=dev ? (first ? 2000 : 8000) : (first ? 18000 : 45000);
-      const max=dev ? (first ? 5000 : 15000) : (first ? 50000 : 150000);
+      /* 通常は初回18〜50秒、その後45〜150秒。
+         開発モードと毎年1月22日（Snow Manデビュー日）は、初回2〜5秒、その後8〜15秒にする。 */
+      const frequent=isDevMode() || isSnowManDebutDay();
+      const min=frequent ? (first ? 2000 : 8000) : (first ? 18000 : 45000);
+      const max=frequent ? (first ? 5000 : 15000) : (first ? 50000 : 150000);
       shootingStarTimer=setTimeout(()=>{
         if(shootingStarsActive && !document.hidden) spawnShootingStar();
         scheduleNextShootingStar(false);
