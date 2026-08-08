@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-  <!-- SNOW MAP v0.13.141: 開発モードの夜を23時にし、流れ星の確認間隔を開発時のみ短縮 -->
+  <!-- SNOW MAP v0.13.142: 流れ星の尾の向きと進行方向が一致するよう、角度を移動ベクトルから算出する方式に修正。開発モードの夜は23時、確認間隔は開発時のみ短縮 -->
   <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
@@ -1896,7 +1896,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01381";
+    const version="01382";
 
     const PLACE_META = {
       "展望台":{
@@ -2480,7 +2480,8 @@
       const length=44+Math.random()*30;
       const dx=fromLeft ? 92+Math.random()*62 : -(84+Math.random()*52);
       const dy=36+Math.random()*38;
-      const angle=fromLeft ? -(18+Math.random()*13) : 198+Math.random()*13;
+      /* 流れる向きそのものから角度を決め、尾の向きと進行方向を一致させる */
+      const angle=Math.atan2(dy,dx)*(180/Math.PI);
       const duration=.72+Math.random()*.34;
 
       meteor.style.setProperty("--meteor-x",`${x.toFixed(1)}%`);
