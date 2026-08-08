@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.113: 公園の池のきらめきを見つけやすく再調整 -->
+    <!-- SNOW MAP v0.13.114: 池の煌めきを左へ補正し、公園に木漏れ日の微かな揺らぎを追加 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -647,6 +647,74 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .sea-spark { animation: none; opacity: .25; }
+    }
+
+
+    /* 公園の木漏れ日：地図の絵を邪魔しない、淡い光の揺らぎ */
+    .park-dapple-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      overflow: visible;
+      --dapple-color: rgba(255,250,205,.48);
+      --dapple-glow: rgba(255,238,170,.18);
+      --dapple-max: .42;
+    }
+    body.time-morning .park-dapple-layer {
+      --dapple-color: rgba(255,236,178,.48);
+      --dapple-glow: rgba(255,218,145,.18);
+      --dapple-max: .40;
+    }
+    body.time-day .park-dapple-layer {
+      --dapple-color: rgba(255,255,224,.54);
+      --dapple-glow: rgba(255,245,190,.20);
+      --dapple-max: .48;
+    }
+    body.time-evening .park-dapple-layer,
+    body.time-twilight .park-dapple-layer {
+      --dapple-color: rgba(255,214,157,.40);
+      --dapple-glow: rgba(255,188,120,.14);
+      --dapple-max: .32;
+    }
+    body.time-night .park-dapple-layer {
+      opacity: 0;
+    }
+    .park-dapple {
+      position: absolute;
+      left: var(--dx);
+      top: var(--dy);
+      width: var(--dw);
+      height: var(--dh);
+      border-radius: 50%;
+      opacity: .08;
+      background: radial-gradient(ellipse at center,
+        var(--dapple-color) 0 24%,
+        rgba(255,255,255,.10) 42%,
+        transparent 72%);
+      filter: blur(.7px);
+      box-shadow: 0 0 7px var(--dapple-glow);
+      transform: translate(-50%,-50%) rotate(var(--dr)) scale(.90);
+      animation: parkDapple var(--dd) ease-in-out infinite;
+      animation-delay: var(--delay);
+      will-change: opacity, transform;
+    }
+    @keyframes parkDapple {
+      0%,100% {
+        opacity: .06;
+        transform: translate(-50%,-50%) rotate(var(--dr)) translate3d(-1px,1px,0) scale(.88);
+      }
+      42% {
+        opacity: var(--dapple-max);
+        transform: translate(-50%,-50%) rotate(var(--dr)) translate3d(2px,-1px,0) scale(1.03);
+      }
+      68% {
+        opacity: calc(var(--dapple-max) * .46);
+        transform: translate(-50%,-50%) rotate(var(--dr)) translate3d(-2px,2px,0) scale(.95);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .park-dapple { animation: none; opacity: .18; }
     }
 
     .harbor-boats {
@@ -1470,45 +1538,59 @@
         <div class="dome-aura" aria-hidden="true"></div>
         <div class="special-day-glow" id="specialDayGlow" aria-hidden="true"></div>
         <div class="city-sparkles" id="citySparkles" aria-hidden="true"></div>
+        <div class="park-dapple-layer" id="parkDappleLayer" aria-hidden="true">
+          <i class="park-dapple" style="--dx:16.8%;--dy:37.7%;--dw:15px;--dh:7px;--dr:-18deg;--dd:6.8s;--delay:-1.2s"></i>
+          <i class="park-dapple" style="--dx:20.0%;--dy:38.4%;--dw:13px;--dh:6px;--dr:12deg;--dd:7.5s;--delay:-4.1s"></i>
+          <i class="park-dapple" style="--dx:24.0%;--dy:37.8%;--dw:14px;--dh:6px;--dr:-8deg;--dd:8.2s;--delay:-2.5s"></i>
+          <i class="park-dapple" style="--dx:28.2%;--dy:39.0%;--dw:13px;--dh:6px;--dr:20deg;--dd:6.6s;--delay:-5.0s"></i>
+          <i class="park-dapple" style="--dx:15.8%;--dy:41.0%;--dw:12px;--dh:6px;--dr:8deg;--dd:7.1s;--delay:-3.4s"></i>
+          <i class="park-dapple" style="--dx:30.0%;--dy:42.1%;--dw:13px;--dh:6px;--dr:-15deg;--dd:8.4s;--delay:-1.7s"></i>
+          <i class="park-dapple" style="--dx:16.5%;--dy:44.4%;--dw:13px;--dh:6px;--dr:-20deg;--dd:7.8s;--delay:-5.8s"></i>
+          <i class="park-dapple" style="--dx:29.2%;--dy:45.7%;--dw:12px;--dh:5px;--dr:15deg;--dd:6.9s;--delay:-2.9s"></i>
+          <i class="park-dapple" style="--dx:19.0%;--dy:47.0%;--dw:14px;--dh:6px;--dr:7deg;--dd:8.6s;--delay:-4.8s"></i>
+          <i class="park-dapple" style="--dx:24.0%;--dy:47.4%;--dw:12px;--dh:5px;--dr:-12deg;--dd:7.3s;--delay:-0.8s"></i>
+          <i class="park-dapple" style="--dx:27.0%;--dy:46.8%;--dw:11px;--dh:5px;--dr:18deg;--dd:6.5s;--delay:-3.8s"></i>
+          <i class="park-dapple" style="--dx:21.5%;--dy:40.0%;--dw:10px;--dh:5px;--dr:-5deg;--dd:8.0s;--delay:-6.1s"></i>
+        </div>
         <div class="pond-sparkles sea-sparkles" id="pondSparkles" aria-hidden="true">
-          <i class="sea-spark pond-spark tiny" style="--sx:24.7%;--sy:41.5%;--ss:1.0px;--sd:3.5s;--sdelay:-1.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:25.2%;--sy:43.1%;--ss:1.2px;--sd:2.7s;--sdelay:-1.3s"></i>
-          <i class="sea-spark pond-spark" style="--sx:21.1%;--sy:42.4%;--ss:1.2px;--sd:3.3s;--sdelay:-0.2s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:22.7%;--sy:46.1%;--ss:1.1px;--sd:3.1s;--sdelay:-2.4s"></i>
-          <i class="sea-spark pond-spark" style="--sx:26.0%;--sy:41.0%;--ss:1.3px;--sd:3.2s;--sdelay:-2.5s"></i>
-          <i class="sea-spark pond-spark" style="--sx:23.7%;--sy:40.2%;--ss:1.4px;--sd:3.5s;--sdelay:-1.2s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:27.7%;--sy:45.2%;--ss:1.1px;--sd:2.2s;--sdelay:-3.0s"></i>
-          <i class="sea-spark pond-spark" style="--sx:26.8%;--sy:45.0%;--ss:1.4px;--sd:2.3s;--sdelay:-2.4s"></i>
-          <i class="sea-spark pond-spark" style="--sx:22.5%;--sy:43.8%;--ss:1.4px;--sd:2.7s;--sdelay:-0.3s"></i>
-          <i class="sea-spark pond-spark" style="--sx:23.9%;--sy:44.3%;--ss:1.5px;--sd:3.1s;--sdelay:-0.9s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:25.4%;--sy:43.0%;--ss:1.0px;--sd:3.1s;--sdelay:-3.2s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:25.2%;--sy:42.3%;--ss:1.0px;--sd:3.2s;--sdelay:-3.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:26.8%;--sy:43.1%;--ss:1.5px;--sd:3.1s;--sdelay:-1.2s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:22.9%;--sy:41.6%;--ss:1.0px;--sd:2.2s;--sdelay:-0.8s"></i>
-          <i class="sea-spark pond-spark" style="--sx:23.4%;--sy:43.6%;--ss:1.2px;--sd:2.5s;--sdelay:-0.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:27.8%;--sy:42.8%;--ss:1.4px;--sd:3.6s;--sdelay:-1.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:24.5%;--sy:41.1%;--ss:1.3px;--sd:3.4s;--sdelay:-0.9s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:25.4%;--sy:41.5%;--ss:1.1px;--sd:2.9s;--sdelay:-1.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:28.9%;--sy:43.0%;--ss:1.4px;--sd:3.2s;--sdelay:-1.1s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:28.7%;--sy:42.4%;--ss:1.0px;--sd:2.7s;--sdelay:-3.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:25.4%;--sy:46.0%;--ss:1.4px;--sd:3.5s;--sdelay:-3.0s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:28.2%;--sy:41.7%;--ss:1.0px;--sd:2.9s;--sdelay:-1.4s"></i>
-          <i class="sea-spark pond-spark" style="--sx:21.9%;--sy:43.2%;--ss:1.5px;--sd:2.4s;--sdelay:-0.8s"></i>
-          <i class="sea-spark pond-spark" style="--sx:24.4%;--sy:40.9%;--ss:1.5px;--sd:2.9s;--sdelay:-1.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:25.1%;--sy:40.3%;--ss:1.4px;--sd:3.4s;--sdelay:-3.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:21.7%;--sy:44.0%;--ss:1.2px;--sd:2.6s;--sdelay:-0.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:20.2%;--sy:45.0%;--ss:1.3px;--sd:2.8s;--sdelay:-3.0s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:21.7%;--sy:43.5%;--ss:1.0px;--sd:3.4s;--sdelay:-0.8s"></i>
-          <i class="sea-spark pond-spark" style="--sx:23.3%;--sy:43.1%;--ss:1.3px;--sd:2.6s;--sdelay:-1.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:20.2%;--sy:42.7%;--ss:1.5px;--sd:2.6s;--sdelay:-0.1s"></i>
-          <i class="sea-spark pond-spark" style="--sx:22.9%;--sy:45.4%;--ss:1.3px;--sd:3.0s;--sdelay:-0.7s"></i>
-          <i class="sea-spark pond-spark" style="--sx:24.3%;--sy:44.9%;--ss:1.2px;--sd:3.0s;--sdelay:-1.0s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:23.7%;--sy:42.3%;--ss:1.0px;--sd:2.8s;--sdelay:-2.2s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:19.4%;--sy:42.9%;--ss:1.1px;--sd:2.7s;--sdelay:-0.3s"></i>
-          <i class="sea-spark pond-spark" style="--sx:28.0%;--sy:44.1%;--ss:1.4px;--sd:3.6s;--sdelay:-1.2s"></i>
-          <i class="sea-spark pond-spark" style="--sx:25.9%;--sy:41.3%;--ss:1.5px;--sd:2.4s;--sdelay:-2.5s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:23.3%;--sy:41.2%;--ss:1.1px;--sd:2.6s;--sdelay:-3.1s"></i>
-          <i class="sea-spark pond-spark tiny" style="--sx:21.8%;--sy:42.5%;--ss:1.0px;--sd:2.8s;--sdelay:-1.7s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:22.9%;--sy:41.5%;--ss:1.0px;--sd:3.5s;--sdelay:-1.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:23.4%;--sy:43.1%;--ss:1.2px;--sd:2.7s;--sdelay:-1.3s"></i>
+          <i class="sea-spark pond-spark" style="--sx:19.3%;--sy:42.4%;--ss:1.2px;--sd:3.3s;--sdelay:-0.2s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:20.9%;--sy:46.1%;--ss:1.1px;--sd:3.1s;--sdelay:-2.4s"></i>
+          <i class="sea-spark pond-spark" style="--sx:24.2%;--sy:41.0%;--ss:1.3px;--sd:3.2s;--sdelay:-2.5s"></i>
+          <i class="sea-spark pond-spark" style="--sx:21.9%;--sy:40.2%;--ss:1.4px;--sd:3.5s;--sdelay:-1.2s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:25.9%;--sy:45.2%;--ss:1.1px;--sd:2.2s;--sdelay:-3.0s"></i>
+          <i class="sea-spark pond-spark" style="--sx:25.0%;--sy:45.0%;--ss:1.4px;--sd:2.3s;--sdelay:-2.4s"></i>
+          <i class="sea-spark pond-spark" style="--sx:20.7%;--sy:43.8%;--ss:1.4px;--sd:2.7s;--sdelay:-0.3s"></i>
+          <i class="sea-spark pond-spark" style="--sx:22.1%;--sy:44.3%;--ss:1.5px;--sd:3.1s;--sdelay:-0.9s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:23.6%;--sy:43.0%;--ss:1.0px;--sd:3.1s;--sdelay:-3.2s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:23.4%;--sy:42.3%;--ss:1.0px;--sd:3.2s;--sdelay:-3.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:25.0%;--sy:43.1%;--ss:1.5px;--sd:3.1s;--sdelay:-1.2s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:21.1%;--sy:41.6%;--ss:1.0px;--sd:2.2s;--sdelay:-0.8s"></i>
+          <i class="sea-spark pond-spark" style="--sx:21.6%;--sy:43.6%;--ss:1.2px;--sd:2.5s;--sdelay:-0.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:26.0%;--sy:42.8%;--ss:1.4px;--sd:3.6s;--sdelay:-1.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:22.7%;--sy:41.1%;--ss:1.3px;--sd:3.4s;--sdelay:-0.9s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:23.6%;--sy:41.5%;--ss:1.1px;--sd:2.9s;--sdelay:-1.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:27.1%;--sy:43.0%;--ss:1.4px;--sd:3.2s;--sdelay:-1.1s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:26.9%;--sy:42.4%;--ss:1.0px;--sd:2.7s;--sdelay:-3.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:23.6%;--sy:46.0%;--ss:1.4px;--sd:3.5s;--sdelay:-3.0s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:26.4%;--sy:41.7%;--ss:1.0px;--sd:2.9s;--sdelay:-1.4s"></i>
+          <i class="sea-spark pond-spark" style="--sx:20.1%;--sy:43.2%;--ss:1.5px;--sd:2.4s;--sdelay:-0.8s"></i>
+          <i class="sea-spark pond-spark" style="--sx:22.6%;--sy:40.9%;--ss:1.5px;--sd:2.9s;--sdelay:-1.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:23.3%;--sy:40.3%;--ss:1.4px;--sd:3.4s;--sdelay:-3.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:19.9%;--sy:44.0%;--ss:1.2px;--sd:2.6s;--sdelay:-0.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:18.4%;--sy:45.0%;--ss:1.3px;--sd:2.8s;--sdelay:-3.0s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:19.9%;--sy:43.5%;--ss:1.0px;--sd:3.4s;--sdelay:-0.8s"></i>
+          <i class="sea-spark pond-spark" style="--sx:21.5%;--sy:43.1%;--ss:1.3px;--sd:2.6s;--sdelay:-1.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:18.4%;--sy:42.7%;--ss:1.5px;--sd:2.6s;--sdelay:-0.1s"></i>
+          <i class="sea-spark pond-spark" style="--sx:21.1%;--sy:45.4%;--ss:1.3px;--sd:3.0s;--sdelay:-0.7s"></i>
+          <i class="sea-spark pond-spark" style="--sx:22.5%;--sy:44.9%;--ss:1.2px;--sd:3.0s;--sdelay:-1.0s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:21.9%;--sy:42.3%;--ss:1.0px;--sd:2.8s;--sdelay:-2.2s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:17.6%;--sy:42.9%;--ss:1.1px;--sd:2.7s;--sdelay:-0.3s"></i>
+          <i class="sea-spark pond-spark" style="--sx:26.2%;--sy:44.1%;--ss:1.4px;--sd:3.6s;--sdelay:-1.2s"></i>
+          <i class="sea-spark pond-spark" style="--sx:24.1%;--sy:41.3%;--ss:1.5px;--sd:2.4s;--sdelay:-2.5s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:21.5%;--sy:41.2%;--ss:1.1px;--sd:2.6s;--sdelay:-3.1s"></i>
+          <i class="sea-spark pond-spark tiny" style="--sx:20.0%;--sy:42.5%;--ss:1.0px;--sd:2.8s;--sdelay:-1.7s"></i>
         </div>
         <div class="sea-sparkles" id="seaSparkles" aria-hidden="true">
           <i class="sea-spark" style="--sx:18.7%;--sy:67.8%;--ss:1.5px;--sd:3.03s;--sdelay:-1.1s"></i>
