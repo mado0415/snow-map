@@ -1849,7 +1849,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01377";
+    const version="01378";
 
     const PLACE_META = {
       "展望台":{
@@ -3556,10 +3556,20 @@
       const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
 
       if(lowerPlace){
-        /* 下端へ滑り続ける smooth scroll 自体も使わない。 */
-        currentPanY=-shortage;
+        /*
+         * 下部3地点では window 自体を動かさない。
+         * iOS Safari のページ最下端補正／rubber-band に触れず、
+         * 目的地の未変形レイアウト位置と画面上の目標位置との差を
+         * mapStage の縦 pan だけで吸収する。
+         * beacon は transform-origin 上にあるため、scale 中もこの pan 値で
+         * 到着地点の画面内位置を安定して決められる。
+         */
+        const beaconViewportY=mapViewport.getBoundingClientRect().top
+          + mapStage.offsetTop
+          + mapStage.offsetHeight*(y/100);
+        const desiredViewportY=window.innerHeight*.43;
+        currentPanY=desiredViewportY-beaconViewportY;
         mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
-        window.scrollTo({top:targetY,behavior:"auto"});
         return;
       }
 
