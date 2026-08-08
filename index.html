@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.135: 下部3スポット到着前のSafariスクロール補正を抑止 -->
+    <!-- SNOW MAP v0.13.136: ズーム維持のまま地点移動時のtransform-origin切替を位置補正し、下部スポット到着直前の縦跳ねを抑制 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -357,13 +357,13 @@
       margin-left: 0;
       transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1);
       transform-origin: var(--walk-x, 50%) var(--walk-y, 50%);
-      transition: transform 2.55s cubic-bezier(.16,.72,.14,1);
+      transition:
+        transform 2.55s cubic-bezier(.16,.72,.14,1);
       will-change: transform;
     }
     .map-stage.walking {
       transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38);
     }
-
     .map-stage.strolling {
       transition-duration: 2.45s;
       transition-timing-function: cubic-bezier(.16,.72,.14,1);
@@ -1849,7 +1849,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01375";
+    const version="01376";
 
     const PLACE_META = {
       "展望台":{
@@ -3567,6 +3567,47 @@
       if(!beacon || !mapStage) return;
       const x=parseFloat(beacon.style.left || "50");
       const y=parseFloat(beacon.style.top || "50");
+
+      /*
+       * すでに1.38倍へズームした状態でtransform-originだけ別地点へ切り替えると、
+       * Safariではorigin差分ぶん地図全体が縦に跳ねて見える。
+       * origin変更と同時にpanを逆補正して、切替瞬間の見た目を完全に維持する。
+       * その次のframeで目的地用panへ戻し、ズームアウトせず滑らかに移動する。
+       */
+      if(mapStage.classList.contains("walking")){
+        const oldX=parseFloat(mapStage.style.getPropertyValue("--walk-x")) || 50;
+        const oldY=parseFloat(mapStage.style.getPropertyValue("--walk-y")) || 50;
+        const stageW=mapStage.offsetWidth || 1;
+        const stageH=mapStage.offsetHeight || 1;
+        const scale=1.38;
+        const dx=stageW*((oldX-x)/100)*(1-scale);
+        const dy=stageH*((oldY-y)/100)*(1-scale);
+        const preservedPanX=currentPanX + dx;
+        const preservedPanY=currentPanY + dy;
+
+        const viewportWidth=mapViewport?.clientWidth || stageW;
+        const targetX=stageW*(x/100);
+        const targetPanX=viewportWidth/2-targetX;
+
+        mapStage.style.transition="none";
+        mapStage.style.setProperty("--walk-x", `${x}%`);
+        mapStage.style.setProperty("--walk-y", `${y}%`);
+        mapStage.style.setProperty("--pan-x", `${preservedPanX}px`);
+        mapStage.style.setProperty("--pan-y", `${preservedPanY}px`);
+        void mapStage.offsetHeight;
+
+        currentPanX=targetPanX;
+        currentPanY=0;
+        requestAnimationFrame(()=>{
+          mapStage.style.removeProperty("transition");
+          requestAnimationFrame(()=>{
+            mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
+            mapStage.style.setProperty("--pan-y", "0px");
+          });
+        });
+        return;
+      }
+
       setMapFocus(x,y);
     }
     function closeSheet({keepZoom=true}={}){
@@ -3643,41 +3684,20 @@
       closeSheet({keepZoom:true});
       walkText.textContent=fromMap ? `${place}へ` : `${place}へ歩いています`;
       walkStatus.classList.add("show");
+      setWalkFocus(beacon);
       isZoomed=true;
-
-      const lowerArrival=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(place);
-
-      const beginArrivalMotion=()=>{
-        /*
-         * Safariでは、拡大済みの巨大な地図レイヤー上で transform-origin を
-         * アニメーションすると、遷移終了時に座標が再確定して縦に跳ねることがある。
-         * origin は scale(1) の状態で即時確定し、動かすのは transform だけにする。
-         */
-        setWalkFocus(beacon);
-        centerBeacon(beacon, lowerArrival ? "auto" : "smooth");
-        requestAnimationFrame(()=>{
-          requestAnimationFrame(()=>mapStage?.classList.add("walking"));
-        });
-
-        setTimeout(()=>beacon.classList.add("arriving"),2700);
-        setTimeout(()=>{
-          walkStatus.classList.remove("show");
-          beacon.classList.remove("arriving");
-          stopFootsteps();
-          finishDestinationPreview(place,previewToken);
-          playArrivalSound(place);
-          showSong(place);
-          isTransitioning=false;
-        },4850);
-      };
-
-      if(lowerArrival && mapStage?.classList.contains("walking")){
-        /* 別地点から下部3地点へ向かう時は、いったん等倍へ戻してからoriginを変更する。 */
-        mapStage.classList.remove("walking");
-        setTimeout(beginArrivalMotion,2600);
-      }else{
-        beginArrivalMotion();
-      }
+      requestAnimationFrame(()=>mapStage?.classList.add("walking"));
+      setTimeout(()=>centerBeacon(beacon),90);
+      setTimeout(()=>beacon.classList.add("arriving"),2180);
+      setTimeout(()=>{
+        walkStatus.classList.remove("show");
+        beacon.classList.remove("arriving");
+        stopFootsteps();
+        finishDestinationPreview(place,previewToken);
+        playArrivalSound(place);
+        showSong(place);
+        isTransitioning=false;
+      },4850);
     }
 
     function continueWalk(){
