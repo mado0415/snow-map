@@ -1850,7 +1850,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01373";
+    const version="01374";
 
     const PLACE_META = {
       "展望台":{
@@ -3661,7 +3661,10 @@
         requestAnimationFrame(()=>mapStage?.classList.add("walking"));
         setTimeout(()=>centerBeacon(beacon),90);
       }
-      setTimeout(()=>beacon.classList.add("arriving"),2180);
+      // 下部3スポットは地図の2.55秒transformが完了してから到着光を開始する。
+      // transform終盤とarrivalGlowの重なりを避け、iOS Safariの合成負荷を分離する。
+      const arrivalGlowDelay=lowerArrival ? 2700 : 2180;
+      setTimeout(()=>beacon.classList.add("arriving"),arrivalGlowDelay);
       setTimeout(()=>{
         walkStatus.classList.remove("show");
         beacon.classList.remove("arriving");
