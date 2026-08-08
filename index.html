@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.124: 噴水エフェクトをほんの少し左上へ微調整 -->
+    <!-- SNOW MAP v0.13.130: 19時台の時間判定を分単位に修正し、下部スポット到着時のスクロール基準を安定化 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -3145,11 +3145,14 @@
     function getTimeKey(){
       const forced=devTimeOverride || getForcedTimeKey();
       if(isDevMode() && forced) return forced;
-      const h=getVirtualNow().getHours();
-      if(h>=5&&h<10) return "morning";
-      if(h>=10&&h<16) return "day";
-      if(h>=16&&h<18.5) return "evening";
-      if(h>=18.5&&h<19.25) return "twilight";
+
+      const now=getVirtualNow();
+      const minute=now.getHours()*60+now.getMinutes();
+
+      if(minute>=5*60 && minute<10*60) return "morning";
+      if(minute>=10*60 && minute<16*60) return "day";
+      if(minute>=16*60 && minute<18*60+30) return "evening";
+      if(minute>=18*60+30 && minute<19*60+15) return "twilight";
       return "night";
     }
     const skyStops=[
@@ -3527,10 +3530,26 @@
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
     }
     function centerBeacon(beacon, behavior="smooth"){
-      if(!beacon) return;
-      const rect=beacon.getBoundingClientRect();
-      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.43;
-      window.scrollTo({top:Math.max(0,targetY),behavior});
+      if(!beacon || !mapStage || !mapViewport) return;
+
+      /* 
+       * mapStageのtransform途中にgetBoundingClientRect()を読むと、
+       * 下部スポットでは拡大アニメーション中の一時座標を拾いやすい。
+       * beacon自身が持つtop(%)から、変形前の安定した位置を計算する。
+       */
+      const y=parseFloat(beacon.style.top || "50");
+      const viewportTop=window.scrollY + mapViewport.getBoundingClientRect().top;
+      const beaconLayoutY=viewportTop + mapStage.offsetTop + mapStage.offsetHeight*(y/100);
+      const rawTarget=beaconLayoutY - window.innerHeight*.43;
+
+      const doc=document.documentElement;
+      const maxScroll=Math.max(
+        0,
+        Math.max(doc.scrollHeight,document.body.scrollHeight)-window.innerHeight
+      );
+      const targetY=Math.max(0,Math.min(maxScroll,rawTarget));
+
+      window.scrollTo({top:targetY,behavior});
     }
     function setMapFocus(x,y){
       if(!mapStage) return;
