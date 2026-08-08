@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0" />
   <meta name="theme-color" id="themeColor" content="#f8fbfb" />
   <title>SNOW MAP</title>
-    <!-- SNOW MAP v0.13.136: ズーム維持のまま地点移動時のtransform-origin切替を位置補正し、下部スポット到着直前の縦跳ねを抑制 -->
+    <!-- SNOW MAP v0.13.137: ズーム維持のまま地点移動時のtransform-origin切替を位置補正し、下部スポット到着直前の縦跳ねを抑制 -->
   <!-- SNOW MAP v0.13.62: 光線を実線化し、光粒の分散を画面上で確認できる強さに調整 -->
   <style>
     :root {
@@ -1849,7 +1849,7 @@
     }
     document.querySelectorAll(".snowflake-svg").forEach(drawSnowflake);
 
-    const version="01376";
+    const version="01377";
 
     const PLACE_META = {
       "展望台":{
@@ -3531,10 +3531,15 @@
     function centerBeacon(beacon, behavior="smooth"){
       if(!beacon || !mapStage || !mapViewport) return;
 
-      /* 
-       * mapStageのtransform途中にgetBoundingClientRect()を読むと、
-       * 下部スポットでは拡大アニメーション中の一時座標を拾いやすい。
-       * beacon自身が持つtop(%)から、変形前の安定した位置を計算する。
+      /*
+       * 下部スポットは、目的地を画面上部寄りへ持ち上げるために必要な
+       * window.scrollY がページ末尾を越えることがある。
+       * transform で拡大した地図は document のレイアウト高を増やさないため、
+       * その不足分を window スクロールに任せると iOS Safari で下端補正が入り、
+       * 到着直前に上へ戻されたように見える。
+       *
+       * そこでページ内で動けるところまでは window を動かし、
+       * 足りない分だけ mapStage の縦 pan で補う。
        */
       const y=parseFloat(beacon.style.top || "50");
       const viewportTop=window.scrollY + mapViewport.getBoundingClientRect().top;
@@ -3547,7 +3552,19 @@
         Math.max(doc.scrollHeight,document.body.scrollHeight)-window.innerHeight
       );
       const targetY=Math.max(0,Math.min(maxScroll,rawTarget));
+      const shortage=Math.max(0,rawTarget-targetY);
+      const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
 
+      if(lowerPlace){
+        /* 下端へ滑り続ける smooth scroll 自体も使わない。 */
+        currentPanY=-shortage;
+        mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
+        window.scrollTo({top:targetY,behavior:"auto"});
+        return;
+      }
+
+      currentPanY=0;
+      mapStage.style.setProperty("--pan-y", "0px");
       window.scrollTo({top:targetY,behavior});
     }
     function setMapFocus(x,y){
