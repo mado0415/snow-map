@@ -11,6 +11,17 @@
   <meta name="description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイドです。" />
   <link rel="canonical" href="https://mado0415.github.io/snow-map/" />
 
+  <!-- Share cache refresh: keep the site identical, but make the browser share a fresh URL -->
+  <script>
+    (() => {
+      const url = new URL(window.location.href);
+      if (!url.searchParams.has("share")) {
+        url.searchParams.set("share", "2");
+        history.replaceState(null, "", url);
+      }
+    })();
+  </script>
+
   <!-- Social sharing / OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SNOW MAP" />
