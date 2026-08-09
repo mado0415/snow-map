@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.196: 時間帯マップ切替のクロスフェードを実機で安定化 -->
   <!-- SNOW MAP v0.13.147: 深夜0:00〜4:30は暗い夜空を維持し、4:30以降から明け方へ移行 -->
   <!-- SNOW MAP v0.13.144: 流れ星の速度を少し落とし、尾の向きと進行方向を維持。開発モードの夜は23時、確認間隔は開発時のみ短縮 -->
   <!-- SNOW MAP v0.13.139: 下部3地点はページスクロールを使わず地図の縦panで到着位置を調整し、iOS Safariの下端補正による縦跳ねを回避 -->
@@ -4046,21 +4047,40 @@ body.weather-snow .sky-stars {
 
         mapImageFade.src=nextSrc;
         mapImageFade.classList.remove("visible");
-        // src反映後の次フレームでフェード開始
-        requestAnimationFrame(()=>{
-          requestAnimationFrame(()=>{
-            if(myToken!==timeFadeToken) return;
-            mapImageFade.classList.add("visible");
-          });
-        });
 
-        setTimeout(()=>{
-          if(myToken!==timeFadeToken) return;
+        // 開発モードなど負荷が高い状況でも、fade画像の「opacity:0」が
+        // 1度実際に描画されてからフェードを始める。
+        // requestAnimationFrameだけだと重い端末で描画が飛び、瞬時切替に見えることがあるため、
+        // layout確定 + rAF + transitionend の順で処理する。
+        void mapImageFade.offsetWidth;
+
+        let transitionFinished=false;
+        const finishFade=()=>{
+          if(transitionFinished || myToken!==timeFadeToken) return;
+          transitionFinished=true;
           mapImage.src=nextSrc;
           mapImageFade.classList.remove("visible");
           currentTimeKey=key;
           currentWeatherKey=weatherKey;
-        },1600);
+        };
+
+        const onFadeEnd=(event)=>{
+          if(event.target!==mapImageFade || event.propertyName!=="opacity") return;
+          mapImageFade.removeEventListener("transitionend",onFadeEnd);
+          finishFade();
+        };
+        mapImageFade.addEventListener("transitionend",onFadeEnd);
+
+        requestAnimationFrame(()=>{
+          if(myToken!==timeFadeToken) return;
+          mapImageFade.classList.add("visible");
+        });
+
+        // transitionendが端末負荷などで発火しなかった場合の安全弁
+        setTimeout(()=>{
+          mapImageFade.removeEventListener("transitionend",onFadeEnd);
+          finishFade();
+        },2100);
       };
 
       preload.onerror=()=>{
