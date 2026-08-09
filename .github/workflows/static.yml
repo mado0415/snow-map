@@ -39,7 +39,6 @@ jobs:
           touch public/.nojekyll
 
           cp index.html public/
-          cp share-20260810.html public/
 
           shopt -s nullglob
           visual_files=(
@@ -109,9 +108,6 @@ jobs:
 
           echo "Published visual files:"
           find public -maxdepth 1 -type f -name "*.png" | sort
-
-          echo "Published HTML files:"
-          find public -maxdepth 1 -type f -name "*.html" | sort
 
           echo "Publish folder size:"
           du -sh public
