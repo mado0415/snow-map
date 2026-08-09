@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.208: 下部3地点のSafari下端補正対策とズーム中のorigin切替補正を復元 -->
   <!-- SNOW MAP v0.13.207: 通常夜マップ更新／時間帯別の流れる雲を指定画像＋各マップ最下部雲へ統一／時間帯境界更新 -->
   <!-- SNOW MAP v0.13.203: iOS Safari地点表示のカード幅・背景ぼかし・ズーム処理を安定版へ修正 -->
   <!-- SNOW MAP v0.13.202: 雨の夕方・夕暮れマップ更新／雪の小雲を透過済み雪マップから再切り出し -->
@@ -4420,11 +4421,43 @@ body.weather-snow .sky-stars {
       return [...document.querySelectorAll(".beacon")].find(b=>b.dataset.place===place);
     }
     function centerBeacon(beacon, behavior="smooth"){
-      if(!beacon) return;
-      const rect=beacon.getBoundingClientRect();
-      const targetY=window.scrollY + rect.top + rect.height/2 - window.innerHeight*.43;
-      window.scrollTo({top:Math.max(0,targetY),behavior});
+      if(!beacon || !mapStage || !mapViewport) return;
+
+      /*
+       * 下部3地点は、ページ末尾付近でwindowスクロールを使うと
+       * iOS Safariの下端補正が入り、到着直前に縦へ跳ねることがある。
+       * その3地点だけはwindowを動かさず、mapStageの縦panで位置を合わせる。
+       * それ以外の地点は従来どおりページスクロールで中央寄せする。
+       */
+      const y=parseFloat(beacon.style.top || "50");
+      const viewportTop=window.scrollY + mapViewport.getBoundingClientRect().top;
+      const beaconLayoutY=viewportTop + mapStage.offsetTop + mapStage.offsetHeight*(y/100);
+      const rawTarget=beaconLayoutY - window.innerHeight*.43;
+
+      const doc=document.documentElement;
+      const maxScroll=Math.max(
+        0,
+        Math.max(doc.scrollHeight,document.body.scrollHeight)-window.innerHeight
+      );
+      const targetY=Math.max(0,Math.min(maxScroll,rawTarget));
+      const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
+
+      if(lowerPlace){
+        // ページ下端には触れず、地図レイヤーだけを縦に動かす。
+        const beaconViewportY=mapViewport.getBoundingClientRect().top
+          + mapStage.offsetTop
+          + mapStage.offsetHeight*(y/100);
+        const desiredViewportY=window.innerHeight*.43;
+        currentPanY=desiredViewportY-beaconViewportY;
+        mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
+        return;
+      }
+
+      currentPanY=0;
+      mapStage.style.setProperty("--pan-y", "0px");
+      window.scrollTo({top:targetY,behavior});
     }
+
     function setMapFocus(x,y){
       if(!mapStage) return;
       const stageWidth=mapStage.offsetWidth || 1;
@@ -4438,10 +4471,51 @@ body.weather-snow .sky-stars {
       mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
       mapStage.style.setProperty("--pan-y", "0px");
     }
+
     function setWalkFocus(beacon){
       if(!beacon || !mapStage) return;
       const x=parseFloat(beacon.style.left || "50");
       const y=parseFloat(beacon.style.top || "50");
+
+      /*
+       * すでに1.38倍へズームした状態でtransform-originだけ別地点へ切り替えると、
+       * Safariではorigin差分ぶん地図全体が縦に跳ねて見える。
+       * origin変更と同時にpanを逆補正して、切替瞬間の見た目を維持する。
+       */
+      if(mapStage.classList.contains("walking")){
+        const oldX=parseFloat(mapStage.style.getPropertyValue("--walk-x")) || 50;
+        const oldY=parseFloat(mapStage.style.getPropertyValue("--walk-y")) || 50;
+        const stageW=mapStage.offsetWidth || 1;
+        const stageH=mapStage.offsetHeight || 1;
+        const scale=1.38;
+        const dx=stageW*((oldX-x)/100)*(1-scale);
+        const dy=stageH*((oldY-y)/100)*(1-scale);
+        const preservedPanX=currentPanX + dx;
+        const preservedPanY=currentPanY + dy;
+
+        const viewportWidth=mapViewport?.clientWidth || stageW;
+        const targetX=stageW*(x/100);
+        const targetPanX=viewportWidth/2-targetX;
+
+        mapStage.style.transition="none";
+        mapStage.style.setProperty("--walk-x", `${x}%`);
+        mapStage.style.setProperty("--walk-y", `${y}%`);
+        mapStage.style.setProperty("--pan-x", `${preservedPanX}px`);
+        mapStage.style.setProperty("--pan-y", `${preservedPanY}px`);
+        void mapStage.offsetHeight;
+
+        currentPanX=targetPanX;
+        currentPanY=0;
+        requestAnimationFrame(()=>{
+          mapStage.style.removeProperty("transition");
+          requestAnimationFrame(()=>{
+            mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
+            mapStage.style.setProperty("--pan-y", "0px");
+          });
+        });
+        return;
+      }
+
       setMapFocus(x,y);
     }
     function closeSheet({keepZoom=true}={}){
