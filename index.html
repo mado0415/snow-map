@@ -27,7 +27,6 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
-  <!-- SNOW MAP v0.13.210-share-test: 通常URLは維持し、専用共有ページをネイティブ共有へ渡すボタンを追加 -->
   <!-- SNOW MAP v0.13.209: 下部地点の縦panをズーム開始前に確定し、全景復帰のpan/origin/scale更新順を統一 -->
   <!-- SNOW MAP v0.13.208: 下部3地点のSafari下端補正対策とズーム中のorigin切替補正を復元 -->
   <!-- SNOW MAP v0.13.207: 通常夜マップ更新／時間帯別の流れる雲を指定画像＋各マップ最下部雲へ統一／時間帯境界更新 -->
@@ -128,37 +127,6 @@
       cursor: pointer;
       transition: color .4s ease, background .4s ease, border-color .4s ease, box-shadow .4s ease, opacity .2s ease;
       -webkit-tap-highlight-color: transparent;
-    }
-    .share-toggle {
-      position: absolute;
-      right: 58px;
-      top: 5px;
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--sound-border);
-      border-radius: 50%;
-      background: var(--sound-bg);
-      color: var(--top-ink);
-      display: grid;
-      place-items: center;
-      padding: 0;
-      opacity: .82;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--sound-shadow);
-      pointer-events: auto;
-      cursor: pointer;
-      transition: color .4s ease, background .4s ease, border-color .4s ease, box-shadow .4s ease, opacity .2s ease;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .share-toggle:active { transform: scale(.96); }
-    .share-toggle svg {
-      width: 17px;
-      height: 17px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
     }
 
     .sound-toggle:active { transform: scale(.96); }
@@ -1969,13 +1937,6 @@ body.weather-snow .sky-stars {
       <p class="site-subtitle">A fanmade music guide for Snow Man</p>
       <p class="top-copy">今日は、どの景色を歩きますか。</p>
       <p class="hint" id="hint">小さく光る景色に触れてみてください</p>
-      <button class="share-toggle" id="shareToggle" type="button" aria-label="SNOW MAPを共有">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 16V4"></path>
-          <path d="M8 8l4-4 4 4"></path>
-          <path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path>
-        </svg>
-      </button>
       <button class="sound-toggle" id="soundToggle" type="button" aria-label="街の音をオンにする" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 10h3l4-3v10l-4-3H5z"/>
@@ -4926,34 +4887,6 @@ body.weather-snow .sky-stars {
     });
   </script>
 
-  <script>
-    (() => {
-      const shareButton = document.getElementById("shareToggle");
-      if (!shareButton) return;
-
-      const shareUrl = "https://mado0415.github.io/snow-map/share-20260810.html";
-      const shareTitle = "SNOW MAP | A fanmade music guide for Snow Man";
-
-      shareButton.addEventListener("click", async () => {
-        try {
-          if (navigator.share) {
-            await navigator.share({
-              title: shareTitle,
-              url: shareUrl
-            });
-          } else if (navigator.clipboard) {
-            await navigator.clipboard.writeText(shareUrl);
-            alert("共有用URLをコピーしました");
-          } else {
-            window.prompt("このURLを共有してください", shareUrl);
-          }
-        } catch (err) {
-          if (err && err.name === "AbortError") return;
-          console.error(err);
-        }
-      });
-    })();
-  </script>
 
 </body>
 </html>
