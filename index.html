@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.199: 雨粒の視認性を強化し、深夜の雪マップを差し替え -->
   <!-- SNOW MAP v0.13.198: 雨粒の角度と落下方向を垂直に統一 -->
   <!-- SNOW MAP v0.13.197: 連続した時間帯切替でもクロスフェードが途中状態を引き継がないよう修正 -->
   <!-- SNOW MAP v0.13.196: 時間帯マップ切替のクロスフェードを実機で安定化 -->
@@ -958,11 +959,11 @@ body.weather-snow .sky-cloud.cloud-c { --cloud-opacity-snow: .34; }
 .weather-piece.rain {
   left: var(--x0);
   top: -12%;
-  width: var(--thickness, 1.35px);
-  height: var(--size, 15px);
+  width: var(--thickness, 1.55px);
+  height: var(--size, 19px);
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(233,245,255,.42) 22%, rgba(162,199,229,.72) 100%);
-  box-shadow: 0 0 2px rgba(100,145,185,.16);
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(238,247,255,.56) 20%, rgba(151,192,225,.88) 100%);
+  box-shadow: 0 0 2.5px rgba(92,138,180,.22);
   animation: weatherRainFall var(--life) linear forwards;
 }
 @keyframes weatherSnowFall {
@@ -984,7 +985,7 @@ body.weather-snow .sky-cloud.cloud-c { --cloud-opacity-snow: .34; }
     opacity: 0;
   }
   14% {
-    opacity: var(--peak,.34);
+    opacity: var(--peak,.48);
   }
   100% {
     transform: translate3d(0,112vh,0);
@@ -2752,7 +2753,7 @@ body.weather-snow .sky-stars {
   midnight:"snow-cloud-night.png?v=01418"
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
-    const WEATHER_VERSION="01420";
+    const WEATHER_VERSION="01421";
     const weatherMaps={
       snow:{
         morning:`snow-map-snow-morning.png?v=${WEATHER_VERSION}`,
@@ -2901,7 +2902,7 @@ body.weather-snow .sky-stars {
           node.style.setProperty("--size",`${randomInRange([3.4,7.2]).toFixed(2)}px`);
           node.style.setProperty("--dx",`${randomInRange([14,44]).toFixed(1)}px`);
           node.style.setProperty("--life",`${randomInRange([7.8,12.6]).toFixed(2)}s`);
-          node.style.setProperty("--peak",randomInRange([.42,.88]).toFixed(2));
+          node.style.setProperty("--peak",randomInRange([.42,.60]).toFixed(2));
           node.style.setProperty("--scale",randomInRange([.84,1.28]).toFixed(2));
           node.style.setProperty("--blur",`${randomInRange([0,.5]).toFixed(2)}px`);
         }else if(kind==="rain"){
@@ -2911,7 +2912,7 @@ body.weather-snow .sky-stars {
           node.style.setProperty("--dx","0px");
           node.style.setProperty("--life",`${randomInRange([.92,1.28]).toFixed(2)}s`);
           node.style.setProperty("--peak",randomInRange([.36,.62]).toFixed(2));
-          node.style.setProperty("--thickness",`${randomInRange([1.25,1.75]).toFixed(2)}px`);
+          node.style.setProperty("--thickness",`${randomInRange([1.35,1.75]).toFixed(2)}px`);
         }else{
           return;
         }
