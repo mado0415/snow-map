@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.209: 下部地点の縦panをズーム開始前に確定し、全景復帰のpan/origin/scale更新順を統一 -->
   <!-- SNOW MAP v0.13.208: 下部3地点のSafari下端補正対策とズーム中のorigin切替補正を復元 -->
   <!-- SNOW MAP v0.13.207: 通常夜マップ更新／時間帯別の流れる雲を指定画像＋各マップ最下部雲へ統一／時間帯境界更新 -->
   <!-- SNOW MAP v0.13.203: iOS Safari地点表示のカード幅・背景ぼかし・ズーム処理を安定版へ修正 -->
@@ -4443,13 +4444,8 @@ body.weather-snow .sky-stars {
       const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
 
       if(lowerPlace){
-        // ページ下端には触れず、地図レイヤーだけを縦に動かす。
-        const beaconViewportY=mapViewport.getBoundingClientRect().top
-          + mapStage.offsetTop
-          + mapStage.offsetHeight*(y/100);
-        const desiredViewportY=window.innerHeight*.43;
-        currentPanY=desiredViewportY-beaconViewportY;
-        mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
+        // 下部地点の縦panは setWalkFocus() でズーム開始前に確定済み。
+        // ここで再計算するとSafariで二段階補正になり、押し戻しに見えるため何もしない。
         return;
       }
 
@@ -4476,6 +4472,7 @@ body.weather-snow .sky-stars {
       if(!beacon || !mapStage) return;
       const x=parseFloat(beacon.style.left || "50");
       const y=parseFloat(beacon.style.top || "50");
+      const lowerPlace=["ブルーハーバー","シーサイド","シーズンガーデン"].includes(beacon.dataset.place);
 
       /*
        * すでに1.38倍へズームした状態でtransform-originだけ別地点へ切り替えると、
@@ -4505,18 +4502,36 @@ body.weather-snow .sky-stars {
         void mapStage.offsetHeight;
 
         currentPanX=targetPanX;
-        currentPanY=0;
+
+        if(lowerPlace && mapViewport){
+          const beaconViewportY=mapViewport.getBoundingClientRect().top
+            + mapStage.offsetTop
+            + mapStage.offsetHeight*(y/100);
+          currentPanY=window.innerHeight*.43-beaconViewportY;
+        }else{
+          currentPanY=0;
+        }
+
         requestAnimationFrame(()=>{
           mapStage.style.removeProperty("transition");
           requestAnimationFrame(()=>{
             mapStage.style.setProperty("--pan-x", `${currentPanX}px`);
-            mapStage.style.setProperty("--pan-y", "0px");
+            mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
           });
         });
         return;
       }
 
+      // 初回ズームでも、下部地点はズーム開始後に補正を足さず、
+      // 最終的な縦panを最初から設定して1本のアニメーションにする。
       setMapFocus(x,y);
+      if(lowerPlace && mapViewport){
+        const beaconViewportY=mapViewport.getBoundingClientRect().top
+          + mapStage.offsetTop
+          + mapStage.offsetHeight*(y/100);
+        currentPanY=window.innerHeight*.43-beaconViewportY;
+        mapStage.style.setProperty("--pan-y", `${currentPanY}px`);
+      }
     }
     function closeSheet({keepZoom=true}={}){
       sheet.classList.remove("open");
@@ -4553,13 +4568,17 @@ body.weather-snow .sky-stars {
       travelPreviewToken++;
       clearTimeout(humanFadeTimer); humanFadeTimer=null;
       isZoomed=false;
-      mapViewport?.classList.remove("zoomed");
       currentPlace=null;
-      mapStage?.classList.remove("walking");
-      mapStage?.style.setProperty("--walk-x", "50%");
-      mapStage?.style.setProperty("--walk-y", "50%");
+
+      // Safariで「縮小してからpan/originが戻る」中間フレームを作らない。
+      // 先に全景の最終値をまとめて設定し、その同じ描画フレームでwalkingを外す。
       currentPanX=0;
       currentPanY=0;
+      mapStage?.style.setProperty("--walk-x", "50%");
+      mapStage?.style.setProperty("--walk-y", "50%");
+      mapStage?.style.setProperty("--pan-x", "0px");
+      mapStage?.style.setProperty("--pan-y", "0px");
+
       freePan.active=false;
       freePan.moved=false;
       freePan.pointerId=null;
@@ -4567,13 +4586,16 @@ body.weather-snow .sky-stars {
       mapViewport?.classList.remove("dragging");
       mapStage?.classList.remove("free-panning");
       mapViewport?.style.removeProperty("touch-action");
-      mapStage?.style.setProperty("--pan-x", "0px");
-      mapStage?.style.setProperty("--pan-y", "0px");
 
-      // iOS Safari: 全景復帰直後の次のスワイプをブラウザ標準スクロールへ返す
       requestAnimationFrame(()=>{
-        mapViewport?.classList.remove("dragging");
-        mapStage?.classList.remove("free-panning");
+        mapStage?.classList.remove("walking");
+        mapViewport?.classList.remove("zoomed");
+
+        // iOS Safari: 全景復帰直後の次のスワイプをブラウザ標準スクロールへ返す
+        requestAnimationFrame(()=>{
+          mapViewport?.classList.remove("dragging");
+          mapStage?.classList.remove("free-panning");
+        });
       });
 
       hint.style.opacity=".5";
