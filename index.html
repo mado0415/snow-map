@@ -27,6 +27,8 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.202: 雨の夕方・夕暮れマップ更新／雪の小雲を透過済み雪マップから再切り出し -->
+  <!-- SNOW MAP v0.13.201: 開発モードの地点移動中はQAパネルを退避し、通常時と同じズーム・カード描画条件に修正 -->
   <!-- SNOW MAP v0.13.200: 雨の夜・深夜で使用する通常マップを現行版へ更新 -->
   <!-- SNOW MAP v0.13.199: 雨粒の視認性を強化し、深夜の雪マップを差し替え -->
   <!-- SNOW MAP v0.13.198: 雨粒の角度と落下方向を垂直に統一 -->
@@ -2754,7 +2756,7 @@ body.weather-snow .sky-stars {
   midnight:"snow-cloud-night.png?v=01418"
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
-    const WEATHER_VERSION="01421";
+    const WEATHER_VERSION="01422";
     const weatherMaps={
       snow:{
         morning:`snow-map-snow-morning.png?v=${WEATHER_VERSION}`,
@@ -2768,7 +2770,7 @@ body.weather-snow .sky-stars {
         morning:`snow-map-rain-morning.png?v=${WEATHER_VERSION}`,
         day:`snow-map-rain-day.png?v=${WEATHER_VERSION}`,
         evening:`snow-map-rain-evening.png?v=${WEATHER_VERSION}`,
-        twilight:`snow-map-rain-evening.png?v=${WEATHER_VERSION}`,
+        twilight:`snow-map-rain-twilight.png?v=${WEATHER_VERSION}`,
         night:timeImages.night,
         midnight:timeImages.midnight
       }
@@ -3037,6 +3039,20 @@ body.weather-snow .sky-stars {
     const soundToggle=document.getElementById("soundToggle"), soundNote=document.getElementById("soundNote");
     const devTimePanel=document.getElementById("devTimePanel"), devTimeTitle=document.getElementById("devTimeTitle");
     const devTimeToggle=document.getElementById("devTimeToggle");
+
+    // 開発パネルはiOS SafariのVisual Viewport / fixed要素の合成に影響するため、
+    // 地点移動〜曲カード表示中だけ完全に退避する。
+    let devPanelSuspendedForPlace=false;
+    function suspendDevPanelForPlace(){
+      if(!isDevMode() || !devTimePanel || devTimePanel.hidden) return;
+      devPanelSuspendedForPlace=true;
+      devTimePanel.hidden=true;
+    }
+    function restoreDevPanelAfterPlace(){
+      if(!devPanelSuspendedForPlace || !isDevMode() || !devTimePanel) return;
+      devPanelSuspendedForPlace=false;
+      devTimePanel.hidden=false;
+    }
     const devTimeButtons=[...document.querySelectorAll("[data-dev-time]")];
     const devWeatherButtons=[...document.querySelectorAll("[data-dev-weather]")];
     const devDateInput=document.getElementById("devDateInput");
@@ -4487,6 +4503,10 @@ body.weather-snow .sky-stars {
       document.body.classList.remove("sheet-open");
       backdrop.classList.remove("open");
 
+      // 地点カードを閉じたらQA操作へ戻れるよう開発パネルを復帰。
+      // arriveAt()冒頭から呼ばれるcloseSheetでは isTransitioning=true のため復帰させない。
+      if(!isTransitioning) restoreDevPanelAfterPlace();
+
       // iOS Safari対策：ぼかしレイヤーを閉じた直後に再合成させ、
       // 下端へ残る半透明帯を持ち越さない。
       requestAnimationFrame(()=>{
@@ -4508,6 +4528,7 @@ body.weather-snow .sky-stars {
     }
 
     function returnToMap(){
+      restoreDevPanelAfterPlace();
       stopDomeEventTrack();
       travelPreviewToken++;
       clearTimeout(humanFadeTimer); humanFadeTimer=null;
@@ -4541,6 +4562,10 @@ body.weather-snow .sky-stars {
 
     function arriveAt(place,{fromMap=false}={}){
       if(isTransitioning) return;
+
+      // QA用パネルの高さ・fixed合成が地点ズームやカード寸法に干渉しないよう、
+      // 移動処理を始める前に通常公開時と同じ表示条件へ戻す。
+      suspendDevPanelForPlace();
 
       if(place==="Snow Dome" && soundEnabled) startDomeEventTrack();
       else stopDomeEventTrack();
