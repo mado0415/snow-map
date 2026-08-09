@@ -2749,8 +2749,8 @@
       "木漏れ日の道":{
         kinds:["leaf1","leaf2","leaf1","leaf2"],
         area:{x:[13,23], y:[33,39]},
-        cap:1,
-        spawn:[950,1650],
+        cap:2,
+        spawn:[1900,3600],
         duration:[1250,1750],
         size:[5,7],
         driftX:[42,66],
@@ -2875,7 +2875,7 @@
       clearPlaceDrifts();
       if(!placeDriftLayer || document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       Object.entries(PLACE_DRIFT_CONFIGS).forEach(([zone,config])=>{
-        const initialCount=zone==="木漏れ日の道" ? 1 : (zone==="シーズンガーデン" ? 3 : 2);
+        const initialCount=zone==="木漏れ日の道" ? 0 : (zone==="シーズンガーデン" ? 3 : 2);
         for(let i=0;i<initialCount;i++){
           setTimeout(()=>{
             if(!document.hidden) spawnPlaceDrift(zone);
