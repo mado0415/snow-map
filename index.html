@@ -864,28 +864,35 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.1s ease, background 1.1s ease;
-  mix-blend-mode: multiply;
+  opacity: 0 !important;
+  transition: none;
+  background: transparent !important;
+  mix-blend-mode: normal;
 }
-body.weather-rain #weatherSkyOverlay {
-  opacity: .58;
+/* 天候時はページ全体の空色を曇天寄りへ寄せ、地図上部だけ色が分かれるのを防ぐ */
+body.weather-rain.time-morning::before,
+body.weather-rain.time-day::before {
+  background: linear-gradient(180deg, #d1dce3 0%, #e3eaee 52%, #f1f4f5 100%);
 }
-body.weather-rain.time-morning #weatherSkyOverlay,
-body.weather-rain.time-day #weatherSkyOverlay {
-  background: linear-gradient(180deg, rgba(124,151,171,.42) 0%, rgba(171,189,198,.34) 38%, rgba(208,218,222,.14) 100%);
+body.weather-rain.time-evening::before,
+body.weather-rain.time-twilight::before {
+  background: linear-gradient(180deg, #b7b3bf 0%, #d0c4ca 48%, #e5d2cf 100%);
 }
-body.weather-rain.time-evening #weatherSkyOverlay,
-body.weather-rain.time-twilight #weatherSkyOverlay {
-  background: linear-gradient(180deg, rgba(121,127,147,.44) 0%, rgba(170,156,166,.30) 40%, rgba(211,201,203,.14) 100%);
+body.weather-rain.time-night::before,
+body.weather-rain.time-midnight::before {
+  background: linear-gradient(180deg, #4a6078 0%, #60758c 46%, #7f95aa 100%);
 }
-body.weather-rain.time-night #weatherSkyOverlay,
-body.weather-rain.time-midnight #weatherSkyOverlay {
-  background: linear-gradient(180deg, rgba(62,78,108,.46) 0%, rgba(96,112,144,.30) 48%, rgba(146,161,183,.10) 100%);
+body.weather-snow.time-morning::before,
+body.weather-snow.time-day::before {
+  background: linear-gradient(180deg, #d9e5ed 0%, #edf4f7 52%, #fafcfc 100%);
 }
-body.weather-snow #weatherSkyOverlay {
-  opacity: .28;
-  background: linear-gradient(180deg, rgba(200,219,236,.24) 0%, rgba(233,241,248,.18) 52%, rgba(255,255,255,.06) 100%);
+body.weather-snow.time-evening::before,
+body.weather-snow.time-twilight::before {
+  background: linear-gradient(180deg, #cbd6e2 0%, #dfe6ee 48%, #f0f2f6 100%);
+}
+body.weather-snow.time-night::before,
+body.weather-snow.time-midnight::before {
+  background: linear-gradient(180deg, #415773 0%, #5b7390 46%, #7b97b1 100%);
 }
 body.weather-rain .sky-cloud {
   filter: saturate(.90) brightness(.96);
@@ -1902,9 +1909,9 @@ body.weather-snow .sky-stars {
       <div class="full-map-touch-layer" id="fullMapTouchLayer" aria-hidden="true"></div>
       <div class="map-stage">
         <div class="sky-clouds" id="skyClouds" aria-hidden="true">
-          <img class="sky-cloud cloud-a" data-sky-cloud src="snow-cloud-morning.png?v=01410" alt="">
-          <img class="sky-cloud cloud-b" data-sky-cloud src="snow-cloud-morning.png?v=01410" alt="">
-          <img class="sky-cloud cloud-c" data-sky-cloud src="snow-cloud-morning.png?v=01410" alt="">
+          <img class="sky-cloud cloud-a" data-sky-cloud src="snow-cloud-morning.png?v=01414" alt="">
+          <img class="sky-cloud cloud-b" data-sky-cloud src="snow-cloud-morning.png?v=01414" alt="">
+          <img class="sky-cloud cloud-c" data-sky-cloud src="snow-cloud-morning.png?v=01414" alt="">
         </div>
         <div class="weather-sky-overlay" id="weatherSkyOverlay" aria-hidden="true"></div>
         <div class="sky-stars" id="skyStars" aria-hidden="true">
@@ -1937,7 +1944,7 @@ body.weather-snow .sky-stars {
           <i class="sky-star" style="--sx:94%;--sy:24%;--ss:1.5px;--sd:4.6s;--sdelay:-2.8s"></i>
         </div>
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image base" id="mapImage" src="snow-map-day.png?v=01410" alt="SNOW MAPの地図" />
+          <img class="map-image base" id="mapImage" src="snow-map-day.png?v=01414" alt="SNOW MAPの地図" />
           <img class="map-image fade" id="mapImageFade" src="" alt="" aria-hidden="true" />
         </div>
         <div class="ambient"></div>
@@ -2707,23 +2714,23 @@ body.weather-snow .sky-stars {
     const weatherSkyOverlay=document.getElementById("weatherSkyOverlay");
     const weatherEffectLayer=document.getElementById("weatherEffectLayer");
     const timeImages={
-  morning:"snow-map-morning.png?v=01410",
-  day:"snow-map-day.png?v=01410",
-  evening:"snow-map-evening.png?v=01410",
-  twilight:"snow-map-twilight.png?v=01410",
-  night:"snow-map-night.png?v=01410",
-  midnight:"snow-map-midnight.png?v=01410"
+  morning:"snow-map-morning.png?v=01414",
+  day:"snow-map-day.png?v=01414",
+  evening:"snow-map-evening.png?v=01414",
+  twilight:"snow-map-twilight.png?v=01414",
+  night:"snow-map-night.png?v=01414",
+  midnight:"snow-map-midnight.png?v=01414"
 };
     const timeClouds={
-  morning:"snow-cloud-morning.png?v=01410",
-  day:"snow-cloud-day.png?v=01410",
-  evening:"snow-cloud-evening.png?v=01410",
-  twilight:"snow-cloud-evening.png?v=01410",
-  night:"snow-cloud-night.png?v=01410",
-  midnight:"snow-cloud-night.png?v=01410"
+  morning:"snow-cloud-morning.png?v=01414",
+  day:"snow-cloud-day.png?v=01414",
+  evening:"snow-cloud-evening.png?v=01414",
+  twilight:"snow-cloud-evening.png?v=01414",
+  night:"snow-cloud-night.png?v=01414",
+  midnight:"snow-cloud-night.png?v=01414"
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
-    const WEATHER_VERSION="01413";
+    const WEATHER_VERSION="01414";
     const weatherMaps={
       snow:{
         morning:`snow-map-snow-morning.png?v=${WEATHER_VERSION}`,
