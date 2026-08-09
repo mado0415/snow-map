@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.205: 地点表示のカード幅・ズーム・ぼかしを正常だった旧実装へロールバック。時間帯境界変更は維持 -->
   <!-- SNOW MAP v0.13.204: 時間帯境界を4:00/16:00/18:00/19:00/2:00へ変更し、地点カード幅・ズーム・Safariぼかしを再修正 -->
   <!-- SNOW MAP v0.13.203: iOS Safari地点表示のカード幅・背景ぼかし・ズーム処理を安定版へ修正 -->
   <!-- SNOW MAP v0.13.202: 雨の夕方・夕暮れマップ更新／雪の小雲を透過済み雪マップから再切り出し -->
@@ -185,18 +186,6 @@
       -webkit-tap-highlight-color: transparent;
       transition: opacity .18s ease, transform .18s ease;
     }
-    body.sheet-open .topbar,
-    body.sheet-open .map-stage {
-      filter: blur(2.5px) saturate(.96);
-      transition: filter .24s ease;
-    }
-
-    body:not(.sheet-open) .topbar,
-    body:not(.sheet-open) .map-stage {
-      filter: none;
-      transition: filter .24s ease;
-    }
-
     body.sheet-open .guidebook-launcher {
       opacity: 0;
       pointer-events: none;
@@ -405,7 +394,7 @@
       will-change: transform;
     }
     .map-stage.walking {
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.52);
+      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38);
     }
     .map-stage.strolling {
       transition-duration: 2.45s;
@@ -1316,9 +1305,8 @@ body.weather-snow .sky-stars {
       z-index: 21;
       left: 50%;
       bottom: max(10px, env(safe-area-inset-bottom));
-      width: calc(100vw - 28px);
-      max-width: 500px;
-      max-height: calc(100dvh - 70px);
+      width: min(calc(100% - 42px), 430px);
+      max-height: calc(100svh - 92px);
       overflow-y: auto;
       overscroll-behavior: contain;
       transform: translate(-50%, calc(100% + 28px));
