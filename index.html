@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
+  <!-- SNOW MAP v0.13.197: 連続した時間帯切替でもクロスフェードが途中状態を引き継がないよう修正 -->
   <!-- SNOW MAP v0.13.196: 時間帯マップ切替のクロスフェードを実機で安定化 -->
   <!-- SNOW MAP v0.13.147: 深夜0:00〜4:30は暗い夜空を維持し、4:30以降から明け方へ移行 -->
   <!-- SNOW MAP v0.13.144: 流れ星の速度を少し落とし、尾の向きと進行方向を維持。開発モードの夜は23時、確認間隔は開発時のみ短縮 -->
@@ -4005,6 +4006,7 @@ body.weather-snow .sky-stars {
       themeColor?.setAttribute("content",sky.bottom);
     }
     let timeFadeToken=0;
+    let mapFadeAnimation=null;
     function applyTimeClasses(key){
       const classKey=key==="midnight" ? "night" : key;
       app.classList.remove("time-morning","time-day","time-evening","time-twilight","time-night","time-midnight");
@@ -4045,42 +4047,58 @@ body.weather-snow .sky-stars {
         // 背景色・光・雲も、地図のクロスフェード開始と同時に切り替える
         applyTimeClasses(key);
 
-        mapImageFade.src=nextSrc;
+        // 前回のフェード途中で次の時間帯が選ばれても、
+        // 半透明状態を引き継がないようアニメーションを完全にリセットする。
+        if(mapFadeAnimation){
+          mapFadeAnimation.cancel();
+          mapFadeAnimation=null;
+        }
+        mapImageFade.getAnimations?.().forEach(animation=>animation.cancel());
         mapImageFade.classList.remove("visible");
-
-        // 開発モードなど負荷が高い状況でも、fade画像の「opacity:0」が
-        // 1度実際に描画されてからフェードを始める。
-        // requestAnimationFrameだけだと重い端末で描画が飛び、瞬時切替に見えることがあるため、
-        // layout確定 + rAF + transitionend の順で処理する。
+        mapImageFade.style.transition="none";
+        mapImageFade.style.opacity="0";
+        mapImageFade.src=nextSrc;
         void mapImageFade.offsetWidth;
 
-        let transitionFinished=false;
         const finishFade=()=>{
-          if(transitionFinished || myToken!==timeFadeToken) return;
-          transitionFinished=true;
+          if(myToken!==timeFadeToken) return;
           mapImage.src=nextSrc;
+          mapImageFade.style.opacity="0";
           mapImageFade.classList.remove("visible");
+          mapImageFade.style.transition="";
+          mapFadeAnimation=null;
           currentTimeKey=key;
           currentWeatherKey=weatherKey;
         };
 
-        const onFadeEnd=(event)=>{
-          if(event.target!==mapImageFade || event.propertyName!=="opacity") return;
-          mapImageFade.removeEventListener("transitionend",onFadeEnd);
-          finishFade();
-        };
-        mapImageFade.addEventListener("transitionend",onFadeEnd);
-
         requestAnimationFrame(()=>{
           if(myToken!==timeFadeToken) return;
-          mapImageFade.classList.add("visible");
+
+          // Web Animations APIで毎回必ず0→1から開始する。
+          // Safari等で使えない場合だけCSS transitionへフォールバック。
+          if(typeof mapImageFade.animate==="function"){
+            mapFadeAnimation=mapImageFade.animate(
+              [{opacity:0},{opacity:1}],
+              {
+                duration:1550,
+                easing:"cubic-bezier(.22,.70,.20,1)",
+                fill:"forwards"
+              }
+            );
+            mapFadeAnimation.onfinish=finishFade;
+            mapFadeAnimation.oncancel=()=>{};
+          }else{
+            mapImageFade.style.transition="opacity 1.55s cubic-bezier(.22,.70,.20,1)";
+            void mapImageFade.offsetWidth;
+            mapImageFade.style.opacity="1";
+            setTimeout(finishFade,1600);
+          }
         });
 
-        // transitionendが端末負荷などで発火しなかった場合の安全弁
+        // 端末負荷でfinishイベントが失われた場合の安全弁
         setTimeout(()=>{
-          mapImageFade.removeEventListener("transitionend",onFadeEnd);
-          finishFade();
-        },2100);
+          if(myToken===timeFadeToken) finishFade();
+        },2200);
       };
 
       preload.onerror=()=>{
