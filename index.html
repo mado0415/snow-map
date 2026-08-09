@@ -2717,7 +2717,7 @@ body.weather-snow .sky-stars {
   morning:"snow-map-morning.png?v=01418",
   day:"snow-map-day.png?v=01418",
   evening:"snow-map-evening.png?v=01418",
-  twilight:"snow-map-twilight.png?v=01419",
+  twilight:"snow-map-twilight.png?v=01420",
   night:"snow-map-night.png?v=01418",
   midnight:"snow-map-midnight.png?v=01418"
 };
@@ -2730,7 +2730,7 @@ body.weather-snow .sky-stars {
   midnight:"snow-cloud-night.png?v=01418"
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
-    const WEATHER_VERSION="01419";
+    const WEATHER_VERSION="01420";
     const weatherMaps={
       snow:{
         morning:`snow-map-snow-morning.png?v=${WEATHER_VERSION}`,
@@ -2776,6 +2776,35 @@ body.weather-snow .sky-stars {
     function weatherRandom(str){
       return weatherSeed(str)/4294967295;
     }
+    function getTimeKeyForDate(date){
+      const minute=date.getHours()*60+date.getMinutes();
+      if(minute>=5*60 && minute<10*60) return "morning";
+      if(minute>=10*60 && minute<16*60) return "day";
+      if(minute>=16*60 && minute<18*60+30) return "evening";
+      if(minute>=18*60+30 && minute<19*60+15) return "twilight";
+      if(minute>=19*60+15 || minute<2*60) return "night";
+      return "midnight";
+    }
+    function isWeatherEventDay(date){
+      /* 誕生日・デビュー日・クリスマスは、自動天候の雨を出さない。 */
+      const md=`${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+      return SPECIAL_DATES.debut.has(md) || SPECIAL_DATES.christmas.has(md) || SPECIAL_DATES.birthday.has(md);
+    }
+    function getRainPeriodsForDay(dayId){
+      /* 雨の日でも一日中は降らせない。日ごとに1〜2つの連続時間帯だけ雨にする。 */
+      const patterns=[
+        ["morning"],
+        ["day"],
+        ["evening"],
+        ["evening","twilight"],
+        ["morning","day"],
+        ["day","evening"],
+        ["twilight","night"],
+        ["night"]
+      ];
+      const index=Math.min(patterns.length-1, Math.floor(weatherRandom(`rain-period-${dayId}`)*patterns.length));
+      return patterns[index];
+    }
     function getWeatherKey(date=getVirtualNow()){
       if(isDevMode()){
         const forced=devWeatherOverride || getForcedWeatherKey();
@@ -2790,8 +2819,13 @@ body.weather-snow .sky-stars {
         if(d===snowyDay) return "snow";
       }
       if(isWinterMonth(m) && weatherRandom(`snow-${dayId}`)<0.055) return "snow";
+      /* イベント日は雨なし。雪判定は上で済ませるので、クリスマスの雪仕様は維持。 */
+      if(isWeatherEventDay(date)) return "clear";
       const rainChance=isWinterMonth(m) ? 0.070 : 0.085;
-      if(weatherRandom(`rain-${dayId}`)<rainChance) return "rain";
+      if(weatherRandom(`rain-${dayId}`)<rainChance){
+        const currentPeriod=getTimeKeyForDate(date);
+        if(getRainPeriodsForDay(dayId).includes(currentPeriod)) return "rain";
+      }
       return "clear";
     }
     function getSceneMapSrc(timeKey, weatherKey=currentWeatherKey){
@@ -3857,15 +3891,7 @@ body.weather-snow .sky-stars {
       const forced=devTimeOverride || getForcedTimeKey();
       if(isDevMode() && forced) return forced;
 
-      const now=getVirtualNow();
-      const minute=now.getHours()*60+now.getMinutes();
-
-      if(minute>=5*60 && minute<10*60) return "morning";
-      if(minute>=10*60 && minute<16*60) return "day";
-      if(minute>=16*60 && minute<18*60+30) return "evening";
-      if(minute>=18*60+30 && minute<19*60+15) return "twilight";
-      if(minute>=19*60+15 || minute<2*60) return "night";
-      return "midnight";
+      return getTimeKeyForDate(getVirtualNow());
     }
     const skyStops=[
       /* 0:00〜4:30：深夜の暗さを維持。4:30以降からゆっくり明け方へ */
