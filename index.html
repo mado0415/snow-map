@@ -936,11 +936,11 @@ body.weather-snow .sky-cloud.cloud-c { --cloud-opacity-snow: .34; }
 .weather-piece.rain {
   left: var(--x0);
   top: -12%;
-  width: var(--thickness, 1.8px);
-  height: var(--size, 18px);
+  width: var(--thickness, 1.35px);
+  height: var(--size, 15px);
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(235,246,255,.62) 18%, rgba(150,190,225,.96) 100%);
-  box-shadow: 0 0 3px rgba(100,145,185,.28);
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(233,245,255,.42) 22%, rgba(162,199,229,.72) 100%);
+  box-shadow: 0 0 2px rgba(100,145,185,.16);
   animation: weatherRainFall var(--life) linear forwards;
 }
 @keyframes weatherSnowFall {
@@ -2836,7 +2836,7 @@ body.weather-snow .sky-stars {
     }
     function spawnWeatherEffect(kind=currentWeatherKey){
       if(!weatherEffectLayer || document.hidden) return;
-      const burst=kind==="rain" ? Math.round(randomInRange([4,7])) : 1;
+      const burst=kind==="rain" ? Math.round(randomInRange([2,4])) : 1;
       for(let i=0;i<burst;i++){
         const node=document.createElement("i");
         if(kind==="snow"){
@@ -2851,11 +2851,11 @@ body.weather-snow .sky-stars {
         }else if(kind==="rain"){
           node.className="weather-piece rain";
           node.style.setProperty("--x0",`${randomInRange([-8,102]).toFixed(2)}%`);
-          node.style.setProperty("--size",`${randomInRange([15,24]).toFixed(2)}px`);
-          node.style.setProperty("--dx",`${randomInRange([18,42]).toFixed(1)}px`);
-          node.style.setProperty("--life",`${randomInRange([.72,1.08]).toFixed(2)}s`);
-          node.style.setProperty("--peak",randomInRange([.38,.68]).toFixed(2));
-          node.style.setProperty("--thickness",`${randomInRange([1.3,2.2]).toFixed(2)}px`);
+          node.style.setProperty("--size",`${randomInRange([12,19]).toFixed(2)}px`);
+          node.style.setProperty("--dx",`${randomInRange([15,34]).toFixed(1)}px`);
+          node.style.setProperty("--life",`${randomInRange([.92,1.28]).toFixed(2)}s`);
+          node.style.setProperty("--peak",randomInRange([.22,.43]).toFixed(2));
+          node.style.setProperty("--thickness",`${randomInRange([1.0,1.55]).toFixed(2)}px`);
         }else{
           return;
         }
@@ -2871,7 +2871,7 @@ body.weather-snow .sky-stars {
       if(!weatherEffectLayer || document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const wait=kind==="snow"
         ? Math.round(randomInRange([320,920]))
-        : Math.round(randomInRange([90,190]));
+        : Math.round(randomInRange([150,290]));
       const timer=setTimeout(()=>{
         weatherSpawnTimers.delete(timer);
         if(currentWeatherKey!==kind) return;
@@ -2887,7 +2887,7 @@ body.weather-snow .sky-stars {
         for(let i=0;i<8;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="snow") spawnWeatherEffect("snow"); }, i*180);
         scheduleWeatherEffect("snow");
       }else if(currentWeatherKey==="rain"){
-        for(let i=0;i<20;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="rain") spawnWeatherEffect("rain"); }, i*70);
+        for(let i=0;i<10;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="rain") spawnWeatherEffect("rain"); }, i*110);
         scheduleWeatherEffect("rain");
       }
     }
