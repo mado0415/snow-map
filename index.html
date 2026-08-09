@@ -958,14 +958,14 @@ body.weather-snow .sky-cloud.cloud-c { --cloud-opacity-snow: .34; }
 }
 @keyframes weatherRainFall {
   0% {
-    transform: translate3d(0,-16vh,0) rotate(12deg);
+    transform: translate3d(0,-16vh,0) rotate(-12deg);
     opacity: 0;
   }
   14% {
     opacity: var(--peak,.34);
   }
   100% {
-    transform: translate3d(var(--dx, 28px), 112vh, 0) rotate(12deg);
+    transform: translate3d(var(--dx, -28px), 112vh, 0) rotate(-12deg);
     opacity: 0;
   }
 }
@@ -1909,9 +1909,9 @@ body.weather-snow .sky-stars {
       <div class="full-map-touch-layer" id="fullMapTouchLayer" aria-hidden="true"></div>
       <div class="map-stage">
         <div class="sky-clouds" id="skyClouds" aria-hidden="true">
-          <img class="sky-cloud cloud-a" data-sky-cloud src="snow-cloud-morning.png?v=01416" alt="">
-          <img class="sky-cloud cloud-b" data-sky-cloud src="snow-cloud-morning.png?v=01416" alt="">
-          <img class="sky-cloud cloud-c" data-sky-cloud src="snow-cloud-morning.png?v=01416" alt="">
+          <img class="sky-cloud cloud-a" data-sky-cloud src="snow-cloud-morning.png?v=01418" alt="">
+          <img class="sky-cloud cloud-b" data-sky-cloud src="snow-cloud-morning.png?v=01418" alt="">
+          <img class="sky-cloud cloud-c" data-sky-cloud src="snow-cloud-morning.png?v=01418" alt="">
         </div>
         <div class="weather-sky-overlay" id="weatherSkyOverlay" aria-hidden="true"></div>
         <div class="sky-stars" id="skyStars" aria-hidden="true">
@@ -1944,7 +1944,7 @@ body.weather-snow .sky-stars {
           <i class="sky-star" style="--sx:94%;--sy:24%;--ss:1.5px;--sd:4.6s;--sdelay:-2.8s"></i>
         </div>
         <div class="map-images" aria-label="海と街、Snow Dome、木漏れ日の道、はじまりの広場、ブルーハーバー、シーズンガーデンがつながるSNOW MAP">
-          <img class="map-image base" id="mapImage" src="snow-map-day.png?v=01416" alt="SNOW MAPの地図" />
+          <img class="map-image base" id="mapImage" src="snow-map-day.png?v=01418" alt="SNOW MAPの地図" />
           <img class="map-image fade" id="mapImageFade" src="" alt="" aria-hidden="true" />
         </div>
         <div class="ambient"></div>
@@ -2714,23 +2714,23 @@ body.weather-snow .sky-stars {
     const weatherSkyOverlay=document.getElementById("weatherSkyOverlay");
     const weatherEffectLayer=document.getElementById("weatherEffectLayer");
     const timeImages={
-  morning:"snow-map-morning.png?v=01416",
-  day:"snow-map-day.png?v=01416",
-  evening:"snow-map-evening.png?v=01416",
-  twilight:"snow-map-twilight.png?v=01416",
-  night:"snow-map-night.png?v=01416",
-  midnight:"snow-map-midnight.png?v=01416"
+  morning:"snow-map-morning.png?v=01418",
+  day:"snow-map-day.png?v=01418",
+  evening:"snow-map-evening.png?v=01418",
+  twilight:"snow-map-twilight.png?v=01418",
+  night:"snow-map-night.png?v=01418",
+  midnight:"snow-map-midnight.png?v=01418"
 };
     const timeClouds={
-  morning:"snow-cloud-morning.png?v=01416",
-  day:"snow-cloud-day.png?v=01416",
-  evening:"snow-cloud-evening.png?v=01416",
-  twilight:"snow-cloud-evening.png?v=01416",
-  night:"snow-cloud-night.png?v=01416",
-  midnight:"snow-cloud-night.png?v=01416"
+  morning:"snow-cloud-morning.png?v=01418",
+  day:"snow-cloud-day.png?v=01418",
+  evening:"snow-cloud-evening.png?v=01418",
+  twilight:"snow-cloud-evening.png?v=01418",
+  night:"snow-cloud-night.png?v=01418",
+  midnight:"snow-cloud-night.png?v=01418"
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
-    const WEATHER_VERSION="01417";
+    const WEATHER_VERSION="01418";
     const weatherMaps={
       snow:{
         morning:`snow-map-snow-morning.png?v=${WEATHER_VERSION}`,
@@ -2851,11 +2851,11 @@ body.weather-snow .sky-stars {
         }else if(kind==="rain"){
           node.className="weather-piece rain";
           node.style.setProperty("--x0",`${randomInRange([-8,102]).toFixed(2)}%`);
-          node.style.setProperty("--size",`${randomInRange([12,19]).toFixed(2)}px`);
-          node.style.setProperty("--dx",`${randomInRange([15,34]).toFixed(1)}px`);
+          node.style.setProperty("--size",`${randomInRange([14,21]).toFixed(2)}px`);
+          node.style.setProperty("--dx",`${randomInRange([-34,-15]).toFixed(1)}px`);
           node.style.setProperty("--life",`${randomInRange([.92,1.28]).toFixed(2)}s`);
-          node.style.setProperty("--peak",randomInRange([.22,.43]).toFixed(2));
-          node.style.setProperty("--thickness",`${randomInRange([1.0,1.55]).toFixed(2)}px`);
+          node.style.setProperty("--peak",randomInRange([.36,.62]).toFixed(2));
+          node.style.setProperty("--thickness",`${randomInRange([1.25,1.75]).toFixed(2)}px`);
         }else{
           return;
         }
@@ -2871,7 +2871,7 @@ body.weather-snow .sky-stars {
       if(!weatherEffectLayer || document.hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const wait=kind==="snow"
         ? Math.round(randomInRange([320,920]))
-        : Math.round(randomInRange([150,290]));
+        : Math.round(randomInRange([430,720]));
       const timer=setTimeout(()=>{
         weatherSpawnTimers.delete(timer);
         if(currentWeatherKey!==kind) return;
@@ -2887,7 +2887,7 @@ body.weather-snow .sky-stars {
         for(let i=0;i<8;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="snow") spawnWeatherEffect("snow"); }, i*180);
         scheduleWeatherEffect("snow");
       }else if(currentWeatherKey==="rain"){
-        for(let i=0;i<10;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="rain") spawnWeatherEffect("rain"); }, i*110);
+        for(let i=0;i<4;i++) setTimeout(()=>{ if(!document.hidden && currentWeatherKey==="rain") spawnWeatherEffect("rain"); }, i*260);
         scheduleWeatherEffect("rain");
       }
     }
