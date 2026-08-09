@@ -27,9 +27,7 @@
   <meta name="twitter:description" content="景色を歩くように、Snow Manの楽曲と出会う。個人制作による非公式ファンメイド・ミュージックガイド。" />
   <meta name="twitter:image" content="https://mado0415.github.io/snow-map/snow-map-share.png?v=2" />
   <meta name="twitter:image:alt" content="SNOW MAP — an unofficial fanmade music guide for Snow Man" />
-  <!-- SNOW MAP v0.13.206: iOS Safariで地点到着後の地図倍率を固定し、transformによるページ横幅再計算を抑制 -->
-  <!-- SNOW MAP v0.13.205: 地点表示のカード幅・ズーム・ぼかしを正常だった旧実装へロールバック。時間帯境界変更は維持 -->
-  <!-- SNOW MAP v0.13.204: 時間帯境界を4:00/16:00/18:00/19:00/2:00へ変更し、地点カード幅・ズーム・Safariぼかしを再修正 -->
+  <!-- SNOW MAP v0.13.207: 通常夜マップ更新／時間帯別の流れる雲を指定画像＋各マップ最下部雲へ統一／時間帯境界更新 -->
   <!-- SNOW MAP v0.13.203: iOS Safari地点表示のカード幅・背景ぼかし・ズーム処理を安定版へ修正 -->
   <!-- SNOW MAP v0.13.202: 雨の夕方・夕暮れマップ更新／雪の小雲を透過済み雪マップから再切り出し -->
   <!-- SNOW MAP v0.13.201: 開発モードの地点移動中はQAパネルを退避し、通常時と同じズーム・カード描画条件に修正 -->
@@ -70,9 +68,6 @@
     html {
       margin: 0;
       min-height: 100%;
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
       background: var(--world-bottom);
       transition: background-color .9s linear;
     }
@@ -80,8 +75,6 @@
       margin: 0;
       min-height: 100svh;
       min-height: 100dvh;
-      width: 100%;
-      max-width: 100%;
       position: relative;
       background: transparent;
       color: var(--ink);
@@ -192,6 +185,16 @@
       -webkit-tap-highlight-color: transparent;
       transition: opacity .18s ease, transform .18s ease;
     }
+    body.sheet-open .app {
+      filter: blur(2.5px) saturate(.96);
+      transition: filter .24s ease;
+    }
+
+    body:not(.sheet-open) .app {
+      filter: none;
+      transition: filter .24s ease;
+    }
+
     body.sheet-open .guidebook-launcher {
       opacity: 0;
       pointer-events: none;
@@ -401,10 +404,6 @@
     }
     .map-stage.walking {
       transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38);
-    }
-    .map-stage.arrived {
-      transition: none !important;
-      transform: translate3d(var(--pan-x, 0px), var(--pan-y, 0px), 0) scale(1.38) !important;
     }
     .map-stage.strolling {
       transition-duration: 2.45s;
@@ -1302,8 +1301,8 @@ body.weather-snow .sky-stars {
     }
     .sheet-backdrop.open {
       background: rgba(28,40,51,.09);
-      -webkit-backdrop-filter: blur(2.5px) saturate(.96);
-      backdrop-filter: blur(2.5px) saturate(.96);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
@@ -1315,7 +1314,7 @@ body.weather-snow .sky-stars {
       z-index: 21;
       left: 50%;
       bottom: max(10px, env(safe-area-inset-bottom));
-      width: min(calc(100% - 42px), 430px);
+      width: min(calc(100vw - 42px), 430px);
       max-height: calc(100svh - 92px);
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -2758,16 +2757,16 @@ body.weather-snow .sky-stars {
   day:"snow-map-day.png?v=01418",
   evening:"snow-map-evening.png?v=01418",
   twilight:"snow-map-twilight.png?v=01420",
-  night:"snow-map-night.png?v=01422",
+  night:"snow-map-night.png?v=01423",
   midnight:"snow-map-midnight.png?v=01422"
 };
     const timeClouds={
-  morning:"snow-cloud-morning.png?v=01418",
-  day:"snow-cloud-day.png?v=01418",
-  evening:"snow-cloud-evening.png?v=01418",
-  twilight:"snow-cloud-evening.png?v=01418",
-  night:"snow-cloud-night.png?v=01418",
-  midnight:"snow-cloud-night.png?v=01418"
+  morning:{primary:"snow-cloud-morning.png?v=01423",bottom:"snow-cloud-bottom-morning.png?v=01423"},
+  day:{primary:"snow-cloud-day.png?v=01423",bottom:"snow-cloud-bottom-day.png?v=01423"},
+  evening:{primary:"snow-cloud-evening.png?v=01423",bottom:"snow-cloud-bottom-evening.png?v=01423"},
+  twilight:{primary:"snow-cloud-evening.png?v=01423",bottom:"snow-cloud-bottom-twilight.png?v=01423"},
+  night:{primary:"snow-cloud-night.png?v=01423",bottom:"snow-cloud-bottom-night.png?v=01423"},
+  midnight:{primary:"snow-cloud-night.png?v=01423",bottom:"snow-cloud-bottom-midnight.png?v=01423"}
 };
     const skyCloudImages=[...document.querySelectorAll("[data-sky-cloud]")];
     const WEATHER_VERSION="01422";
@@ -2818,10 +2817,6 @@ body.weather-snow .sky-stars {
     }
     function getTimeKeyForDate(date){
       const minute=date.getHours()*60+date.getMinutes();
-
-      // 4:00〜9:59 朝 / 10:00〜15:59 昼
-      // 16:00〜17:59 夕方 / 18:00〜18:59 夕暮れ
-      // 19:00〜1:59 夜 / 2:00〜3:59 深夜
       if(minute>=4*60 && minute<10*60) return "morning";
       if(minute>=10*60 && minute<16*60) return "day";
       if(minute>=16*60 && minute<18*60) return "evening";
@@ -2878,15 +2873,17 @@ body.weather-snow .sky-stars {
       return timeImages[timeKey] || timeImages.day;
     }
     function getSkyCloudSources(key, weatherKey=currentWeatherKey){
-      const base=timeClouds[key]||timeClouds.day;
-      if(weatherKey==="snow") return [base, weatherClouds.snow.cutout, base];
+      const cloudSet=timeClouds[key]||timeClouds.day;
+      const primary=cloudSet.primary;
+      const bottom=cloudSet.bottom;
+      if(weatherKey==="snow") return [primary, weatherClouds.snow.cutout, bottom];
       if(weatherKey==="rain"){
         const accent=(key==="evening" || key==="twilight" || key==="night" || key==="midnight")
           ? weatherClouds.rain.late
           : weatherClouds.rain.day;
         return [weatherClouds.rain.cutout, accent, weatherClouds.rain.cutout];
       }
-      return [base, base, base];
+      return [primary, bottom, primary];
     }
     function setSkyClouds(key){
       const srcs=getSkyCloudSources(key, currentWeatherKey);
@@ -4366,8 +4363,6 @@ body.weather-snow .sky-stars {
     }
     function showSong(place){
       currentPlace=place;
-      // iOS Safari: fixedカードを開く瞬間の再合成で地図倍率が戻らないよう到着状態を固定。
-      mapStage?.classList.add("walking","arrived");
       // カード表示ではSoundscapeを再起動しない。場所移動時の音をそのまま継続する。
       const data=places[place], song=nextSongFor(place);
       placeName.textContent=place;
@@ -4387,7 +4382,6 @@ body.weather-snow .sky-stars {
     function exploreCurrentPlace(){
       if(!currentPlace || isTransitioning) return;
       isTransitioning=true;
-      mapStage?.classList.remove("arrived");
       const song=nextSongFor(currentPlace);
       const beacon=getBeacon(currentPlace);
 
@@ -4487,7 +4481,7 @@ body.weather-snow .sky-stars {
       isZoomed=false;
       mapViewport?.classList.remove("zoomed");
       currentPlace=null;
-      mapStage?.classList.remove("walking","arrived");
+      mapStage?.classList.remove("walking");
       mapStage?.style.setProperty("--walk-x", "50%");
       mapStage?.style.setProperty("--walk-y", "50%");
       currentPanX=0;
@@ -4524,7 +4518,6 @@ body.weather-snow .sky-stars {
       const beacon=getBeacon(place);
       if(!beacon) return;
       isTransitioning=true;
-      mapStage?.classList.remove("arrived");
       mapViewport?.classList.add("zoomed");
       setFreeRoam(false);
       previousPlaceBeforeTravel=currentPlace;
@@ -4545,7 +4538,6 @@ body.weather-snow .sky-stars {
         stopFootsteps();
         finishDestinationPreview(place,previewToken);
         playArrivalSound(place);
-        mapStage?.classList.add("arrived");
         showSong(place);
         isTransitioning=false;
       },4850);
