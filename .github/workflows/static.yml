@@ -1,4 +1,4 @@
-# SNOW MAP: publish only the files the site actually uses
+# SNOW MAP: publish the assets used by the site
 name: Deploy static content to Pages
 
 on:
@@ -29,7 +29,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Build lightweight publish folder
+      - name: Build publish folder
         shell: bash
         run: |
           set -euo pipefail
@@ -38,22 +38,28 @@ jobs:
           mkdir -p public/data public/sounds
           touch public/.nojekyll
 
-          # Main page and all time-of-day maps
           cp index.html public/
-          cp snow-map-morning.png public/
-          cp snow-map-day.png public/
-          cp snow-map-evening.png public/
-          cp snow-map-twilight.png public/
-          cp snow-map-night.png public/
-          cp snow-map-midnight.png public/
 
-          # Song data
+          shopt -s nullglob
+          visual_files=(
+            snow-map-*.png
+            snow-cloud-*.png
+            harbor-boat-*.png
+            drift-*.png
+          )
+
+          if [ ${#visual_files[@]} -eq 0 ]; then
+            echo "No visual PNG assets found."
+            exit 1
+          fi
+
+          for file in "${visual_files[@]}"; do
+            cp "$file" "public/$file"
+          done
+
           cp data/songs.json public/data/
-
-          # One sound file that still lives at repository root
           cp harbor-horn-far-v012-loud-v0128.mp3 public/
 
-          # Only sound files currently referenced by index.html
           sound_files=(
             soft-wind.mp3
             night-city.mp3
@@ -100,10 +106,11 @@ jobs:
             cp "sounds/$file" "public/sounds/$file"
           done
 
+          echo "Published visual files:"
+          find public -maxdepth 1 -type f -name "*.png" | sort
+
           echo "Publish folder size:"
           du -sh public
-          echo "Published files:"
-          find public -type f | sort
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
