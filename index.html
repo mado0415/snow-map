@@ -1502,7 +1502,7 @@ body.weather-snow .sky-stars {
     }
     .dev-time-content {
       overflow: hidden;
-      max-height: 150px;
+      max-height: 205px;
       opacity: 1;
       transition: max-height .22s ease, opacity .16s ease, margin .22s ease;
     }
@@ -1550,6 +1550,36 @@ body.weather-snow .sky-stars {
       -webkit-tap-highlight-color: transparent;
     }
     .dev-time-button.active {
+      background: #31475f;
+      color: #fff;
+      border-color: #31475f;
+    }
+    .dev-weather-row {
+      display: grid;
+      grid-template-columns: 54px repeat(4, 1fr);
+      gap: 5px;
+      margin-top: 7px;
+      align-items: center;
+    }
+    .dev-weather-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-align: center;
+      opacity: .58;
+    }
+    .dev-weather-button {
+      min-height: 32px;
+      border: 1px solid rgba(49,71,95,.14);
+      border-radius: 10px;
+      background: rgba(255,255,255,.72);
+      color: #31475f;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dev-weather-button.active {
       background: #31475f;
       color: #fff;
       border-color: #31475f;
@@ -1785,6 +1815,13 @@ body.weather-snow .sky-stars {
         <button class="dev-time-button" type="button" data-dev-time="twilight">暮</button>
         <button class="dev-time-button" type="button" data-dev-time="night">夜★</button>
         <button class="dev-time-button" type="button" data-dev-time="midnight">深夜</button>
+      </div>
+      <div class="dev-weather-row" aria-label="開発用天候切り替え">
+        <span class="dev-weather-label">天候</span>
+        <button class="dev-weather-button" type="button" data-dev-weather="auto">自動</button>
+        <button class="dev-weather-button" type="button" data-dev-weather="clear">通常</button>
+        <button class="dev-weather-button" type="button" data-dev-weather="rain">雨</button>
+        <button class="dev-weather-button" type="button" data-dev-weather="snow">雪</button>
       </div>
       <div class="dev-date-controls" aria-label="開発用日付切り替え">
         <button class="dev-date-button" id="devDatePrev" type="button" aria-label="前日">−1</button>
@@ -2215,8 +2252,14 @@ body.weather-snow .sky-stars {
       return {y,mo,d,value:raw};
     }
 
+    function getForcedWeatherKey(){
+      const raw=(getUrlParams().get("weather")||"").trim().toLowerCase();
+      return ["clear","rain","snow"].includes(raw) ? raw : null;
+    }
+
     let devTimeOverride=null;
     let devDateOverride=null;
+    let devWeatherOverride=null;
 
     function getVirtualNow(){
       const now=new Date();
@@ -2727,6 +2770,10 @@ body.weather-snow .sky-stars {
       return weatherSeed(str)/4294967295;
     }
     function getWeatherKey(date=getVirtualNow()){
+      if(isDevMode()){
+        const forced=devWeatherOverride || getForcedWeatherKey();
+        if(forced) return forced;
+      }
       const y=date.getFullYear();
       const m=date.getMonth();
       const d=date.getDate();
@@ -2926,6 +2973,7 @@ body.weather-snow .sky-stars {
     const devTimePanel=document.getElementById("devTimePanel"), devTimeTitle=document.getElementById("devTimeTitle");
     const devTimeToggle=document.getElementById("devTimeToggle");
     const devTimeButtons=[...document.querySelectorAll("[data-dev-time]")];
+    const devWeatherButtons=[...document.querySelectorAll("[data-dev-weather]")];
     const devDateInput=document.getElementById("devDateInput");
     const devDatePrev=document.getElementById("devDatePrev"), devDateNext=document.getElementById("devDateNext"), devDateToday=document.getElementById("devDateToday");
     const ambWind=document.getElementById("ambWind");
@@ -4006,6 +4054,10 @@ body.weather-snow .sky-stars {
         return devTimeOverride || getForcedTimeKey() || (getForcedClock() ? "clock" : "realtime");
       }
 
+      function activeWeatherKey(){
+        return devWeatherOverride || getForcedWeatherKey() || "auto";
+      }
+
       function selectedDateValue(){
         return devDateOverride || getForcedDate()?.value || dateValueFrom(new Date());
       }
@@ -4040,6 +4092,10 @@ body.weather-snow .sky-stars {
         devTimeButtons.forEach(button=>{
           button.classList.toggle("active",button.dataset.devTime===active);
         });
+        const activeWeather=activeWeatherKey();
+        devWeatherButtons.forEach(button=>{
+          button.classList.toggle("active",button.dataset.devWeather===activeWeather);
+        });
 
         const dateValue=selectedDateValue();
         if(devDateInput && devDateInput.value!==dateValue) devDateInput.value=dateValue;
@@ -4053,7 +4109,8 @@ body.weather-snow .sky-stars {
           const [y,mo,d]=dateValue.split("-");
           const realToday=dateValueFrom(new Date());
           const dateTitle=dateValue===realToday ? "今日" : `${Number(mo)}/${Number(d)}`;
-          devTimeTitle.textContent=`開発モード：${dateTitle}・${timeTitle}`;
+          const weatherLabel={auto:"自動",clear:"通常",rain:"雨",snow:"雪"}[activeWeather] || "自動";
+          devTimeTitle.textContent=`開発モード：${dateTitle}・${timeTitle}・${weatherLabel}`;
         }
       }
 
@@ -4069,6 +4126,23 @@ body.weather-snow .sky-stars {
           }
           currentTimeKey=null;
           setWorldTime();
+          if(soundEnabled) ambientMix(currentPlace,{duration:700});
+          refreshControls();
+        });
+      });
+
+      devWeatherButtons.forEach(button=>{
+        button.addEventListener("click",()=>{
+          const key=button.dataset.devWeather;
+          devWeatherOverride=key==="auto" ? null : key;
+          const url=new URL(window.location.href);
+          if(key==="auto") url.searchParams.delete("weather");
+          else url.searchParams.set("weather",key);
+          history.replaceState(null,"",url);
+          currentTimeKey=null;
+          currentWeatherKey="clear";
+          setWorldTime();
+          updatePlaceDrifts();
           if(soundEnabled) ambientMix(currentPlace,{duration:700});
           refreshControls();
         });
