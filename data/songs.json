@@ -1,11 +1,9 @@
 {
   "schemaVersion": 2,
   "source": {
-    "file": "SNOW_MAP_曲の住所と場所ネットワーク_v1.1_MASTER(5).xlsm",
+    "file": "SNOW_MAP_曲の住所と場所ネットワーク_v1.1_MASTER_入力選択式.xlsm",
     "sheet": "全曲の住所",
-    "songCount": 147,
-    "linksSource": "スノ曲アンケートまとめ(4).xlsx / 曲順",
-    "linkedSongCount": 147
+    "songCount": 147
   },
   "settings": {
     "timeBands": [
@@ -17,7 +15,10 @@
     "eventDateFormat": "MM-DD",
     "selection": {
       "homeWeight": 0.9,
-      "secondaryPlaceWeight": 0.1
+      "secondaryPlaceWeight": 0.1,
+      "strictTimeField": "time.strict",
+      "rainBoostField": "weather.rainBoost",
+      "snowBoostField": "weather.snowBoost"
     }
   },
   "places": {
@@ -383,7 +384,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16",
@@ -441,7 +447,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夜",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": false
       },
       "events": [
         "05-17"
@@ -497,7 +508,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -551,7 +567,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -605,7 +626,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -659,7 +685,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17",
@@ -717,7 +748,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -771,7 +807,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16",
@@ -828,7 +869,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16"
@@ -884,7 +930,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "夜",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-27",
@@ -941,7 +992,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "朝",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -995,7 +1051,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1049,7 +1110,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1103,7 +1169,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1157,7 +1228,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1211,7 +1287,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1265,7 +1346,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1319,7 +1405,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1373,7 +1464,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": true
       },
       "events": [
         "12-24",
@@ -1430,7 +1526,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "03-25",
@@ -1488,7 +1589,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1542,7 +1648,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1596,7 +1707,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "01-22"
@@ -1652,7 +1768,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1706,7 +1827,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "朝",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16"
@@ -1762,7 +1888,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1816,7 +1947,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1870,7 +2006,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1924,7 +2065,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -1978,7 +2124,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2032,7 +2183,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2086,7 +2242,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": true
       },
       "events": [],
       "survey": {
@@ -2140,7 +2301,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2194,7 +2360,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2248,7 +2419,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2302,7 +2478,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17",
@@ -2359,7 +2540,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-21",
@@ -2416,7 +2602,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2470,7 +2661,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2524,7 +2720,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17",
@@ -2588,7 +2789,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2642,7 +2848,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-27"
@@ -2698,7 +2909,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2752,7 +2968,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16",
@@ -2809,7 +3030,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16",
@@ -2867,7 +3093,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-27"
@@ -2923,7 +3154,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -2977,7 +3213,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-05"
@@ -3033,7 +3274,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "03-25"
@@ -3089,7 +3335,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3143,7 +3394,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3197,7 +3453,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3251,7 +3512,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3305,7 +3571,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3359,7 +3630,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3413,7 +3689,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-09"
@@ -3469,7 +3750,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17"
@@ -3525,7 +3811,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3579,7 +3870,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3633,7 +3929,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3687,7 +3988,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3741,7 +4047,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3795,7 +4106,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3849,7 +4165,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3903,7 +4224,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -3957,7 +4283,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4011,7 +4342,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "朝",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4065,7 +4401,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "03-25",
@@ -4123,7 +4464,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4177,7 +4523,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4231,7 +4582,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4285,7 +4641,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4339,7 +4700,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4393,7 +4759,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "03-25"
@@ -4449,7 +4820,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16"
@@ -4505,7 +4881,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": true
       },
       "events": [
         "02-16"
@@ -4561,7 +4942,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "11-05"
@@ -4617,7 +5003,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "夜",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4671,7 +5062,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4725,7 +5121,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": true
       },
       "events": [
         "08-08"
@@ -4781,7 +5182,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4835,7 +5241,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": true
       },
       "events": [],
       "survey": {
@@ -4889,7 +5300,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4943,7 +5359,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -4997,7 +5418,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5051,7 +5477,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5105,7 +5536,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": false
       },
       "events": [
         "05-17",
@@ -5162,7 +5598,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5216,7 +5657,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5270,7 +5716,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5324,7 +5775,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5378,7 +5834,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5432,7 +5893,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16",
@@ -5489,7 +5955,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5543,7 +6014,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17",
@@ -5601,7 +6077,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5655,7 +6136,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "11-05"
@@ -5711,7 +6197,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5765,7 +6256,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "夜",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5819,7 +6315,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5873,7 +6374,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5927,7 +6433,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -5981,7 +6492,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6035,7 +6551,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6089,7 +6610,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6143,7 +6669,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6197,7 +6728,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6251,7 +6787,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6305,7 +6846,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "11-05"
@@ -6361,7 +6907,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "07-05"
@@ -6417,7 +6968,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17"
@@ -6473,7 +7029,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6527,7 +7088,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-05",
@@ -6585,7 +7151,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6639,7 +7210,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6693,7 +7269,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6747,7 +7328,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6801,7 +7387,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "昼",
-        "sub": "朝"
+        "sub": "朝",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-21",
@@ -6859,7 +7450,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -6913,7 +7509,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "02-16"
@@ -6969,7 +7570,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7023,7 +7629,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "11-27",
@@ -7081,7 +7692,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "夕方",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7135,7 +7751,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-21"
@@ -7191,7 +7812,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7245,7 +7871,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "朝",
-        "sub": "昼"
+        "sub": "昼",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7299,7 +7930,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7353,7 +7989,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7407,7 +8048,12 @@
       "secondaryPlace": "展望台",
       "time": {
         "main": "夜",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7461,7 +8107,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7515,7 +8166,12 @@
       "secondaryPlace": "木漏れ日の道",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": true
       },
       "events": [],
       "survey": {
@@ -7569,7 +8225,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7623,7 +8284,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7677,7 +8343,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "昼",
-        "sub": "夕方"
+        "sub": "夕方",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7731,7 +8402,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "11-05"
@@ -7787,7 +8463,12 @@
       "secondaryPlace": "シーズンガーデン",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7841,7 +8522,12 @@
       "secondaryPlace": "はじまりの広場",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "07-05",
@@ -7898,7 +8584,12 @@
       "secondaryPlace": "ブルーハーバー",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": true
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -7952,7 +8643,12 @@
       "secondaryPlace": "シティライト",
       "time": {
         "main": "昼",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -8006,7 +8702,12 @@
       "secondaryPlace": "Snow Dome",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "07-05"
@@ -8062,7 +8763,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "05-17"
@@ -8118,7 +8824,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -8172,7 +8883,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [
         "06-21",
@@ -8229,7 +8945,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "朝",
-        "sub": null
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": false
       },
       "events": [
         "02-16"
@@ -8285,7 +9006,12 @@
       "secondaryPlace": "カフェ",
       "time": {
         "main": "夕方",
-        "sub": "夜"
+        "sub": "夜",
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": false,
+        "snowBoost": false
       },
       "events": [],
       "survey": {
@@ -8339,7 +9065,12 @@
       "secondaryPlace": "歩道橋",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": true
       },
       "events": [],
       "survey": {
@@ -8393,7 +9124,12 @@
       "secondaryPlace": "シーサイド",
       "time": {
         "main": "夕方",
-        "sub": null
+        "sub": null,
+        "strict": false
+      },
+      "weather": {
+        "rainBoost": true,
+        "snowBoost": false
       },
       "events": [
         "07-05"
